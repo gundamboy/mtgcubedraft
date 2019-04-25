@@ -35,6 +35,9 @@ dependencies {
     implementation 'com.squareup.moshi:moshi:1.8.0'
     implementation 'com.squareup.okhttp3:okhttp:3.14.1'
 
+    // this is where the... Magic.... happens... get it! MAGIC! Because Magic The Gathering!
+    implementation 'io.magicthegathering:javasdk:0.0.14'
+
     // testing
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
