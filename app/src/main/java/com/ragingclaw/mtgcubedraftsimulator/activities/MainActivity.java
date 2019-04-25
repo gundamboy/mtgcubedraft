@@ -1,8 +1,10 @@
-package com.ragingclaw.mtgcubedraftsimulator;
+package com.ragingclaw.mtgcubedraftsimulator.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.ragingclaw.mtgcubedraftsimulator.R;
 
 import java.util.Set;
 
@@ -16,7 +18,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void todoCrap() {
         /*
-        TODO: Set up timber as a function so it outputs 'fart' as a tag (in utils file) *maybe*        TODO: set up retrofit class file
+        TODO: Set up timber as a function so it outputs 'fart' as a tag (in utils file) *maybe*
+        TODO: set up retrofit class file
         TODO: set up retrofit interface file
         TODO: set up Room with some dummy data (LiveData, Doa, Repository, Database, etc)
         */

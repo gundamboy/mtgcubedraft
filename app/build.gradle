@@ -38,8 +38,14 @@ dependencies {
     // this is where the... Magic.... happens... get it! MAGIC! Because Magic The Gathering!
     implementation 'io.magicthegathering:javasdk:0.0.14'
 
+    // google stuff
+    implementation 'com.google.firebase:firebase-core:16.0.8'
+    implementation 'com.google.firebase:firebase-firestore:18.2.0'
+
     // testing
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }
+
+apply plugin: 'com.google.gms.google-services'
