@@ -1,26 +1,22 @@
 package com.ragingclaw.mtgcubedraftsimulator.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.ragingclaw.mtgcubedraftsimulator.BuildConfig;
 import com.ragingclaw.mtgcubedraftsimulator.R;
+import com.ragingclaw.mtgcubedraftsimulator.fragments.CreateAccountFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.EmailPasswordFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.LoginFragment;
 import com.ragingclaw.mtgcubedraftsimulator.utils.NotLoggingTree;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import timber.log.Timber;
 
-public class LoginActivity extends FragmentActivity implements LoginFragment.OnFragmentInteractionListener, EmailPasswordFragment.OnFragmentInteractionListener {
+public class LoginActivity extends FragmentActivity implements LoginFragment.OnFragmentInteractionListener, EmailPasswordFragment.OnFragmentInteractionListener, CreateAccountFragment.OnFragmentInteractionListener {
     //@BindView(R.id.loginOptionsView) FrameLayout loginOptionsView;
 
     @Override
@@ -46,27 +42,34 @@ public class LoginActivity extends FragmentActivity implements LoginFragment.OnF
     }
 
 
-    private void swapFragment() {
-        EmailPasswordFragment emailPasswordFragment = new EmailPasswordFragment();
+    private void swapFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_from_bottom, R.anim.slide_out_from_top, R.anim.slide_in_from_bottom, R.anim.slide_out_from_top);
-        fragmentTransaction.replace(R.id.loginOptionsView, emailPasswordFragment);
+        fragmentTransaction.replace(R.id.loginOptionsView, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
     @Override
     public void onFragmentInteraction(View view, String message) {
-        Timber.tag("fart").i("message: %s, view %s", message, view);
 
         if (message.equals("email")) {
-            Timber.tag("fart").i("email button was pressed");
-            swapFragment();
+            swapFragment(new EmailPasswordFragment());
+        }
+
+        if (message.equals("create")) {
+            swapFragment(new CreateAccountFragment());
         }
     }
 
     @Override
     public void onEmailFragmentInteraction(View view, Bundle bundle) {
+        Timber.tag("fart").i("bundle: %s, view %s",bundle, view);
+    }
+
+
+    @Override
+    public void onCreateAccountFragmentInteraction(View view, Bundle bundle) {
         Timber.tag("fart").i("bundle: %s, view %s",bundle, view);
     }
 }

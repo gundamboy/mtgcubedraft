@@ -1,7 +1,7 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
-
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -15,59 +15,44 @@ import com.ragingclaw.mtgcubedraftsimulator.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LoginFragment extends Fragment {
-    @BindView(R.id.signInButton) com.google.android.gms.common.SignInButton googleSignInButton;
-    @BindView(R.id.emailSignInButton) com.google.android.material.button.MaterialButton emailSignInButton;
-    @BindView(R.id.createAccountButton) com.google.android.material.button.MaterialButton createAccountButton;
-    private Unbinder unbinder;
+public class CreateAccountFragment extends Fragment {
+    @BindView(R.id.fieldEmail) com.google.android.material.textfield.TextInputEditText emailText;
+    @BindView(R.id.fieldPassword) com.google.android.material.textfield.TextInputEditText passwordText;
+    @BindView(R.id.newAccountButton) com.google.android.material.button.MaterialButton createAccountButton;
 
+    private Unbinder unbinder;
     private OnFragmentInteractionListener mListener;
 
-    public LoginFragment() {
+    public CreateAccountFragment() {
         // Required empty public constructor
     }
 
-    public static LoginFragment newInstance(String param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
-        return fragment;
-    }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.login_fragment, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.login_create_account_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
-
-        emailSignInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                swapFragment(v, "email");
-            }
-        });
 
         createAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                swapFragment(v, "create");
+                Timber.tag("fart").i("sign in with email pressed");
             }
         });
 
         return view;
     }
 
-    private void swapFragment(View view, String message) {
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(View view, Bundle bundle) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(view, message);
+            mListener.onCreateAccountFragmentInteraction(view, bundle);
         }
     }
 
@@ -90,7 +75,7 @@ public class LoginFragment extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(View view, String message);
+        void onCreateAccountFragmentInteraction(View view, Bundle bundle);
     }
 
     @Override public void onDestroyView() {

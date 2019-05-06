@@ -24,9 +24,6 @@ public class EmailPasswordFragment extends Fragment {
     @BindView(R.id.fieldEmail) com.google.android.material.textfield.TextInputEditText emailText;
     @BindView(R.id.fieldPassword) com.google.android.material.textfield.TextInputEditText passwordText;
     @BindView(R.id.emailSignInButton) com.google.android.material.button.MaterialButton signInButton;
-    @BindView(R.id.emailCreateAccountButton) com.google.android.material.button.MaterialButton createAccountButton;
-    @BindView(R.id.signOutButton) com.google.android.material.button.MaterialButton signOutButton;
-    @BindView(R.id.verifyEmailButton) com.google.android.material.button.MaterialButton verifyEmailButton;
     private Unbinder unbinder;
 
 

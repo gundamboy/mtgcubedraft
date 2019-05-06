@@ -11,6 +11,7 @@
 
     <string name="cube_choice">Choose Your Adventure</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="dialog_password_encryption_warning">WARNING\nThis application stores passwords. Passwords ARE encrypted, however, you should not reuse passwords across accounts. Please, for the love of all things holy, make a unique password.</string>
+    <string name="dialog_password_encryption_warning_confirm">OK</string>
 </resources>

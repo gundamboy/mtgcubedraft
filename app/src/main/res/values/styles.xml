@@ -52,4 +52,9 @@
         <item name="android:textSize">36sp</item>
     </style>
 
+    <style name="PasswordWarningText" parent="AppTheme">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
 </resources>
