@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">MTG Cube Draft Simulator</string>
+    <string name="login_title_text">MTG Cube Draft Simulator Login</string>
+    <string name="email_sign_in">Email/Password</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="create_account">Create Account</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="verify_email">Verify Email</string>
+
+    <string name="cube_choice">Choose Your Adventure</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
