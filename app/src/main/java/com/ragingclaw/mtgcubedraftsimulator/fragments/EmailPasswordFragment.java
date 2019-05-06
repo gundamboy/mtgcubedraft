@@ -2,7 +2,6 @@ package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,14 +9,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.ragingclaw.mtgcubedraftsimulator.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,7 +23,7 @@ import butterknife.Unbinder;
 public class EmailPasswordFragment extends Fragment {
     @BindView(R.id.fieldEmail) com.google.android.material.textfield.TextInputEditText emailText;
     @BindView(R.id.fieldPassword) com.google.android.material.textfield.TextInputEditText passwordText;
-    @BindView(R.id.signInButton) com.google.android.material.button.MaterialButton signInButton;
+    @BindView(R.id.emailSignInButton) com.google.android.material.button.MaterialButton signInButton;
     @BindView(R.id.emailCreateAccountButton) com.google.android.material.button.MaterialButton createAccountButton;
     @BindView(R.id.signOutButton) com.google.android.material.button.MaterialButton signOutButton;
     @BindView(R.id.verifyEmailButton) com.google.android.material.button.MaterialButton verifyEmailButton;
@@ -38,9 +36,8 @@ public class EmailPasswordFragment extends Fragment {
         // Required empty public constructor
     }
 
-
-    public static LoginFragment newInstance(String param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
+    public static EmailPasswordFragment newInstance(String param1, String param2) {
+        EmailPasswordFragment fragment = new EmailPasswordFragment();
         return fragment;
     }
 
@@ -51,26 +48,26 @@ public class EmailPasswordFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.login_email_password_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        Timber.tag("fart").i("we made it!");
+
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Timber.tag("fart").i("sign in with email pressed");
             }
         });
 
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    private void loginWithEmail(View view, Bundle bundle) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onEmailFragmentInteraction(view, bundle);
         }
     }
 
@@ -91,14 +88,13 @@ public class EmailPasswordFragment extends Fragment {
         mListener = null;
     }
 
+
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onEmailFragmentInteraction(View view, Bundle bundle);
     }
 
     @Override public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
     }
-
 }
