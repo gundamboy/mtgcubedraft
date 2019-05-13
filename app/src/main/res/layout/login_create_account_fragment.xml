@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/fieldEmail"
+            android:id="@+id/createAccountEmail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -29,7 +29,7 @@
             android:inputType="textEmailAddress" />
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/fieldPassword"
+            android:id="@+id/createAccountPassword"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -53,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@+id/emailPasswordFields">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/newAccountButton"
+            android:id="@+id/createAccountButton"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="180dp"
             android:layout_height="wrap_content"

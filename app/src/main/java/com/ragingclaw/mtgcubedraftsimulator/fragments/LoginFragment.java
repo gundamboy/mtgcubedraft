@@ -10,6 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 
 import butterknife.BindView;
@@ -47,6 +51,13 @@ public class LoginFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.login_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
+
+        googleSignInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                swapFragment(v, "google");
+            }
+        });
 
         emailSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override

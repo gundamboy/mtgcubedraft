@@ -6,10 +6,15 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 
 import butterknife.BindView;
@@ -21,10 +26,11 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class EmailPasswordFragment extends Fragment {
-    @BindView(R.id.fieldEmail) com.google.android.material.textfield.TextInputEditText emailText;
-    @BindView(R.id.fieldPassword) com.google.android.material.textfield.TextInputEditText passwordText;
+    @BindView(R.id.signInEmail) com.google.android.material.textfield.TextInputEditText emailText;
+    @BindView(R.id.signInPassword) com.google.android.material.textfield.TextInputEditText passwordText;
     @BindView(R.id.emailSignInButton) com.google.android.material.button.MaterialButton signInButton;
     private Unbinder unbinder;
+    private FirebaseAuth mAuth;
 
 
     private OnFragmentInteractionListener mListener;
@@ -33,7 +39,7 @@ public class EmailPasswordFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static EmailPasswordFragment newInstance(String param1, String param2) {
+    public static EmailPasswordFragment newInstance() {
         EmailPasswordFragment fragment = new EmailPasswordFragment();
         return fragment;
     }
@@ -49,22 +55,35 @@ public class EmailPasswordFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.login_email_password_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
-
-        Timber.tag("fart").i("we made it!");
+        mAuth = FirebaseAuth.getInstance();
 
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Timber.tag("fart").i("sign in with email pressed");
+                String email = emailText.getText().toString();
+                String password = passwordText.getText().toString();
+
+                if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+                    View toastView = getLayoutInflater().inflate(R.layout.custom_toast_view, null);
+                    TextView createAccountError = toastView.findViewById(R.id.createAccountErrorToast);
+                    createAccountError.setVisibility(View.VISIBLE);
+                    Toast toast = new Toast(getContext());
+                    toast.setView(toastView);
+                    toast.setDuration(Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.BOTTOM, 0, 500);
+                    toast.show();
+                } else {
+                    loginWithEmail(email, password);
+                }
             }
         });
 
         return view;
     }
 
-    private void loginWithEmail(View view, Bundle bundle) {
+    private void loginWithEmail(String email, String password) {
         if (mListener != null) {
-            mListener.onEmailFragmentInteraction(view, bundle);
+            mListener.onEmailFragmentInteraction(email, password);
         }
     }
 
@@ -87,7 +106,7 @@ public class EmailPasswordFragment extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-        void onEmailFragmentInteraction(View view, Bundle bundle);
+        void onEmailFragmentInteraction(String email, String password);
     }
 
     @Override public void onDestroyView() {

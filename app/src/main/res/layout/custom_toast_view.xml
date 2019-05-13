@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:background="@drawable/custom_toast_background">
+
+    <TextView
+        style="@style/ToastErrorText"
+        android:id="@+id/createAccountErrorToast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="@string/create_account_error_text"
+        android:visibility="gone"/>
+
+    <TextView
+        style="@style/ToastErrorText"
+        android:id="@+id/accountAlreadyExistsErrorToast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="@string/account_exists_error"
+        android:visibility="gone"/>
+
+    <TextView
+        style="@style/ToastErrorText"
+        android:id="@+id/emailSignInErrorToast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="@string/email_sign_in_error_text"
+        android:visibility="gone"/>
+
+    <TextView
+        style="@style/ToastErrorText"
+        android:id="@+id/googleSignInErrorToast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:visibility="gone"/>
+
+</LinearLayout>

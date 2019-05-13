@@ -57,4 +57,10 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="ToastErrorText" parent="AppTheme">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
 </resources>

@@ -1,16 +1,18 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 
 import butterknife.BindView;
@@ -22,9 +24,9 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class CreateAccountFragment extends Fragment {
-    @BindView(R.id.fieldEmail) com.google.android.material.textfield.TextInputEditText emailText;
-    @BindView(R.id.fieldPassword) com.google.android.material.textfield.TextInputEditText passwordText;
-    @BindView(R.id.newAccountButton) com.google.android.material.button.MaterialButton createAccountButton;
+    @BindView(R.id.createAccountEmail) com.google.android.material.textfield.TextInputEditText mEmailText;
+    @BindView(R.id.createAccountPassword) com.google.android.material.textfield.TextInputEditText mPasswordText;
+    @BindView(R.id.createAccountButton) com.google.android.material.button.MaterialButton mCreateAccountButton;
 
     private Unbinder unbinder;
     private OnFragmentInteractionListener mListener;
@@ -40,24 +42,44 @@ public class CreateAccountFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login_create_account_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
+                
         passwordEncryptionWarningFragment = new PasswordEncryptionWarningFragment();
         passwordEncryptionWarningFragment.show(getFragmentManager(), "passwordEncryptionWarningFragment");
-
-
-        createAccountButton.setOnClickListener(new View.OnClickListener() {
+        
+        mCreateAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Timber.tag("fart").i("sign in with email pressed");
+                authenticateUser();
             }
+            
         });
 
         return view;
     }
 
+    private void authenticateUser () {
+        String email = mEmailText.getText().toString();
+        String password = mPasswordText.getText().toString();
+
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+            View toastView = getLayoutInflater().inflate(R.layout.custom_toast_view, null);
+            TextView createAccountError = toastView.findViewById(R.id.createAccountErrorToast);
+            createAccountError.setVisibility(View.VISIBLE);
+            Toast toast = new Toast(getContext());
+            toast.setView(toastView);
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.BOTTOM, 0, 500);
+            toast.show();
+        } else {
+           createUser(email, password);
+        }
+
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(View view, Bundle bundle) {
+    public void createUser(String email, String password) {
         if (mListener != null) {
-            mListener.onCreateAccountFragmentInteraction(view, bundle);
+            mListener.onCreateAccountFragmentInteraction(email, password);
         }
     }
 
@@ -80,7 +102,7 @@ public class CreateAccountFragment extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-        void onCreateAccountFragmentInteraction(View view, Bundle bundle);
+        void onCreateAccountFragmentInteraction(String email, String password);
     }
 
     @Override public void onDestroyView() {

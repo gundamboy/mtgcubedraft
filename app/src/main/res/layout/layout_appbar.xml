@@ -1,26 +1,18 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-<com.google.android.material.appbar.AppBarLayout
-    android:id="@+id/app_bar"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/app_bar_height_portrait"
-    android:fitsSystemWindows="true"
-    android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
-
-    <com.google.android.material.appbar.CollapsingToolbarLayout
-        android:id="@+id/toolbar_layout"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        app:contentScrim="?attr/colorPrimary"
-        app:layout_scrollFlags="scroll|exitUntilCollapsed">
+        android:layout_height="@dimen/app_bar_height_portrait"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:layout_collapseMode="pin"
+            android:background="?attr/colorPrimary"
+            app:navigationIcon="?homeAsUpIndicator"
             app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
-    </com.google.android.material.appbar.CollapsingToolbarLayout>
-</com.google.android.material.appbar.AppBarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
 </merge>
