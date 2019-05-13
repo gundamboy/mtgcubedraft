@@ -9,6 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activities.MyDraftsActivity"></activity>
+        <activity android:name=".activities.NewDraftActivity" />
+        <activity android:name=".activities.MyCubesActivity" />
+        <activity android:name=".activities.NewCubeActivity" />
         <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

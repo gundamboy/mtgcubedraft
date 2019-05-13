@@ -3,6 +3,7 @@ package com.ragingclaw.mtgcubedraftsimulator.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -34,10 +35,48 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        toolbar.setTitle(getString(R.string.main_activity_title));;
         setSupportActionBar(toolbar);
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+
+        newCubeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), NewCubeActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        myCubesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MyCubesActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        newDraftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), NewDraftActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        myDraftsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MyDraftsActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     public void goToLogin() {
