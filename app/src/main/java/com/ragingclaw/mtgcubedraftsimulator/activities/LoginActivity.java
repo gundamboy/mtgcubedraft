@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.ragingclaw.mtgcubedraftsimulator.BuildConfig;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.CreateAccountFragment;
@@ -17,13 +19,15 @@ import com.ragingclaw.mtgcubedraftsimulator.utils.NotLoggingTree;
 import timber.log.Timber;
 
 public class LoginActivity extends FragmentActivity implements LoginFragment.OnFragmentInteractionListener, EmailPasswordFragment.OnFragmentInteractionListener, CreateAccountFragment.OnFragmentInteractionListener {
-    //@BindView(R.id.loginOptionsView) FrameLayout loginOptionsView;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        //ButterKnife.bind(this);
+
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
 
         // set up Timber because it makes logging better
         if (BuildConfig.DEBUG) {
@@ -41,6 +45,12 @@ public class LoginActivity extends FragmentActivity implements LoginFragment.OnF
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+    }
 
     private void swapFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -67,9 +77,21 @@ public class LoginActivity extends FragmentActivity implements LoginFragment.OnF
         Timber.tag("fart").i("bundle: %s, view %s",bundle, view);
     }
 
-
     @Override
     public void onCreateAccountFragmentInteraction(View view, Bundle bundle) {
         Timber.tag("fart").i("bundle: %s, view %s",bundle, view);
+    }
+
+    private void createAccount(String email, String password) {}
+
+    private void signIn(String email, String password) {}
+
+    private void signOut() {}
+
+    // might be smarter to move this into the fragment.
+    private boolean validateForm() {
+        boolean valid = true;
+
+        return valid;
     }
 }

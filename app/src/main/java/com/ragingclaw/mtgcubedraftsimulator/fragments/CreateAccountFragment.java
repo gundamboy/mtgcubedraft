@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 
 import butterknife.BindView;
@@ -27,6 +28,7 @@ public class CreateAccountFragment extends Fragment {
 
     private Unbinder unbinder;
     private OnFragmentInteractionListener mListener;
+    private PasswordEncryptionWarningFragment passwordEncryptionWarningFragment;
 
     public CreateAccountFragment() {
         // Required empty public constructor
@@ -38,6 +40,9 @@ public class CreateAccountFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login_create_account_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
+        passwordEncryptionWarningFragment = new PasswordEncryptionWarningFragment();
+        passwordEncryptionWarningFragment.show(getFragmentManager(), "passwordEncryptionWarningFragment");
+
 
         createAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
