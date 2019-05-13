@@ -110,7 +110,7 @@ public class LoginActivity extends AppCompatActivity implements
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             user = mAuth.getCurrentUser();
-
+                            loggedIn();
                         } else {
                             // If sign in fails, display a message to the user.
                             View toastView = getLayoutInflater().inflate(R.layout.custom_toast_view, null);
@@ -203,6 +203,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     private void googleSignIn() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
@@ -220,12 +221,4 @@ public class LoginActivity extends AppCompatActivity implements
         finish();
     }
 
-    private void signOut() {}
-
-    // might be smarter to move this into the fragment.
-    private boolean validateForm() {
-        boolean valid = true;
-
-        return valid;
-    }
 }
