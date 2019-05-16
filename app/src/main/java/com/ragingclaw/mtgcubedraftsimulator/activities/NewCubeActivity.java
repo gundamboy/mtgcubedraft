@@ -68,15 +68,4 @@ public class NewCubeActivity extends AppCompatActivity {
             }
         }
     }
-
-    class MTGThread extends Thread {
-
-        @Override
-        public void run() {
-            int multiverseId = 461119;
-            Card card = CardAPI.getCard(multiverseId);
-
-            Timber.tag("fart").i("card: %s", card.getLegalities());
-        }
-    }
 }
