@@ -18,12 +18,12 @@ public class CubesEntity {
     @PrimaryKey(autoGenerate = true)
     private int cubeId;
 
-    private int userId;
+    private String userId;
     private String cube_name;
     private int total_cards;
     private List<Integer> card_ids = null;
 
-    public CubesEntity(int cubeId, int userId, String cube_name, int total_cards, List<Integer> card_ids) {
+    public CubesEntity(int cubeId, String userId, String cube_name, int total_cards, List<Integer> card_ids) {
         this.cubeId = cubeId;
         this.userId = userId;
         this.cube_name = cube_name;
@@ -39,11 +39,11 @@ public class CubesEntity {
         return cube_name;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
