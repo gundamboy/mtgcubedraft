@@ -7,15 +7,15 @@ import androidx.room.TypeConverters;
 
 import com.ragingclaw.mtgcubedraftsimulator.interfaces.IntegerIdTypeConverter;
 
-
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "cubes")
 @TypeConverters(IntegerIdTypeConverter.class)
-public class CubesEntity {
+public class Cube {
 
     @NonNull
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private int cubeId;
 
     private String userId;
@@ -23,7 +23,7 @@ public class CubesEntity {
     private int total_cards;
     private List<Integer> card_ids = null;
 
-    public CubesEntity(int cubeId, String userId, String cube_name, int total_cards, List<Integer> card_ids) {
+    public Cube(int cubeId, String userId, String cube_name, int total_cards, List<Integer> card_ids) {
         this.cubeId = cubeId;
         this.userId = userId;
         this.cube_name = cube_name;
@@ -67,7 +67,7 @@ public class CubesEntity {
         this.total_cards = total_cards;
     }
 
-    public void setCard_ids(List<Integer> card_ids) {
+    public void setCard_ids(ArrayList<Integer> card_ids) {
         this.card_ids = card_ids;
     }
 }

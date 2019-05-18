@@ -30,7 +30,6 @@ import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.CreateAccountFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.EmailPasswordFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.LoginFragment;
-import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 import com.ragingclaw.mtgcubedraftsimulator.utils.NotLoggingTree;
 
 
