@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.TypeConverters;
 import androidx.room.Update;
@@ -16,7 +17,7 @@ import java.util.List;
 @TypeConverters(ListTypeConverter.class)
 public interface CubeDao {
 
-    @Insert()
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertCube(Cube cube);
 
     // get every cube in the database

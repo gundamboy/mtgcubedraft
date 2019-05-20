@@ -7,39 +7,37 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
-import com.ragingclaw.mtgcubedraftsimulator.database.CubeRepository;
+import com.ragingclaw.mtgcubedraftsimulator.database.ApplicationRepository;
 
 import java.util.List;
 
 public class CubeViewModel extends AndroidViewModel {
-    private CubeRepository mCubeRepository;
+    private ApplicationRepository mApplicationRepository;
     private LiveData<List<Cube>> mAllCubes;
     private LiveData<List<Cube>> mAllUsersCubes;
     private LiveData<Cube> mUserCube;
 
     public CubeViewModel(@NonNull Application application) {
         super(application);
-        mCubeRepository = new CubeRepository(application);
-        mAllCubes = mCubeRepository.mGetAllCubes();
-//        mAllUsersCubes = mCubeRepository.getUserCubes(userID);
-//        mUserCube = mCubeRepository.getUserCube(userID, cubeId);
+        mApplicationRepository = new ApplicationRepository(application);
+        mAllCubes = mApplicationRepository.mGetAllCubes();
 
     }
 
     public void insertCube(Cube cube) {
-        mCubeRepository.insertCube(cube);
+        mApplicationRepository.insertCube(cube);
     }
 
     public void updateCube(Cube cube) {
-        mCubeRepository.updateCube(cube);
+        mApplicationRepository.updateCube(cube);
     }
 
     public void deleteAllCubes() {
-        mCubeRepository.deleteAllCubes();
+        mApplicationRepository.deleteAllCubes();
     }
 
     public void deleteCube(Cube cube) {
-        mCubeRepository.deleteCube(cube);
+        mApplicationRepository.deleteCube(cube);
     }
 
     public LiveData<List<Cube>> getmAllCubes() {
@@ -47,10 +45,10 @@ public class CubeViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Cube>> getmAllUsersCubes(String s) {
-       return  mCubeRepository.getUserCubes(s);
+       return  mApplicationRepository.getUserCubes(s);
     }
 
     public LiveData<Cube> getmUserCube(String s, Integer i) {
-        return  mCubeRepository.getUserCube(s, i);
+        return  mApplicationRepository.getUserCube(s, i);
     }
 }

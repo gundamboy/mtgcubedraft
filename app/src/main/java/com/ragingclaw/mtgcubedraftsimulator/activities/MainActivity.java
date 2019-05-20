@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.btn_my_cubes) com.google.android.material.button.MaterialButton myCubesButton;
     @BindView(R.id.btn_new_draft) com.google.android.material.button.MaterialButton newDraftButton;
     @BindView(R.id.btn_my_drafts) com.google.android.material.button.MaterialButton myDraftsButton;
+    @BindView(R.id.btn_crud_test) com.google.android.material.button.MaterialButton CRUDTESTBUTTON;
     @BindView(R.id.toolbar) Toolbar toolbar;
 
     private FirebaseAuth mAuth;
@@ -41,6 +42,15 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+
+        CRUDTESTBUTTON.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), CRUDtestingActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         newCubeButton.setOnClickListener(new View.OnClickListener() {
             @Override
