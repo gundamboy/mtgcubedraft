@@ -16,13 +16,16 @@ import java.util.List;
 
 public class PackViewModel extends AndroidViewModel {
     private ApplicationRepository mApplicationRepository;
+    private LiveData<List<Pack>> mAllPacks;
 
     public PackViewModel(@NonNull Application application) {
         super(application);
+        mApplicationRepository = new ApplicationRepository(application);
+        mAllPacks = mApplicationRepository.getAllPacks();
     }
 
     public LiveData<List<Pack>> getAllPacks() {
-        return mApplicationRepository.getAllPacks();
+        return mAllPacks;
     }
 
     public void insertPack(Pack pack) {

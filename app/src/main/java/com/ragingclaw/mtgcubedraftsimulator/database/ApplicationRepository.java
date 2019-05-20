@@ -325,15 +325,15 @@ public class ApplicationRepository {
 
     // Packs AsyncTasks
     private static class InsertPackAsyncTask extends AsyncTask<Pack, Void, Void> {
-        PackDao packDao;
+        private PackDao packDao;
 
         private InsertPackAsyncTask(PackDao draftDao) {
-            this.packDao = packDao;
+            this.packDao = draftDao;
         }
 
         @Override
-        protected Void doInBackground(Pack... packs) {
-            packDao.insertPack(packs[0]);
+        protected Void doInBackground(Pack... packEntities) {
+            packDao.insertPack(packEntities[0]);
             return null;
         }
     }
