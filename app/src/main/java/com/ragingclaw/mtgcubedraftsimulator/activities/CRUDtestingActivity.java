@@ -157,6 +157,23 @@ public class CRUDtestingActivity extends AppCompatActivity {
             }
         });
 
+        draftViewModel.getSingleDraft(1).observe(this, new Observer <Draft>() {
+            @Override
+            public void onChanged(Draft draft) {
+                // update stuff
+                single_draft_observer = "SINGLE DRAFTS INFO:\n ";
+                try {
+                    single_draft_observer += "draft id: " + draft.getDraftID() + "\n";
+                    single_draft_observer += "cube id: " + draft.getCubeId() + "\n";
+                    single_draft_observer += "booster choices: " + draft.getBooster_choices() + "\n";
+                } catch(Exception e) {
+                    single_draft_observer = e.getMessage();
+                }
+
+                tv_output_single_draft.setText(single_draft_observer);
+            }
+        });
+
 
 
         btn_addCube.setOnClickListener(new View.OnClickListener() {
