@@ -116,53 +116,21 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="80dp"
             android:layout_marginEnd="8dp"
             android:textSize="11sp"
-            app:layout_constraintBottom_toTopOf="@+id/output_packs"
+            app:layout_constraintBottom_toTopOf="@+id/output_single_draft"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btn_add_cube"
             app:layout_constraintTop_toBottomOf="@+id/output"
-            tools:text="Single User Whatever Info" />
-
-        <TextView
-            android:id="@+id/output_packs"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:textSize="11sp"
-            app:layout_constraintBottom_toTopOf="@+id/output_single_pack"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btn_add_cube"
-            app:layout_constraintTop_toBottomOf="@+id/output_single"
-            tools:text="All Packs Info" />
-
-        <TextView
-            android:id="@+id/output_single_pack"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:textSize="11sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btn_add_cube"
-            app:layout_constraintTop_toBottomOf="@+id/output_packs"
-            tools:text="Single Pack Info" />
+            tools:text="Single Cube Info" />
 
         <TextView
             android:id="@+id/output_draft_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:textSize="11sp"
@@ -170,7 +138,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btn_add_cube"
-            app:layout_constraintTop_toBottomOf="@+id/output_single_pack"
+            app:layout_constraintTop_toBottomOf="@+id/output_single_draft"
             tools:text="Drafts Info" />
 
         <TextView
@@ -182,11 +150,11 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:textSize="11sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/output_draft_info"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btn_add_cube"
-            app:layout_constraintTop_toBottomOf="@+id/output_draft_info"
+            app:layout_constraintTop_toBottomOf="@+id/output_single"
             tools:text="Single Draft Info" />
 
         <!--<com.google.android.material.button.MaterialButton-->

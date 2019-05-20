@@ -142,21 +142,6 @@ public class ApplicationRepository {
         return mPackDao.getAllPacks();
     }
 
-    public LiveData<List<Pack>> getUserPacks(String userId) {
-        return mPackDao.getUserPacks(userId);
-    }
-
-    public LiveData<Pack> getSinglePack(int packId) {
-        return mPackDao.getSinglePack(packId);
-    }
-
-    public LiveData<Cube> getCubeFromPack(int cubeId) {
-        return mPackDao.getCubeFromPack(cubeId);
-    }
-
-    public LiveData<List<Draft>> getDraftAndCubeFromPack(Integer packId, Integer draftId) {
-        return mPackDao.getDraftAndCubeFromPack(packId, draftId);
-    }
 
 
 

@@ -3,6 +3,7 @@ package com.ragingclaw.mtgcubedraftsimulator.database;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -10,7 +11,14 @@ import com.ragingclaw.mtgcubedraftsimulator.interfaces.IntegerIdTypeConverter;
 
 import java.util.List;
 
-@Entity(tableName = "packs", foreignKeys = @ForeignKey(entity = Draft.class, parentColumns = "draftID", childColumns = "draftId", onDelete = ForeignKey.CASCADE))
+@Entity(tableName = "packs",
+        foreignKeys = @ForeignKey(
+                entity = Draft.class,
+                parentColumns = "draftID",
+                childColumns = "draftId",
+                onDelete = ForeignKey.CASCADE),
+        indices = {@Index(name = "idx_pack", value = {"draftId"})}
+        )
 @TypeConverters(IntegerIdTypeConverter.class)
 public class Pack {
 

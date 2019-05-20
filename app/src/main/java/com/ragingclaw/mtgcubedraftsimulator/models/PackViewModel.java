@@ -25,22 +25,6 @@ public class PackViewModel extends AndroidViewModel {
         return mApplicationRepository.getAllPacks();
     }
 
-    public LiveData<List<Pack>> getUserPacks(String userId) {
-        return mApplicationRepository.getUserPacks(userId);
-    }
-
-    public LiveData<List<Draft>> getDraftAndCubeFromPack(Integer packId, Integer draftId) {
-        return mApplicationRepository.getDraftAndCubeFromPack(packId, draftId);
-    }
-
-    public LiveData<Pack> getSinglePack(int packId) {
-        return mApplicationRepository.getSinglePack(packId);
-    }
-
-    public LiveData<Cube> getCubeFromPacks(int cubeId) {
-        return mApplicationRepository.getCubeFromPack(cubeId);
-    }
-
     public void insertPack(Pack pack) {
         mApplicationRepository.insertPack(pack);
     }

@@ -22,7 +22,7 @@ public interface UserDao {
     @Query("SELECT * From users")
     LiveData<List<User>> getAllUsers();
 
-    @Query("SELECT users.userID From users WHERE users.email = :email AND users.password = :password")
+    @Query("SELECT * From users WHERE users.email = :email AND users.password = :password")
     User getUserId(String email, String password);
 
     @Query("DELETE From users")

@@ -15,9 +15,6 @@ import java.util.List;
 
 public class DraftViewModel extends AndroidViewModel {
     private ApplicationRepository mApplicationRepository;
-    private User mUserID;
-    private Cube mCubeID;
-    private Draft mDraftId;
 
     public DraftViewModel(@NonNull Application application) {
         super(application);
@@ -40,15 +37,15 @@ public class DraftViewModel extends AndroidViewModel {
         mApplicationRepository.deleteAllDrafts();
     }
 
-    LiveData<List<Draft>> getUserDrafts(String userId) {
+    public LiveData<List<Draft>> getUserDrafts(String userId) {
         return mApplicationRepository.getUserDrafts(userId);
     }
 
-    LiveData<Draft> getSingleDraft(int draftID) {
+    public LiveData<Draft> getSingleDraft(Integer draftID) {
         return mApplicationRepository.getSingleDraft(draftID);
     }
 
-    LiveData<List<Draft>> getAllDrafts() {
+    public LiveData<List<Draft>> getAllDrafts() {
         return mApplicationRepository.getAllDrafts();
     }
 

@@ -31,15 +31,8 @@ public class CRUDtestingActivity extends AppCompatActivity {
     @BindView(R.id.btn_delete_cube) com.google.android.material.button.MaterialButton btn_deleteCube;
     @BindView(R.id.btn_add_draft) com.google.android.material.button.MaterialButton btn_addDraft;
     @BindView(R.id.btn_delete_draft) com.google.android.material.button.MaterialButton btn_DeleteDraft;
-    //    @BindView(R.id.btn_delete_all_cubes) com.google.android.material.button.MaterialButton btn_deleteAllCubes;
-//    @BindView(R.id.btn_get_all_cubes) com.google.android.material.button.MaterialButton btn_getAllCubes;
-//    @BindView(R.id.btn_get_all_users_cubes) com.google.android.material.button.MaterialButton btn_getAllUsersCubes;
-//    @BindView(R.id.btn_get_single_cube) com.google.android.material.button.MaterialButton btn_getSingleCube;
-    @BindView(R.id.output)
-    TextView tv_output;
+    @BindView(R.id.output) TextView tv_output;
     @BindView(R.id.output_single) TextView tv_output_single;
-    @BindView(R.id.output_packs) TextView tv_output_packs;
-    @BindView(R.id.output_single_pack) TextView tv_output_single_pack;
     @BindView(R.id.output_draft_info) TextView tv_output_drafts_info;
     @BindView(R.id.output_single_draft) TextView tv_output_single_draft;
 
@@ -77,8 +70,8 @@ public class CRUDtestingActivity extends AppCompatActivity {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
         String logged_in_userID = firebaseUser.getUid();
-        cube_observe_info = "CUBES INFO:\n ";
-        single_cube_observer = "SINGLE CUBE INFO:\n ";
+
+
         all_drafts_observer = "DRAFTS INFO:\n ";
         single_draft_observer = "SINGLE DRAFTS INFO:\n ";
         all_packs_observer = "All DRAFTS INFO:\n ";
@@ -87,8 +80,6 @@ public class CRUDtestingActivity extends AppCompatActivity {
         tv_output_single.setText(single_cube_observer);
         tv_output_drafts_info.setText(all_drafts_observer);
         tv_output_single_draft.setText(single_draft_observer);
-        tv_output_packs.setText(all_packs_observer);
-        tv_output_single_pack.setText(single_packs_observer);
 
 
 
@@ -96,17 +87,17 @@ public class CRUDtestingActivity extends AppCompatActivity {
         // dummy data
         cubeId = 1;
         draftId = 1;
-        cube1Cards = fauxCardIdList(359);
-        booster1 = fauxCardIdList(14);
-        booster2 = fauxCardIdList(14);
-        booster3 = fauxCardIdList(14);
-        draft_booster_choices = fauxCardIdList(44);
+        cube1Cards = fauxCardIdList(360);
+        booster1 = fauxCardIdList(15);
+        booster2 = fauxCardIdList(15);
+        booster3 = fauxCardIdList(15);
+        draft_booster_choices = fauxCardIdList(45);
         Cube cube1 = new Cube(cubeId, logged_in_userID, "First Cube", cube1Cards.size(), cube1Cards);
-        Draft draft1 = new Draft();
-        draft1.setDraftID(draftId);
-        draft1.setCubeId(1);
-        draft1.setTotalSeats(8);
-        draft1.setBooster_choices(draft_booster_choices);
+        Draft draft1 = new Draft(1, 1, 8, draft_booster_choices, draft_booster_choices);
+        Pack pack1 = new Pack(1, 1, 1, 1, 1, booster1);
+        Pack pack2 = new Pack(2, 1, 1, 2, 1, booster2);
+        Pack pack3 = new Pack(3, 1, 1, 3, 1, booster3);
+
 
 
         // get the cubes view model
@@ -122,6 +113,7 @@ public class CRUDtestingActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<Cube> cubesEntities) {
                 // update stuff
+                cube_observe_info = "CUBES INFO:\n ";
                 try {
                     for (Cube c : cubesEntities) {
                         cube_observe_info += c.getCubeId() + ": " + c.getUserId() + ": " + c.getCube_name() + ", \n";
@@ -137,6 +129,7 @@ public class CRUDtestingActivity extends AppCompatActivity {
         cubeViewModel.getmUserCube(logged_in_userID, cubeId).observe(this, new Observer <Cube>() {
             @Override
             public void onChanged(Cube cubesEntities) {
+                single_cube_observer = "SINGLE CUBE INFO:\n ";
                 // update stuff
                 try {
                     single_cube_observer += cubesEntities.getCubeId() + ": " + cubesEntities.getUserId() + ": " + cubesEntities.getCube_name() + ", \n";
@@ -146,6 +139,25 @@ public class CRUDtestingActivity extends AppCompatActivity {
                 }
             }
         });
+
+        draftViewModel.getAllDrafts().observe(this, new Observer<List<Draft>>() {
+            @Override
+            public void onChanged(List<Draft> draftEntries) {
+                // update stuff
+                all_drafts_observer = "DRAFTS INFO:\n ";
+                try {
+                    for (Draft c : draftEntries) {
+                        all_drafts_observer += "draft id: " + c.getDraftID() + "\n";
+                    }
+                } catch(Exception e) {
+                    all_drafts_observer = e.getMessage();
+                }
+
+                tv_output_drafts_info.setText(all_drafts_observer);
+            }
+        });
+
+
 
         btn_addCube.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,13 +208,23 @@ public class CRUDtestingActivity extends AppCompatActivity {
                 // insert each booster into the packs table
                 // drafts observable should show some info
                 // packs observable should show some info
-                Pack pack1 = new Pack(1, 1, 1, 1, 1, booster1);
-                Pack pack2 = new Pack(2, 1, 1, 1, 1, booster2);
-                Pack pack3 = new Pack(3, 1, 1, 1, 1, booster3);
+
                 try {
                     packViewModel.insertPack(pack1);
                     packViewModel.insertPack(pack2);
                     packViewModel.insertPack(pack3);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        btn_DeleteDraft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try {
+                    draftViewModel.deleteDraft(draft1);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -222,8 +244,4 @@ public class CRUDtestingActivity extends AppCompatActivity {
         return cardIds;
     }
 
-    private int getRandomNumberFromRange(int min, int max) {
-        Random r = new Random();
-        return r.nextInt((1000 - 1) + 1);
-    }
 }

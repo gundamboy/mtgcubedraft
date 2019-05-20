@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.RoomWarnings;
 import androidx.room.TypeConverters;
 import androidx.room.Update;
 
@@ -22,6 +23,7 @@ public interface DraftDao {
     LiveData<List<Draft>> getAllDrafts();
 
     // select only the specific user drafts and their packs
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("SELECT * From drafts " +
             "INNER JOIN cubes ON drafts.cubeId " +
             "Where cubes.userId = :userId")
