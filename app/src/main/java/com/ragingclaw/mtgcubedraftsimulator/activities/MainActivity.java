@@ -19,6 +19,7 @@ import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
     @BindView(R.id.btn_new_cube) com.google.android.material.button.MaterialButton newCubeButton;
@@ -42,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+
+        if (currentUser == null) {
+            goToLogin();
+        }
 
         CRUDTESTBUTTON.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,14 +111,19 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //logout
-        if (id == R.id.logout) {
-            mAuth.signOut();
-            goToLogin();
-            return true;
-        }
+        switch (item.getItemId()) {
 
-        return super.onOptionsItemSelected(item);
+
+            case android.R.id.home:
+                Timber.tag("fart").e("up was pressed");
+                return true;
+            case R.id.logout:
+                mAuth.signOut();
+                goToLogin();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void todoCrap() {
