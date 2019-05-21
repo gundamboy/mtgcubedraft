@@ -109,11 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
         switch (item.getItemId()) {
-
-
             case android.R.id.home:
                 Timber.tag("fart").e("up was pressed");
                 return true;

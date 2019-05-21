@@ -63,16 +63,17 @@ public class NewCubeActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        //logout
-        if (id == R.id.logout) {
-            mAuth.signOut();
-            goToLogin();
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Timber.tag("fart").e("up was pressed");
+                return true;
+            case R.id.logout:
+                mAuth.signOut();
+                goToLogin();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
 
