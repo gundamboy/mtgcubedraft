@@ -57,7 +57,7 @@ public class NewCubeActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.cube_menu, menu);
         return true;
     }
 
@@ -66,6 +66,10 @@ public class NewCubeActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 Timber.tag("fart").e("up was pressed");
+                onBackPressed();
+                return true;
+            case R.id.settings:
+
                 return true;
             case R.id.logout:
                 mAuth.signOut();
