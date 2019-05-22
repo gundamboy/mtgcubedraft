@@ -54,11 +54,6 @@ public class LoginActivity extends AppCompatActivity implements
         mAuth = FirebaseAuth.getInstance();
 
         // set up Timber because it makes logging better
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        } else {
-            Timber.plant(new NotLoggingTree());
-        }
 
         if (savedInstanceState == null) {
             LoginFragment loginFragment = new LoginFragment();

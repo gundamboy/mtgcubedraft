@@ -72,9 +72,12 @@ public class NewCubeStepOneFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // validate name
-                String name = Objects.requireNonNull(cubeName.getText()).toString();
-                if(!TextUtils.isEmpty(name)) {
-                    Navigation.findNavController(view).navigate(R.id.action_newCubeStepOneFragment_to_newCubeStepTwoFragment);
+
+                if(!TextUtils.isEmpty(cubeName.getText().toString())) {
+                    String name = cubeName.getText().toString();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("cubeName", name);
+                    Navigation.findNavController(view).navigate(R.id.action_newCubeStepOneFragment_to_newCubeStepTwoFragment, bundle);
                 } else {
                     // show toast because i dont have time for fancy shit.
                     Toast.makeText(getContext(), "You must give your cube a name to continue", Toast.LENGTH_SHORT).show();

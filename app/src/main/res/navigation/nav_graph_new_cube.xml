@@ -12,11 +12,16 @@
         tools:layout="@layout/fragment_new_cube_step_one" >
         <action
             android:id="@+id/action_newCubeStepOneFragment_to_newCubeStepTwoFragment"
-            app:destination="@id/newCubeStepTwoFragment" />
+            app:destination="@id/newCubeStepTwoFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_right" />
     </fragment>
     <fragment
         android:id="@+id/newCubeStepTwoFragment"
         android:name="com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeStepTwoFragment"
         android:label="fragment_new_cube_step_two"
-        tools:layout="@layout/fragment_new_cube_step_two" />
+        tools:layout="@layout/fragment_new_cube_step_two">
+        <argument android:name="cubeName"
+            android:defaultValue="name"/>
+    </fragment>
 </navigation>

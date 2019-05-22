@@ -3,19 +3,17 @@ package com.ragingclaw.mtgcubedraftsimulator.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.ragingclaw.mtgcubedraftsimulator.BuildConfig;
 import com.ragingclaw.mtgcubedraftsimulator.R;
-
-import java.util.Set;
+import com.ragingclaw.mtgcubedraftsimulator.utils.NotLoggingTree;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +34,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        } else {
+            Timber.plant(new NotLoggingTree());
+        }
 
         toolbar.setTitle(getString(R.string.main_activity_title));;
         setSupportActionBar(toolbar);

@@ -96,8 +96,9 @@ public class NewCubeActivity extends AppCompatActivity implements NewCubeStepOne
     }
 
     @Override
-    public void onFragmentInteractionStepTwo(Uri uri) {
-
+    public void onFragmentInteractionStepTwo(String title) {
+        setActionBarTitle(title);
+        Timber.tag("fart").i(title);
     }
 
 
