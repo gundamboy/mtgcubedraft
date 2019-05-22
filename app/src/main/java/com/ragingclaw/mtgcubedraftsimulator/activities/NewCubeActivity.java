@@ -3,8 +3,10 @@ package com.ragingclaw.mtgcubedraftsimulator.activities;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,15 +15,17 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ragingclaw.mtgcubedraftsimulator.R;
+import com.ragingclaw.mtgcubedraftsimulator.fragments.LoginFragment;
+import com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeStepOneFragment;
+import com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeStepTwoFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.magicthegathering.javasdk.api.CardAPI;
-import io.magicthegathering.javasdk.api.SetAPI;
 import io.magicthegathering.javasdk.resource.Card;
 import timber.log.Timber;
 
-public class NewCubeActivity extends AppCompatActivity {
+public class NewCubeActivity extends AppCompatActivity implements NewCubeStepOneFragment.OnFragmentInteractionListenerStepOne, NewCubeStepTwoFragment.OnFragmentInteractionListenerStepTwo {
     @BindView(R.id.toolbar) Toolbar toolbar;
 
     private FirebaseAuth mAuth;
@@ -45,6 +49,15 @@ public class NewCubeActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+
+
+        if (savedInstanceState == null) {
+            NewCubeStepOneFragment loginFragment = new NewCubeStepOneFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.new_cube_frame, loginFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }
 
     }
 
@@ -78,6 +91,16 @@ public class NewCubeActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onFragmentInteractionStepOne(Uri uri) {
+
+    }
+
+    @Override
+    public void onFragmentInteractionStepTwo(Uri uri) {
+
     }
 
 
