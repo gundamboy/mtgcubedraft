@@ -19,11 +19,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.magicthegathering.javasdk.api.CardAPI;
 import io.magicthegathering.javasdk.api.SetAPI;
+import io.magicthegathering.javasdk.resource.Card;
 import io.magicthegathering.javasdk.resource.MtgSet;
 import timber.log.Timber;
 
@@ -41,6 +44,7 @@ public class NewCubeStepTwoFragment extends Fragment {
 
     private OnFragmentInteractionListenerStepTwo mListener;
     private List<String> mSetCodes = new ArrayList<>();
+    private List<Card> mCubeCards = new ArrayList<>();
 
     public NewCubeStepTwoFragment() {
         // Required empty public constructor
@@ -68,32 +72,33 @@ public class NewCubeStepTwoFragment extends Fragment {
             mCubeName.setText(getArguments().getString("cubeName"));
         }
 
-        getSetCodes();
+        generateCube();
 
         return view;
     }
 
-    public void getSetCodes() {
+    private void generateCube() {
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<MtgSet> sets = SetAPI.getAllSets();
-                Timber.tag("fart").i("sets size: %s", sets.size());
+                //List<MtgSet> sets = SetAPI.getAllSets();
+                List<Card> allCards = CardAPI.getAllCards();
 
-                for(MtgSet set : sets) {
-                    String code = set.getCode();
-                    mSetCodes.add(code);
-                }
+                //String code = set.getCode();
+                //Timber.tag("fart").i("sets size: %s", sets.size());
+                Timber.tag("fart").i("allCards size: %s", allCards.size());
+//                for (int i = 0; i < 360; i++) {
+//                    Random r = new Random();
+//                    int randon_index = r.nextInt((allCards.size() - 1) + 1);
+//                    mCubeCards.add(allCards.get(randon_index));
+//                }
+//
+//                // this works
+//                Timber.tag("fart").i("mCubeCards size: %s", mCubeCards.size());
 
-                // this works
-                Timber.tag("fart").i("sets1: %s", mSetCodes);
             }
         }).start();
-
-        // this doesnt work. it comes back as sets2: [] (empty)
-        Timber.tag("fart").i("sets2: %s", mSetCodes);
-
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -128,14 +133,5 @@ public class NewCubeStepTwoFragment extends Fragment {
     public interface OnFragmentInteractionListenerStepTwo {
         // TODO: Update argument type and name
         void onFragmentInteractionStepTwo(String string);
-    }
-
-    private static class getMtgSetsAsyncTask extends AsyncTask<List<MtgSet>, Void, Void> {
-
-        @Override
-        protected Void doInBackground(List<MtgSet>... lists) {
-
-            return null;
-        }
     }
 }
