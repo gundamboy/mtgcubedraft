@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.ragingclaw.mtgcubedraftsimulator.R;
+import com.ragingclaw.mtgcubedraftsimulator.activities.NewCubeActivity;
 
 import java.util.Objects;
 
@@ -52,6 +54,7 @@ public class NewCubeStepOneFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
 
         }
@@ -62,20 +65,20 @@ public class NewCubeStepOneFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_new_cube_step_one, container, false);
         unbinder = ButterKnife.bind(this, view);
+        //setActionBarTitle("test test");
+
 
         generateCubeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // validate name
                 String name = Objects.requireNonNull(cubeName.getText()).toString();
-
-                Navigation.findNavController(getView()).navigate(R.id.newCubeStepTwoFragment);
-//                if(!TextUtils.isEmpty(name)) {
-//                    Navigation.findNavController(v).navigate(R.id.newCubeStepTwoFragment);
-//                } else {
-//                    // show toast because i dont have time for fancy shit.
-//                    Toast.makeText(getContext(), "You must give your cube a name to continue", Toast.LENGTH_SHORT).show();
-//                }
+                if(!TextUtils.isEmpty(name)) {
+                    Navigation.findNavController(view).navigate(R.id.action_newCubeStepOneFragment_to_newCubeStepTwoFragment);
+                } else {
+                    // show toast because i dont have time for fancy shit.
+                    Toast.makeText(getContext(), "You must give your cube a name to continue", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -83,9 +86,9 @@ public class NewCubeStepOneFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void setActionBarTitle(String title) {
         if (mListener != null) {
-            mListener.onFragmentInteractionStepOne(uri);
+            mListener.onFragmentInteractionStepOne(title);
         }
     }
 
@@ -113,6 +116,6 @@ public class NewCubeStepOneFragment extends Fragment {
 
     public interface OnFragmentInteractionListenerStepOne {
         // TODO: Update argument type and name
-        void onFragmentInteractionStepOne(Uri uri);
+        void onFragmentInteractionStepOne(String title);
     }
 }

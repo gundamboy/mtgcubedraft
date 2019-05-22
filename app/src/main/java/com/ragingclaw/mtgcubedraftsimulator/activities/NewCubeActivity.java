@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -28,6 +29,7 @@ import timber.log.Timber;
 public class NewCubeActivity extends AppCompatActivity implements NewCubeStepOneFragment.OnFragmentInteractionListenerStepOne, NewCubeStepTwoFragment.OnFragmentInteractionListenerStepTwo {
     @BindView(R.id.toolbar) Toolbar toolbar;
 
+    private ActionBar ab;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
 
@@ -38,7 +40,7 @@ public class NewCubeActivity extends AppCompatActivity implements NewCubeStepOne
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
+        ab = getSupportActionBar();
 
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
@@ -50,15 +52,10 @@ public class NewCubeActivity extends AppCompatActivity implements NewCubeStepOne
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
+    }
 
-        if (savedInstanceState == null) {
-            NewCubeStepOneFragment loginFragment = new NewCubeStepOneFragment();
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.new_cube_frame, loginFragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
-        }
-
+    public void setActionBarTitle(String title) {
+        ab.setTitle(title);
     }
 
     public void goToLogin() {
@@ -94,8 +91,8 @@ public class NewCubeActivity extends AppCompatActivity implements NewCubeStepOne
     }
 
     @Override
-    public void onFragmentInteractionStepOne(Uri uri) {
-
+    public void onFragmentInteractionStepOne(String title) {
+        setActionBarTitle(title);
     }
 
     @Override
