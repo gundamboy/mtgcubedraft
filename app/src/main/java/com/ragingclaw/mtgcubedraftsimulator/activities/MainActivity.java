@@ -15,6 +15,9 @@ import com.ragingclaw.mtgcubedraftsimulator.BuildConfig;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.utils.NotLoggingTree;
 
+import java.io.File;
+import java.io.FileWriter;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
@@ -86,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 
     public void goToLogin() {
