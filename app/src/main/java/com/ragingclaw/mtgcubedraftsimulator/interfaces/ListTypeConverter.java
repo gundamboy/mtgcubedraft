@@ -16,8 +16,8 @@ public class ListTypeConverter {
     public static List<Cube> stringToList(String json) {
         Gson gson = new Gson();
         Type type = new TypeToken<List<Cube>>() {}.getType();
-        List<Cube> steps = gson.fromJson(json, type);
-        return steps;
+        List<Cube> cubes = gson.fromJson(json, type);
+        return cubes;
     }
 
     @TypeConverter

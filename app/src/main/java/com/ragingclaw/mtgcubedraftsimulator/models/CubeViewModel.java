@@ -14,14 +14,11 @@ import java.util.List;
 public class CubeViewModel extends AndroidViewModel {
     private ApplicationRepository mApplicationRepository;
     private LiveData<List<Cube>> mAllCubes;
-    private LiveData<List<Cube>> mAllUsersCubes;
-    private LiveData<Cube> mUserCube;
 
     public CubeViewModel(@NonNull Application application) {
         super(application);
         mApplicationRepository = new ApplicationRepository(application);
         mAllCubes = mApplicationRepository.mGetAllCubes();
-
     }
 
     public void insertCube(Cube cube) {

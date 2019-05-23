@@ -2,14 +2,12 @@ package com.ragingclaw.mtgcubedraftsimulator.database;
 
 import android.app.Application;
 import android.os.AsyncTask;
-
 import androidx.lifecycle.LiveData;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class ApplicationRepository {
 
+    private MagicCardDao mMagicCardDao;
     private CubeDao mCubesDoa;
     private UserDao mUserDao;
     private DraftDao mDraftDao;
@@ -17,14 +15,40 @@ public class ApplicationRepository {
 
     public ApplicationRepository(Application application) {
         ApplicationDatabase db = ApplicationDatabase.getDatabase(application);
+        mMagicCardDao = db.mtgCardDao();
         mCubesDoa = db.cubesDao();
         mUserDao = db.userDao();
         mDraftDao = db.draftDoa();
         mPackDao = db.packDoa();
     }
 
+    // CARD *************************************************
+    public void insertCard(MagicCard magicCard) {
+        new InsertCardAsyncTask(mMagicCardDao).execute();
+    }
 
-    // CUBE
+    public void updateCard(MagicCard magicCard) {
+        new UpdateCardAsyncTask(mMagicCardDao).execute();
+    }
+
+    public void deleteCard(MagicCard magicCard) {
+        new DeleteCardAsyncTask(mMagicCardDao).execute();
+    }
+
+    public void deleteAllCards() {
+        new DeleteAllCardsAsyncTask(mMagicCardDao).execute();
+    }
+
+    public LiveData<List<MagicCard>> mGetAllCards() {
+        return mMagicCardDao.getAllCards();
+    }
+
+    public LiveData<MagicCard> mGetSingleCard(int id) {
+        return mMagicCardDao.getSingleCard(id);
+    }
+
+
+    // CUBE *************************************************
     public void insertCube(Cube cube) {
         new InsertCubeAsyncTask(mCubesDoa).execute(cube);
     }
@@ -53,11 +77,7 @@ public class ApplicationRepository {
         return mCubesDoa.getUserCube(userId, cubeId);
     }
 
-
-
-
-
-    // USER
+    // USER *************************************************
     public LiveData<List<User>> getAllUsers() {
         return mUserDao.getAllUsers();
     }
@@ -86,10 +106,7 @@ public class ApplicationRepository {
         new DeleteUserAsyncTask(mUserDao).execute(user);
     }
 
-
-
-
-    // DRAFT
+    // DRAFT *************************************************
     public void insertDraft(Draft draft) {
         new InsertDraftAsyncTask(mDraftDao).execute(draft);
     }
@@ -118,10 +135,7 @@ public class ApplicationRepository {
         return mDraftDao.getUserDrafts(userId);
     }
 
-
-
-
-    // Packs
+    // Packs *************************************************
     public void insertPack(Pack pack) {
         new InsertPackAsyncTask(mPackDao).execute(pack);
     }
@@ -142,11 +156,64 @@ public class ApplicationRepository {
         return mPackDao.getAllPacks();
     }
 
+    // Card AsyncTasks *************************************************
+    private static class InsertCardAsyncTask extends AsyncTask<MagicCard, Void, Void> {
+        private MagicCardDao mMagicCardDao;
 
+        private InsertCardAsyncTask(MagicCardDao magicCardDao) {
+            this.mMagicCardDao = magicCardDao;
+        }
 
+        @Override
+        protected Void doInBackground(MagicCard... magicCardEntities) {
+            mMagicCardDao.insertCard(magicCardEntities[0]);
+            return null;
+        }
+    }
 
+    private static class UpdateCardAsyncTask extends AsyncTask<MagicCard, Void, Void> {
+        private MagicCardDao mMagicCardDao;
 
-    // Cube AsyncTasks
+        private UpdateCardAsyncTask(MagicCardDao magicCardDao) {
+            this.mMagicCardDao = magicCardDao;
+        }
+
+        @Override
+        protected Void doInBackground(MagicCard... magicCardEntities) {
+            mMagicCardDao.updateCard(magicCardEntities[0]);
+            return null;
+        }
+    }
+
+    private static class DeleteCardAsyncTask extends AsyncTask<MagicCard, Void, Void> {
+        private MagicCardDao mMagicCardDao;
+
+        private DeleteCardAsyncTask(MagicCardDao magicCardDao) {
+            this.mMagicCardDao = magicCardDao;
+        }
+
+        @Override
+        protected Void doInBackground(MagicCard... magicCardEntities) {
+            mMagicCardDao.deleteCard(magicCardEntities[0]);
+            return null;
+        }
+    }
+
+    private static class DeleteAllCardsAsyncTask extends AsyncTask<Void, Void, Void> {
+        MagicCardDao magicCardDao;
+
+        private DeleteAllCardsAsyncTask(MagicCardDao magicCardDao) {
+            this.magicCardDao = magicCardDao;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            magicCardDao.deleteAllCards();
+            return null;
+        }
+    }
+
+    // Cube AsyncTasks *************************************************
     private static class InsertCubeAsyncTask extends android.os.AsyncTask<Cube, Void, Void> {
         private CubeDao cubeDao;
 
@@ -205,8 +272,7 @@ public class ApplicationRepository {
         }
     }
 
-
-    // User AsyncTasks
+    // User AsyncTasks *************************************************
     private static class InsertUserAsyncTask extends AsyncTask<User, Void, Void> {
         private UserDao userDao;
 
@@ -263,8 +329,7 @@ public class ApplicationRepository {
         }
     }
 
-
-    // Draft AsyncTasks
+    // Draft AsyncTasks *************************************************
     private static class InsertDraftAsyncTask extends AsyncTask<Draft, Void, Void> {
         DraftDao draftDao;
 
@@ -321,9 +386,7 @@ public class ApplicationRepository {
         }
     }
 
-
-
-    // Packs AsyncTasks
+    // Packs AsyncTasks *************************************************
     private static class InsertPackAsyncTask extends AsyncTask<Pack, Void, Void> {
         private PackDao packDao;
 

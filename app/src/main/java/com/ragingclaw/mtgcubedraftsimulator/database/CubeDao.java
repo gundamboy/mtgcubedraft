@@ -40,5 +40,4 @@ public interface CubeDao {
 
     @Delete
     void deleteCube(Cube cube);
-
 }

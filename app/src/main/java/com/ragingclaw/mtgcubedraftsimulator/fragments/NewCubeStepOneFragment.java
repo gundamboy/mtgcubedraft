@@ -1,10 +1,8 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -16,9 +14,7 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.ragingclaw.mtgcubedraftsimulator.R;
-import com.ragingclaw.mtgcubedraftsimulator.activities.NewCubeActivity;
 
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
