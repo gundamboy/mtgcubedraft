@@ -94,7 +94,7 @@ public class NewCubeStepTwoFragment extends Fragment {
             public void run() {
                 List<Card> allCards = CardAPI.getAllCards();
                 Timber.tag("fart").i("********************************************* allCards size: %s", allCards.size());
-
+                String cheating = "";
                 for (Card c : allCards) {
                     String names = "";
                     String colors = "";
@@ -186,14 +186,18 @@ public class NewCubeStepTwoFragment extends Fragment {
                         }
                     }
 
+                    cheating += "MagicCard card = new MagicCard(\"" + c.getId() + "\", \"" + c.getLayout() + "\", \"" + c.getName()  + "\", \"" + names + "\", \"" + c.getManaCost() + "\", " + c.getCmc() + ", \"" + colors + "\", \"" + colorIdentity + "\", \"" + c.getType() + "\", \"" + supertypes + "\", \"" + types + "\", \"" + subtypes + "\", \"" + c.getRarity() + "\", \"" + c.getText() + "\", \"" + c.getOriginalText() + "\", \"" + c.getFlavor() + "\", \"" + c.getArtist() + "\", \"" + c.getNumber() + "\", \"" + c.getPower() + "\", \"" + c.getToughness() + "\", \"" + c.getLoyalty() + "\", " + c.getMultiverseid() + ", \"" + variations + "\", \"" + c.getImageName() + "\", \"" + c.getWatermark() + "\", \"" + c.getBorder() + "\", " + c.getHand() + ", " + c.getLife() + ", \"" + c.getReleaseDate() + "\", \"" + c.getSet() + "\", \"" + c.getSetName() + "\", \"" + printings + "\", \"" + c.getImageUrl() + "\");";
                     //magicCardViewModel.insertCard(card);
-                    Timber.tag("fart").w("MagicCard card = new MagicCard(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", %s, \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", %s, \"%s\", \"%s\", \"%s\", \"%s\", %s, %s, \"%s\", \"%s\", \"%s\", \"%s\", \"%s\");",
-                            c.getId(), c.getLayout(), names, c.getNames(), c.getManaCost(), c.getCmc(),
-                            colors, colorIdentity, c.getType(), supertypes, types,
-                            subtypes, c.getRarity(), c.getText(), c.getOriginalText(), c.getFlavor(), c.getArtist(),
-                            c.getNumber(), c.getPower(), c.getToughness(), c.getLoyalty(), c.getMultiverseid(), variations,
-                            c.getImageName(), c.getWatermark(), c.getBorder(), c.getHand(), c.getLife(), c.getReleaseDate(), c.getSet(),
-                            c.getSetName(), printings, c.getImageUrl());
+//                    Timber.tag("fart").w("MagicCard card = new MagicCard(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", %s, \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", %s, \"%s\", \"%s\", \"%s\", \"%s\", %s, %s, \"%s\", \"%s\", \"%s\", \"%s\", \"%s\");",
+//                            c.getId(), c.getLayout(), names, c.getNames(), c.getManaCost(), c.getCmc(),
+//                            colors, colorIdentity, c.getType(), supertypes, types,
+//                            subtypes, c.getRarity(), c.getText(), c.getOriginalText(), c.getFlavor(), c.getArtist(),
+//                            c.getNumber(), c.getPower(), c.getToughness(), c.getLoyalty(), c.getMultiverseid(), variations,
+//                            c.getImageName(), c.getWatermark(), c.getBorder(), c.getHand(), c.getLife(), c.getReleaseDate(), c.getSet(),
+//                            c.getSetName(), printings, c.getImageUrl());
+//                }
+
+                    Timber.tag("fart").w(cheating);
                 }
 
                 //LiveData<List<MagicCard>> cards = magicCardViewModel.getmAllCards();
