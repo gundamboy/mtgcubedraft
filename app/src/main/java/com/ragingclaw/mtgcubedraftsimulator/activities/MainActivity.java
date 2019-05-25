@@ -13,10 +13,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ragingclaw.mtgcubedraftsimulator.BuildConfig;
 import com.ragingclaw.mtgcubedraftsimulator.R;
+import com.ragingclaw.mtgcubedraftsimulator.utils.MTGUtils;
 import com.ragingclaw.mtgcubedraftsimulator.utils.NotLoggingTree;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -118,13 +127,5 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    public void todoCrap() {
-        /*
-        TODO: set up retrofit class file
-        TODO: set up retrofit interface file
-        TODO: set up Room with some dummy data (LiveData, Doa, Repository, Database, etc)
-        */
     }
 }

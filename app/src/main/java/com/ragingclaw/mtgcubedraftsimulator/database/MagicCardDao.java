@@ -9,21 +9,22 @@ import androidx.room.Query;
 import androidx.room.TypeConverters;
 import androidx.room.Update;
 
-import com.ragingclaw.mtgcubedraftsimulator.interfaces.StringTypeConverter;
+import com.ragingclaw.mtgcubedraftsimulator.converters.BigDecimalTypeConverter;
+import com.ragingclaw.mtgcubedraftsimulator.converters.StringTypeConverter;
 
 import java.util.List;
 
 @Dao
-@TypeConverters(StringTypeConverter.class)
+@TypeConverters({StringTypeConverter.class, BigDecimalTypeConverter.class})
 public interface MagicCardDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertCard(MagicCard magicCard);
+    void insertCard(MagicCard... magicCard);
 
     @Query("SELECT * FROM cards")
     LiveData<List<MagicCard>> getAllCards();
 
-    @Query("SELECT * FROM cards WHERE cards.id = :id")
+    @Query("SELECT * FROM cards WHERE cards.multiverseid = :id")
     LiveData<MagicCard> getSingleCard(int id);
 
     @Update

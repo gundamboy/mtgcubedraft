@@ -9,7 +9,7 @@ import androidx.room.Query;
 import androidx.room.TypeConverters;
 import androidx.room.Update;
 
-import com.ragingclaw.mtgcubedraftsimulator.interfaces.ListTypeConverter;
+import com.ragingclaw.mtgcubedraftsimulator.converters.ListTypeConverter;
 
 import java.util.List;
 

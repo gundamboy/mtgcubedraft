@@ -9,8 +9,7 @@ import androidx.room.RoomWarnings;
 import androidx.room.TypeConverters;
 import androidx.room.Update;
 
-import com.ragingclaw.mtgcubedraftsimulator.interfaces.IntegerIdTypeConverter;
-import com.ragingclaw.mtgcubedraftsimulator.interfaces.ListTypeConverter;
+import com.ragingclaw.mtgcubedraftsimulator.converters.IntegerIdTypeConverter;
 
 import java.util.List;
 

@@ -16,11 +16,13 @@ import android.widget.TextView;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
 import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
+import com.ragingclaw.mtgcubedraftsimulator.utils.MTGUtils;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -78,25 +80,49 @@ public class NewCubeStepTwoFragment extends Fragment {
             mCubeName.setText(getArguments().getString("cubeName"));
         }
 
-        insertCardsIntoDatabase();
+
+
+        //insertCardsIntoDatabase();
+        letsGetDone();
 
         return view;
     }
 
-    private void insertCardsIntoDatabase() {
-        /* MagicCard arguments
-            MagicCard(@NonNull String id, String layout, String name, String[] names, String manaCost, double cmc, String[] colors, String[] colorIdentity, String type, String[] supertypes, String[] types, String[] subtypes, String rarity, String text, String originalText, String flavor, String artist, String number, String power, String toughness, String loyalty, int multiverseid, String[] variations, String imageName, String watermark, String border, int hand, int life, String releaseDate, String set, String setName, String[] printings, String imageUrl)
-         */
+    private void letsGetDone() {
+        String[] list;
+        String output = "";
 
-        magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
+        try {
+            list = getActivity().getAssets().list("");
+
+            if (list.length > 0) {
+                for (String file : list) {
+                    if (file.contains(".json")) {
+                        output += MTGUtils.parseJsonToString(getActivity(), file);
+                        if(output.length() > 0) {
+                            String filename = file + "-ids.txt";
+                            printToFile(output, filename);
+                        }
+
+                    }
+                }
+
+//                if(output.length() > 0) {
+//                    printToFile(output);
+//                }
+            }
+
+        } catch (IOException e) {
+            Timber.tag("fart").w(e);
+        }
+    }
+
+    private void printToFile(String str, String filename) {
 
         // the JDK / API requires processes to run on a new thread.
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<Card> allCards = CardAPI.getAllCards();
-                Timber.tag("fart").i("********************************************* allCards size: %s", allCards.size());
-                String cheating;
                 File file = new File(getContext().getFilesDir(),"mtgcubedraft");
 
                 if(!file.exists()){
@@ -104,125 +130,15 @@ public class NewCubeStepTwoFragment extends Fragment {
                 }
 
                 try {
-                    File gpxfile = new File(file, "dbInsertCommands");
+                    File gpxfile = new File(file, filename);
                     FileWriter writer = new FileWriter(gpxfile);
-
-                    for (Card c : allCards) {
-                        String names = "";
-                        String colors = "";
-                        String colorIdentity = "";
-                        String supertypes = "";
-                        String types = "";
-                        String subtypes = "";
-                        String variations = "";
-                        String printings = "";
-
-                        String[] array_names = c.getNames();
-                        String[] array_colors = c.getColors();
-                        String[] array_colorIdentity = c.getColorIdentity();
-                        String[] array_supertypes = c.getSupertypes();
-                        String[] array_types = c.getTypes();
-                        String[] array_subtypes = c.getSubtypes();
-                        String[] array_variations = c.getVariations();
-                        String[] array_printings = c.getPrintings();
-
-                        if (array_names != null) {
-                            for (String s : array_names) {
-                                names += s + ",";
-                            }
-                            if (names.length() > 0) {
-                                names = names.substring(0, names.length() - 1);
-                            }
-                        }
-
-                        if (array_colors != null) {
-                            for (String s : array_colors) {
-                                colors += s + ",";
-                            }
-                            if (colors.length() > 0) {
-                                colors = colors.substring(0, colors.length() - 1);
-                            }
-                        }
-
-                        if (array_colorIdentity != null) {
-                            for (String s : array_colorIdentity) {
-                                colorIdentity += s + ",";
-                            }
-                            if (colorIdentity.length() > 0) {
-                                colorIdentity = colorIdentity.substring(0, colorIdentity.length() - 1);
-                            }
-                        }
-
-                        if (array_supertypes != null) {
-                            for (String s : array_supertypes) {
-                                supertypes += s + ",";
-                            }
-                            if (supertypes.length() > 0) {
-                                supertypes = supertypes.substring(0, supertypes.length() - 1);
-                            }
-                        }
-
-                        if (array_types != null) {
-                            for (String s : array_types) {
-                                types += s + ",";
-                            }
-                            if (types.length() > 0) {
-                                types = types.substring(0, types.length() - 1);
-                            }
-                        }
-
-                        if (array_subtypes != null) {
-                            for (String s : array_subtypes) {
-                                subtypes += s + ",";
-                            }
-                            if (subtypes.length() > 0) {
-                                subtypes = subtypes.substring(0, subtypes.length() - 1);
-                            }
-                        }
-
-                        if (array_variations != null) {
-                            for (String s : array_variations) {
-                                variations += s + ",";
-                            }
-                            if (variations.length() > 0) {
-                                variations = variations.substring(0, variations.length() - 1);
-                            }
-                        }
-
-                        if (array_printings != null) {
-                            for (String s : array_printings) {
-                                printings += s + ",";
-                            }
-                            if (printings.length() > 0) {
-                                printings = printings.substring(0, printings.length() - 1);
-                            }
-                        }
-
-                        cheating = "MagicCard card = new MagicCard(\"" + c.getId() + "\", \"" + c.getLayout() + "\", \"" + c.getName() + "\", \"" + names + "\", \"" + c.getManaCost() + "\", " + c.getCmc() + ", \"" + colors + "\", \"" + colorIdentity + "\", \"" + c.getType() + "\", \"" + supertypes + "\", \"" + types + "\", \"" + subtypes + "\", \"" + c.getRarity() + "\", \"" + c.getText() + "\", \"" + c.getOriginalText() + "\", \"" + c.getFlavor() + "\", \"" + c.getArtist() + "\", \"" + c.getNumber() + "\", \"" + c.getPower() + "\", \"" + c.getToughness() + "\", \"" + c.getLoyalty() + "\", " + c.getMultiverseid() + ", \"" + variations + "\", \"" + c.getImageName() + "\", \"" + c.getWatermark() + "\", \"" + c.getBorder() + "\", " + c.getHand() + ", " + c.getLife() + ", \"" + c.getReleaseDate() + "\", \"" + c.getSet() + "\", \"" + c.getSetName() + "\", \"" + printings + "\", \"" + c.getImageUrl() + "\");\n";
-                        writer.append(cheating);
-                        //magicCardViewModel.insertCard(card);
-//                    Timber.tag("fart").w("MagicCard card = new MagicCard(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", %s, \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", %s, \"%s\", \"%s\", \"%s\", \"%s\", %s, %s, \"%s\", \"%s\", \"%s\", \"%s\", \"%s\");",
-//                            c.getId(), c.getLayout(), names, c.getNames(), c.getManaCost(), c.getCmc(),
-//                            colors, colorIdentity, c.getType(), supertypes, types,
-//                            subtypes, c.getRarity(), c.getText(), c.getOriginalText(), c.getFlavor(), c.getArtist(),
-//                            c.getNumber(), c.getPower(), c.getToughness(), c.getLoyalty(), c.getMultiverseid(), variations,
-//                            c.getImageName(), c.getWatermark(), c.getBorder(), c.getHand(), c.getLife(), c.getReleaseDate(), c.getSet(),
-//                            c.getSetName(), printings, c.getImageUrl());
-//                }
-
-                        Timber.tag("fart").w("Done cheating... right?");
-                    }
-
+                    writer.append(str);
                     writer.flush();
                     writer.close();
+                    Timber.tag("fart").w("Done... right?");
                 } catch (Exception e){
                     e.printStackTrace();
-
                 }
-
-                //LiveData<List<MagicCard>> cards = magicCardViewModel.getmAllCards();
-                //Timber.tag("fart").i("cards from DB: %s", cards);
-
             }
         }).start();
     }

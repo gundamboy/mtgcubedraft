@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.ragingclaw.mtgcubedraftsimulator.interfaces.IntegerIdTypeConverter;
+import com.ragingclaw.mtgcubedraftsimulator.converters.IntegerIdTypeConverter;
 
 import java.util.ArrayList;
 import java.util.List;

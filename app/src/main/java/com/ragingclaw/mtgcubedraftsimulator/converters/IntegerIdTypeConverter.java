@@ -1,4 +1,4 @@
-package com.ragingclaw.mtgcubedraftsimulator.interfaces;
+package com.ragingclaw.mtgcubedraftsimulator.converters;
 
 import androidx.room.TypeConverter;
 import androidx.room.util.StringUtil;

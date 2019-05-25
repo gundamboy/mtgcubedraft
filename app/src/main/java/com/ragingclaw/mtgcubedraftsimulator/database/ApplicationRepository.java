@@ -23,16 +23,16 @@ public class ApplicationRepository {
     }
 
     // CARD *************************************************
-    public void insertCard(MagicCard magicCard) {
-        new InsertCardAsyncTask(mMagicCardDao).execute();
+    public void insertCard(MagicCard... magicCard) {
+        new InsertCardAsyncTask(mMagicCardDao).execute(magicCard);
     }
 
     public void updateCard(MagicCard magicCard) {
-        new UpdateCardAsyncTask(mMagicCardDao).execute();
+        new UpdateCardAsyncTask(mMagicCardDao).execute(magicCard);
     }
 
     public void deleteCard(MagicCard magicCard) {
-        new DeleteCardAsyncTask(mMagicCardDao).execute();
+        new DeleteCardAsyncTask(mMagicCardDao).execute(magicCard);
     }
 
     public void deleteAllCards() {
@@ -157,7 +157,7 @@ public class ApplicationRepository {
     }
 
     // Card AsyncTasks *************************************************
-    private static class InsertCardAsyncTask extends AsyncTask<MagicCard, Void, Void> {
+    private static class InsertCardAsyncTask extends android.os.AsyncTask<MagicCard, Void, Void> {
         private MagicCardDao mMagicCardDao;
 
         private InsertCardAsyncTask(MagicCardDao magicCardDao) {
@@ -171,7 +171,7 @@ public class ApplicationRepository {
         }
     }
 
-    private static class UpdateCardAsyncTask extends AsyncTask<MagicCard, Void, Void> {
+    private static class UpdateCardAsyncTask extends android.os.AsyncTask<MagicCard, Void, Void> {
         private MagicCardDao mMagicCardDao;
 
         private UpdateCardAsyncTask(MagicCardDao magicCardDao) {
@@ -185,7 +185,7 @@ public class ApplicationRepository {
         }
     }
 
-    private static class DeleteCardAsyncTask extends AsyncTask<MagicCard, Void, Void> {
+    private static class DeleteCardAsyncTask extends android.os.AsyncTask<MagicCard, Void, Void> {
         private MagicCardDao mMagicCardDao;
 
         private DeleteCardAsyncTask(MagicCardDao magicCardDao) {
@@ -199,7 +199,7 @@ public class ApplicationRepository {
         }
     }
 
-    private static class DeleteAllCardsAsyncTask extends AsyncTask<Void, Void, Void> {
+    private static class DeleteAllCardsAsyncTask extends android.os.AsyncTask<Void, Void, Void> {
         MagicCardDao magicCardDao;
 
         private DeleteAllCardsAsyncTask(MagicCardDao magicCardDao) {
