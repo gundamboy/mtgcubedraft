@@ -43,7 +43,7 @@ public class ApplicationRepository {
         return mMagicCardDao.getAllCards();
     }
 
-    public LiveData<MagicCard> mGetSingleCard(int id) {
+    public MagicCard mGetSingleCard(int id) {
         return mMagicCardDao.getSingleCard(id);
     }
 

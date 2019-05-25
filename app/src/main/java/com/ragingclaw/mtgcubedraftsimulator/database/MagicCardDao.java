@@ -25,7 +25,7 @@ public interface MagicCardDao {
     LiveData<List<MagicCard>> getAllCards();
 
     @Query("SELECT * FROM cards WHERE cards.multiverseid = :id")
-    LiveData<MagicCard> getSingleCard(int id);
+    MagicCard getSingleCard(int id);
 
     @Update
     void updateCard(MagicCard magicCard);

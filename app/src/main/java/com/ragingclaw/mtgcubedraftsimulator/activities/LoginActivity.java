@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,11 +29,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.ragingclaw.mtgcubedraftsimulator.BuildConfig;
 import com.ragingclaw.mtgcubedraftsimulator.R;
+import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.CreateAccountFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.EmailPasswordFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.LoginFragment;
+import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.NotLoggingTree;
 
+
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -44,6 +50,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
+    private MagicCardViewModel magicCardViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +68,32 @@ public class LoginActivity extends AppCompatActivity implements
             fragmentTransaction.add(R.id.loginOptionsView, loginFragment);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
+
+            getDBStuff();
         }
+    }
+
+    private void getDBStuff() {
+        Timber.tag("fart").i("MainActivity getDBStuff........");
+        magicCardViewModel = ViewModelProviders.of(this).get(MagicCardViewModel.class);
+
+        magicCardViewModel.getmAllCards().observe(this, new Observer<List<MagicCard>>() {
+            @Override
+            public void onChanged(List<MagicCard> cardEntities) {
+                // update stuff
+
+                Timber.tag("fart").i("on change");
+
+                try {
+                    for (MagicCard c : cardEntities) {
+                        Timber.tag("fart").i("card observed: %s", c.getMultiverseid());
+                    }
+                } catch(Exception e) {
+                    Timber.tag("fart").w("error: %s", e.getMessage());
+                }
+
+            }
+        });
     }
 
     @Override

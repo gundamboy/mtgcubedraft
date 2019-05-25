@@ -1,31 +1,27 @@
 package com.ragingclaw.mtgcubedraftsimulator.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ragingclaw.mtgcubedraftsimulator.BuildConfig;
 import com.ragingclaw.mtgcubedraftsimulator.R;
-import com.ragingclaw.mtgcubedraftsimulator.utils.MTGUtils;
+import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
+import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
+import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.NotLoggingTree;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         if (currentUser == null) {
             goToLogin();
         }
+
 
         newCubeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,8 +96,8 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
+
 
     public void goToLogin() {
         Intent intent = new Intent(this, LoginActivity.class);
@@ -128,4 +126,5 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }

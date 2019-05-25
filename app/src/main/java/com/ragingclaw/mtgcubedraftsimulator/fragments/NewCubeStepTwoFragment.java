@@ -83,14 +83,14 @@ public class NewCubeStepTwoFragment extends Fragment {
 
 
         //insertCardsIntoDatabase();
-        letsGetDone();
+        //letsGetDone();
 
         return view;
     }
 
     private void letsGetDone() {
         String[] list;
-        String output = "";
+        String output = "{ \"ids\": [";
 
         try {
             list = getActivity().getAssets().list("");
@@ -99,17 +99,16 @@ public class NewCubeStepTwoFragment extends Fragment {
                 for (String file : list) {
                     if (file.contains(".json")) {
                         output += MTGUtils.parseJsonToString(getActivity(), file);
-                        if(output.length() > 0) {
-                            String filename = file + "-ids.txt";
-                            printToFile(output, filename);
-                        }
+
 
                     }
                 }
 
-//                if(output.length() > 0) {
-//                    printToFile(output);
-//                }
+                if(output.length() > 1) {
+                    output = MTGUtils.removeLastCharacter(output);
+                    output += "]}";
+                    printToFile(output, "cardIds.json");
+                }
             }
 
         } catch (IOException e) {

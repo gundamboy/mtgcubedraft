@@ -41,7 +41,7 @@ public class MagicCardViewModel extends AndroidViewModel {
         return mAllCards;
     }
 
-    public LiveData<MagicCard> getmCard(int id) {
+    public MagicCard getmCard(int id) {
         return mApplicationRepository.mGetSingleCard(id);
     }
 }

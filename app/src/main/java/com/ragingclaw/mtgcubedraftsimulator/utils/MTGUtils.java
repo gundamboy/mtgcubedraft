@@ -118,7 +118,8 @@ public class MTGUtils {
                         subtypes = MTGUtils.removeLastCharacter(subtypes);
                     }
 
-                    justIds += "\"" + multiverseId + "\",";
+//                    justIds += "\"" + multiverseId + "\",";
+                    justIds += multiverseId + ",";
 
                     output += "MagicCard card"+i+" = new MagicCard(\""+
                             id + "\", \"" +
@@ -173,6 +174,7 @@ public class MTGUtils {
                 }
 
             }
+
         } catch (JSONException e) {
             Timber.tag("fart").w(e);
             e.printStackTrace();
@@ -181,7 +183,7 @@ public class MTGUtils {
         return justIds;
     }
 
-    private static String removeLastCharacter(String str) {
+    public static String removeLastCharacter(String str) {
         if (str != null && str.length() > 0 && str.charAt(str.length() - 1) == ',') {
             str = str.substring(0, str.length() - 1);
         }
