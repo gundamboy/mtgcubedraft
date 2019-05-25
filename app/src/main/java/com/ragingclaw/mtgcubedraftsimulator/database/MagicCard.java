@@ -9,6 +9,7 @@ import com.ragingclaw.mtgcubedraftsimulator.converters.BigDecimalTypeConverter;
 import com.ragingclaw.mtgcubedraftsimulator.converters.StringTypeConverter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import io.magicthegathering.javasdk.resource.Card;
 import io.magicthegathering.javasdk.resource.ForeignData;
@@ -24,15 +25,15 @@ public class MagicCard {
     private String id;
     private String layout;
     private String name;
-    private String[] names;
+    private ArrayList<String> names;
     private String manaCost;
     private double cmc;
-    private String[] colors;
-    private String[] colorIdentity;
+    private ArrayList<String> colors;
+    private ArrayList<String> colorIdentity;
     private String type;
-    private String[] supertypes;
-    private String[] types;
-    private String[] subtypes;
+    private ArrayList<String> supertypes;
+    private ArrayList<String> types;
+    private ArrayList<String> subtypes;
     private String rarity;
     private String text;
     private String originalText;
@@ -42,7 +43,7 @@ public class MagicCard {
     private String power;
     private String toughness;
     private String loyalty;
-    private String[] variations;
+    private ArrayList<String> variations;
     private String imageName;
     private String watermark;
     private String border;
@@ -54,19 +55,19 @@ public class MagicCard {
     private boolean starter;
     private String set;
     private String setName;
-    private String[] printings;
+    private ArrayList<String> printings;
     private String imageUrl;
-    private String[] legalities;
+    private ArrayList<String> legalities;
     private BigDecimal priceHigh;
     private BigDecimal priceMid;
     private BigDecimal priceLow;
     private BigDecimal onlinePriceHigh;
     private BigDecimal onlinePriceMid;
     private BigDecimal onlinePriceLow;
-    private String[] rulings;
-    private String[] foreignNames;
+    private ArrayList<String> rulings;
+    private ArrayList<String> foreignNames;
 
-    public MagicCard(String id, String layout, String name, String[] names, String manaCost, double cmc, String[] colors, String[] colorIdentity, String type, String[] supertypes, String[] types, String[] subtypes, String rarity, String text, String originalText, String flavor, String artist, String number, String power, String toughness, String loyalty, int multiverseid, String[] variations, String imageName, String watermark, String border, boolean timeshifted, int hand, int life, boolean reserved, String releaseDate, boolean starter, String set, String setName, String[] printings, String imageUrl, String[] legalities, BigDecimal priceHigh, BigDecimal priceMid, BigDecimal priceLow, BigDecimal onlinePriceHigh, BigDecimal onlinePriceMid, BigDecimal onlinePriceLow, String[] rulings, String[] foreignNames) {
+    public MagicCard(String id, String layout, String name, ArrayList<String> names, String manaCost, double cmc, ArrayList<String> colors, ArrayList<String> colorIdentity, String type, ArrayList<String> supertypes, ArrayList<String> types, ArrayList<String> subtypes, String rarity, String text, String originalText, String flavor, String artist, String number, String power, String toughness, String loyalty, int multiverseid, ArrayList<String> variations, String imageName, String watermark, String border, boolean timeshifted, int hand, int life, boolean reserved, String releaseDate, boolean starter, String set, String setName, ArrayList<String> printings, String imageUrl, ArrayList<String> legalities, BigDecimal priceHigh, BigDecimal priceMid, BigDecimal priceLow, BigDecimal onlinePriceHigh, BigDecimal onlinePriceMid, BigDecimal onlinePriceLow, ArrayList<String> rulings, ArrayList<String> foreignNames) {
         this.id = id;
         this.layout = layout;
         this.name = name;
@@ -139,11 +140,11 @@ public class MagicCard {
         this.name = name;
     }
 
-    public String[] getNames() {
+    public ArrayList<String> getNames() {
         return names;
     }
 
-    public void setNames(String[] names) {
+    public void setNames(ArrayList<String> names) {
         this.names = names;
     }
 
@@ -163,19 +164,19 @@ public class MagicCard {
         this.cmc = cmc;
     }
 
-    public String[] getColors() {
+    public ArrayList<String> getColors() {
         return colors;
     }
 
-    public void setColors(String[] colors) {
+    public void setColors(ArrayList<String> colors) {
         this.colors = colors;
     }
 
-    public String[] getColorIdentity() {
+    public ArrayList<String> getColorIdentity() {
         return colorIdentity;
     }
 
-    public void setColorIdentity(String[] colorIdentity) {
+    public void setColorIdentity(ArrayList<String> colorIdentity) {
         this.colorIdentity = colorIdentity;
     }
 
@@ -187,27 +188,27 @@ public class MagicCard {
         this.type = type;
     }
 
-    public String[] getSupertypes() {
+    public ArrayList<String> getSupertypes() {
         return supertypes;
     }
 
-    public void setSupertypes(String[] supertypes) {
+    public void setSupertypes(ArrayList<String> supertypes) {
         this.supertypes = supertypes;
     }
 
-    public String[] getTypes() {
+    public ArrayList<String> getTypes() {
         return types;
     }
 
-    public void setTypes(String[] types) {
+    public void setTypes(ArrayList<String> types) {
         this.types = types;
     }
 
-    public String[] getSubtypes() {
+    public ArrayList<String> getSubtypes() {
         return subtypes;
     }
 
-    public void setSubtypes(String[] subtypes) {
+    public void setSubtypes(ArrayList<String> subtypes) {
         this.subtypes = subtypes;
     }
 
@@ -283,11 +284,11 @@ public class MagicCard {
         this.multiverseid = multiverseid;
     }
 
-    public String[] getVariations() {
+    public ArrayList<String> getVariations() {
         return variations;
     }
 
-    public void setVariations(String[] variations) {
+    public void setVariations(ArrayList<String> variations) {
         this.variations = variations;
     }
 
@@ -411,11 +412,11 @@ public class MagicCard {
         this.setName = setName;
     }
 
-    public String[] getPrintings() {
+    public ArrayList<String> getPrintings() {
         return printings;
     }
 
-    public void setPrintings(String[] printings) {
+    public void setPrintings(ArrayList<String> printings) {
         this.printings = printings;
     }
 
@@ -435,11 +436,11 @@ public class MagicCard {
         this.imageUrl = imageUrl;
     }
 
-    public String[] getLegalities() {
+    public ArrayList<String> getLegalities() {
         return legalities;
     }
 
-    public void setLegalities(String[] legalities) {
+    public void setLegalities(ArrayList<String> legalities) {
         this.legalities = legalities;
     }
 
@@ -491,19 +492,19 @@ public class MagicCard {
         this.onlinePriceLow = onlinePriceLow;
     }
 
-    public String[] getRulings() {
+    public ArrayList<String> getRulings() {
         return rulings;
     }
 
-    public void setRulings(String[] rulings) {
+    public void setRulings(ArrayList<String> rulings) {
         this.rulings = rulings;
     }
 
-    public String[] getForeignNames() {
+    public ArrayList<String> getForeignNames() {
         return foreignNames;
     }
 
-    public void setForeignNames(String[] foreignNames) {
+    public void setForeignNames(ArrayList<String> foreignNames) {
         this.foreignNames = foreignNames;
     }
 }

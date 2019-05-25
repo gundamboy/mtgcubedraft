@@ -50,13 +50,12 @@ public class LoginActivity extends AppCompatActivity implements
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
-    private MagicCardViewModel magicCardViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         // Initialize FireBase Auth
         mAuth = FirebaseAuth.getInstance();
 
@@ -69,32 +68,10 @@ public class LoginActivity extends AppCompatActivity implements
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
 
-            getDBStuff();
         }
     }
 
-    private void getDBStuff() {
-        Timber.tag("fart").i("MainActivity getDBStuff........");
-        magicCardViewModel = ViewModelProviders.of(this).get(MagicCardViewModel.class);
 
-        magicCardViewModel.getmAllCards().observe(this, new Observer<List<MagicCard>>() {
-            @Override
-            public void onChanged(List<MagicCard> cardEntities) {
-                // update stuff
-
-                Timber.tag("fart").i("on change");
-
-                try {
-                    for (MagicCard c : cardEntities) {
-                        Timber.tag("fart").i("card observed: %s", c.getMultiverseid());
-                    }
-                } catch(Exception e) {
-                    Timber.tag("fart").w("error: %s", e.getMessage());
-                }
-
-            }
-        });
-    }
 
     @Override
     protected void onStart() {

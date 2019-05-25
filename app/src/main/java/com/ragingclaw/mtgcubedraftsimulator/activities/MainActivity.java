@@ -21,7 +21,14 @@ import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
 import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.NotLoggingTree;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,10 +39,12 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.btn_my_cubes) com.google.android.material.button.MaterialButton myCubesButton;
     @BindView(R.id.btn_new_draft) com.google.android.material.button.MaterialButton newDraftButton;
     @BindView(R.id.btn_my_drafts) com.google.android.material.button.MaterialButton myDraftsButton;
+    @BindView(R.id.insetData) com.google.android.material.button.MaterialButton mInsertData;
     @BindView(R.id.toolbar) Toolbar toolbar;
 
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+    private MagicCardViewModel magicCardViewModel;
 
 
     @Override
@@ -96,8 +105,101 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        mInsertData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDBStuff();
+            }
+        });
     }
 
+    private void getDBStuff() {
+        Timber.tag("fart").i("MainActivity getDBStuff........");
+        magicCardViewModel = ViewModelProviders.of(this).get(MagicCardViewModel.class);
+
+        String json = null;
+        try {
+            Timber.tag("fart").i("inside try block........");
+
+            String filename = "cardIds.json";
+
+            // this is coming back null but the file exists. this works in other files so wtf
+            InputStream is = getAssets().open(filename);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+
+            JSONObject obj = new JSONObject(json);
+            JSONArray idArray = obj.getJSONArray("ids");
+
+            for(int i = 0; i < idArray.length(); i++) {
+                int id = idArray.getInt(i);
+
+                if(i > 0 && i < 10) {
+                    Timber.tag("fart").i("id is: %s", id);
+                }
+
+                MagicCard card = new MagicCard(
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        0.0,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        id,
+                        null,
+                        null,
+                        null,
+                        null,
+                        false,
+                        0,
+                        0,
+                        false,
+                        null,
+                        false,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+
+                magicCardViewModel.insertCard(card);
+            }
+
+        } catch (JSONException e) {
+            Timber.tag("fart").w(e);
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void goToLogin() {
         Intent intent = new Intent(this, LoginActivity.class);
