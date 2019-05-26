@@ -43,31 +43,14 @@ public class MagicCard {
     private String power;
     private String toughness;
     private String loyalty;
-    private ArrayList<String> variations;
-    private String imageName;
-    private String watermark;
     private String border;
-    private boolean timeshifted;
-    private int hand;
-    private int life;
-    private boolean reserved;
     private String releaseDate;
-    private boolean starter;
     private String set;
     private String setName;
-    private ArrayList<String> printings;
     private String imageUrl;
-    private ArrayList<String> legalities;
-    private BigDecimal priceHigh;
-    private BigDecimal priceMid;
-    private BigDecimal priceLow;
-    private BigDecimal onlinePriceHigh;
-    private BigDecimal onlinePriceMid;
-    private BigDecimal onlinePriceLow;
-    private ArrayList<String> rulings;
-    private ArrayList<String> foreignNames;
 
-    public MagicCard(String id, String layout, String name, ArrayList<String> names, String manaCost, double cmc, ArrayList<String> colors, ArrayList<String> colorIdentity, String type, ArrayList<String> supertypes, ArrayList<String> types, ArrayList<String> subtypes, String rarity, String text, String originalText, String flavor, String artist, String number, String power, String toughness, String loyalty, int multiverseid, ArrayList<String> variations, String imageName, String watermark, String border, boolean timeshifted, int hand, int life, boolean reserved, String releaseDate, boolean starter, String set, String setName, ArrayList<String> printings, String imageUrl, ArrayList<String> legalities, BigDecimal priceHigh, BigDecimal priceMid, BigDecimal priceLow, BigDecimal onlinePriceHigh, BigDecimal onlinePriceMid, BigDecimal onlinePriceLow, ArrayList<String> rulings, ArrayList<String> foreignNames) {
+    public MagicCard(int multiverseid, String id, String layout, String name, ArrayList<String> names, String manaCost, double cmc, ArrayList<String> colors, ArrayList<String> colorIdentity, String type, ArrayList<String> supertypes, ArrayList<String> types, ArrayList<String> subtypes, String rarity, String text, String originalText, String flavor, String artist, String number, String power, String toughness, String loyalty, String border, String releaseDate, String set, String setName, String imageUrl) {
+        this.multiverseid = multiverseid;
         this.id = id;
         this.layout = layout;
         this.name = name;
@@ -89,32 +72,20 @@ public class MagicCard {
         this.power = power;
         this.toughness = toughness;
         this.loyalty = loyalty;
-        this.multiverseid = multiverseid;
-        this.variations = variations;
-        this.imageName = imageName;
-        this.watermark = watermark;
         this.border = border;
-        this.timeshifted = timeshifted;
-        this.hand = hand;
-        this.life = life;
-        this.reserved = reserved;
         this.releaseDate = releaseDate;
-        this.starter = starter;
         this.set = set;
         this.setName = setName;
-        this.printings = printings;
         this.imageUrl = imageUrl;
-        this.legalities = legalities;
-        this.priceHigh = priceHigh;
-        this.priceMid = priceMid;
-        this.priceLow = priceLow;
-        this.onlinePriceHigh = onlinePriceHigh;
-        this.onlinePriceMid = onlinePriceMid;
-        this.onlinePriceLow = onlinePriceLow;
-        this.rulings = rulings;
-        this.foreignNames = foreignNames;
     }
 
+    public int getMultiverseid() {
+        return multiverseid;
+    }
+
+    public void setMultiverseid(int multiverseid) {
+        this.multiverseid = multiverseid;
+    }
 
     public String getId() {
         return id;
@@ -228,6 +199,14 @@ public class MagicCard {
         this.text = text;
     }
 
+    public String getOriginalText() {
+        return originalText;
+    }
+
+    public void setOriginalText(String originalText) {
+        this.originalText = originalText;
+    }
+
     public String getFlavor() {
         return flavor;
     }
@@ -276,38 +255,6 @@ public class MagicCard {
         this.loyalty = loyalty;
     }
 
-    public int getMultiverseid() {
-        return multiverseid;
-    }
-
-    public void setMultiverseid(int multiverseid) {
-        this.multiverseid = multiverseid;
-    }
-
-    public ArrayList<String> getVariations() {
-        return variations;
-    }
-
-    public void setVariations(ArrayList<String> variations) {
-        this.variations = variations;
-    }
-
-    public String getImageName() {
-        return imageName;
-    }
-
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
-    }
-
-    public String getWatermark() {
-        return watermark;
-    }
-
-    public void setWatermark(String watermark) {
-        this.watermark = watermark;
-    }
-
     public String getBorder() {
         return border;
     }
@@ -316,84 +263,12 @@ public class MagicCard {
         this.border = border;
     }
 
-    public boolean isTimeshifted() {
-        return timeshifted;
-    }
-
-    public void setTimeshifted(boolean timeshifted) {
-        this.timeshifted = timeshifted;
-    }
-
-    public int getHand() {
-        return hand;
-    }
-
-    public void setHand(int hand) {
-        this.hand = hand;
-    }
-
-    public int getLife() {
-        return life;
-    }
-
-    public void setLife(int life) {
-        this.life = life;
-    }
-
-    public boolean isReserved() {
-        return reserved;
-    }
-
-    public void setReserved(boolean reserved) {
-        this.reserved = reserved;
-    }
-
     public String getReleaseDate() {
         return releaseDate;
     }
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
-    }
-
-    public boolean isStarter() {
-        return starter;
-    }
-
-    public void setStarter(boolean starter) {
-        this.starter = starter;
-    }
-
-    /**
-     * dirty compare to in order to start testing. Just comparing the
-     * MultiverseId which should be unique.
-     *
-     * @param toCompare A {@link Card} object hopefully
-     * @return true if the same set, false if different.
-     */
-    @Override
-    public boolean equals(Object toCompare) {
-        if (toCompare instanceof Card) {
-            Card cardCompare = (Card) toCompare;
-            return getMultiverseid() == cardCompare.getMultiverseid()
-                    && getName().equals(cardCompare.getName())
-                    && getCmc() == cardCompare.getCmc();
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Prints the Card name and multiverseId which should give enough info for
-     * debug testing.
-     *
-     * @return The cards name and Id
-     */
-    @Override
-    public String toString() {
-        return "\nCard Name: " + getName() +
-                "\nMultiverse Id: " + getMultiverseid() +
-                "\nMana Cost: " + getManaCost();
     }
 
     public String getSet() {
@@ -412,99 +287,11 @@ public class MagicCard {
         this.setName = setName;
     }
 
-    public ArrayList<String> getPrintings() {
-        return printings;
-    }
-
-    public void setPrintings(ArrayList<String> printings) {
-        this.printings = printings;
-    }
-
-    public String getOriginalText() {
-        return originalText;
-    }
-
-    public void setOriginalText(String originalText) {
-        this.originalText = originalText;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
-    }
-
-    public ArrayList<String> getLegalities() {
-        return legalities;
-    }
-
-    public void setLegalities(ArrayList<String> legalities) {
-        this.legalities = legalities;
-    }
-
-    public BigDecimal getPriceHigh() {
-        return priceHigh;
-    }
-
-    public void setPriceHigh(BigDecimal priceHigh) {
-        this.priceHigh = priceHigh;
-    }
-
-    public BigDecimal getPriceMid() {
-        return priceMid;
-    }
-
-    public void setPriceMid(BigDecimal priceMid) {
-        this.priceMid = priceMid;
-    }
-
-    public BigDecimal getPriceLow() {
-        return priceLow;
-    }
-
-    public void setPriceLow(BigDecimal priceLow) {
-        this.priceLow = priceLow;
-    }
-
-    public BigDecimal getOnlinePriceHigh() {
-        return onlinePriceHigh;
-    }
-
-    public void setOnlinePriceHigh(BigDecimal onlinePriceHigh) {
-        this.onlinePriceHigh = onlinePriceHigh;
-    }
-
-    public BigDecimal getOnlinePriceMid() {
-        return onlinePriceMid;
-    }
-
-    public void setOnlinePriceMid(BigDecimal onlinePriceMid) {
-        this.onlinePriceMid = onlinePriceMid;
-    }
-
-    public BigDecimal getOnlinePriceLow() {
-        return onlinePriceLow;
-    }
-
-    public void setOnlinePriceLow(BigDecimal onlinePriceLow) {
-        this.onlinePriceLow = onlinePriceLow;
-    }
-
-    public ArrayList<String> getRulings() {
-        return rulings;
-    }
-
-    public void setRulings(ArrayList<String> rulings) {
-        this.rulings = rulings;
-    }
-
-    public ArrayList<String> getForeignNames() {
-        return foreignNames;
-    }
-
-    public void setForeignNames(ArrayList<String> foreignNames) {
-        this.foreignNames = foreignNames;
     }
 }
