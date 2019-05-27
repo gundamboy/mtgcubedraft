@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ragingclaw.mtgcubedraftsimulator.R;
-import com.ragingclaw.mtgcubedraftsimulator.fragments.LoginFragment;
+import com.ragingclaw.mtgcubedraftsimulator.fragments.FragmentCubeReview;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeStepOneFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeStepTwoFragment;
 
@@ -26,10 +26,12 @@ import io.magicthegathering.javasdk.api.CardAPI;
 import io.magicthegathering.javasdk.resource.Card;
 import timber.log.Timber;
 
-public class NewCubeActivity extends AppCompatActivity implements NewCubeStepOneFragment.OnFragmentInteractionListenerStepOne, NewCubeStepTwoFragment.OnFragmentInteractionListenerStepTwo {
+public class NewCubeActivity extends AppCompatActivity implements
+        NewCubeStepOneFragment.OnFragmentInteractionListenerStepOne,
+        NewCubeStepTwoFragment.OnFragmentInteractionListenerStepTwo,
+        FragmentCubeReview.OnCubeReviewFragmentInteractionListener {
     @BindView(R.id.toolbar) Toolbar toolbar;
 
-    private ActionBar ab;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
 
@@ -39,23 +41,23 @@ public class NewCubeActivity extends AppCompatActivity implements NewCubeStepOne
         setContentView(R.layout.activity_new_cube);
         ButterKnife.bind(this);
 
+        toolbar.setTitle(getString(R.string.new_cube_activity_title));
         setSupportActionBar(toolbar);
-        ab = getSupportActionBar();
 
-        if (ab != null) {
-            ab.setDisplayHomeAsUpEnabled(true);
-            ab.setTitle(getString(R.string.new_cube_activity_title));
+
+        if (toolbar != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
         } else {
             Timber.tag("fart").i("actionbar is null... wtf");
         }
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-
     }
 
     public void setActionBarTitle(String title) {
-        ab.setTitle(title);
+        toolbar.setTitle(title);
     }
 
     public void goToLogin() {
@@ -63,7 +65,7 @@ public class NewCubeActivity extends AppCompatActivity implements NewCubeStepOne
         startActivity(intent);
         finish();
     }
-
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -81,6 +83,9 @@ public class NewCubeActivity extends AppCompatActivity implements NewCubeStepOne
             case R.id.settings:
 
                 return true;
+            case R.id.save:
+
+                return true;
             case R.id.logout:
                 mAuth.signOut();
                 goToLogin();
@@ -89,6 +94,7 @@ public class NewCubeActivity extends AppCompatActivity implements NewCubeStepOne
                 return super.onOptionsItemSelected(item);
         }
     }
+    */
 
     @Override
     public void onFragmentInteractionStepOne(String title) {
@@ -97,8 +103,13 @@ public class NewCubeActivity extends AppCompatActivity implements NewCubeStepOne
 
     @Override
     public void onFragmentInteractionStepTwo(String title) {
-        setActionBarTitle(title);
+        toolbar.setTitle(title);
         Timber.tag("fart").i(title);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
 

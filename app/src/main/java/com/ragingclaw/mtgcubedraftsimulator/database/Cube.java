@@ -15,7 +15,7 @@ import java.util.List;
 public class Cube {
 
     @NonNull
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int cubeId;
 
     private String userId;

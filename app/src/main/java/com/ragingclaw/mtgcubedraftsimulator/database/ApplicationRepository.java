@@ -31,6 +31,7 @@ public class ApplicationRepository {
         new UpdateCardAsyncTask(mMagicCardDao).execute(magicCard);
     }
 
+
     public void deleteCard(MagicCard magicCard) {
         new DeleteCardAsyncTask(mMagicCardDao).execute(magicCard);
     }

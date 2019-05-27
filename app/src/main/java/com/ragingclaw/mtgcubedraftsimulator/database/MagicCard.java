@@ -1,5 +1,7 @@
 package com.ragingclaw.mtgcubedraftsimulator.database;
 
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -8,6 +10,10 @@ import androidx.room.TypeConverters;
 import com.ragingclaw.mtgcubedraftsimulator.converters.BigDecimalTypeConverter;
 import com.ragingclaw.mtgcubedraftsimulator.converters.StringTypeConverter;
 
+import org.parceler.Parcel;
+import org.parceler.ParcelConstructor;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -17,6 +23,7 @@ import io.magicthegathering.javasdk.resource.Ruling;
 
 @Entity(tableName = "cards")
 @TypeConverters({StringTypeConverter.class, BigDecimalTypeConverter.class})
+@Parcel(Parcel.Serialization.BEAN)
 public class MagicCard {
     @PrimaryKey
     @NonNull
@@ -49,6 +56,7 @@ public class MagicCard {
     private String setName;
     private String imageUrl;
 
+    @ParcelConstructor
     public MagicCard(int multiverseid, String id, String layout, String name, ArrayList<String> names, String manaCost, double cmc, ArrayList<String> colors, ArrayList<String> colorIdentity, String type, ArrayList<String> supertypes, ArrayList<String> types, ArrayList<String> subtypes, String rarity, String text, String originalText, String flavor, String artist, String number, String power, String toughness, String loyalty, String border, String releaseDate, String set, String setName, String imageUrl) {
         this.multiverseid = multiverseid;
         this.id = id;
@@ -294,4 +302,5 @@ public class MagicCard {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
 }

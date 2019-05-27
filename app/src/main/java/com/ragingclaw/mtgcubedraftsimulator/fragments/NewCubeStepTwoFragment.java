@@ -2,24 +2,22 @@ package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
+
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
 import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
-import com.ragingclaw.mtgcubedraftsimulator.utils.MTGUtils;
 
 import org.jetbrains.annotations.NotNull;
+import org.parceler.Parcels;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -28,25 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.annotation.meta.When;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.magicthegathering.javasdk.api.CardAPI;
 import io.magicthegathering.javasdk.resource.Card;
 import timber.log.Timber;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link NewCubeStepTwoFragment.OnFragmentInteractionListenerStepTwo} interface
- * to handle interaction events.
- * Use the {@link NewCubeStepTwoFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class NewCubeStepTwoFragment extends Fragment {
-    @BindView (R.id.cube_name) TextView mCubeName;
+    @BindView(R.id.percentage_built) TextView completePercent;
     private Unbinder unbinder;
 
     private MagicCardViewModel magicCardViewModel;
@@ -75,18 +62,23 @@ public class NewCubeStepTwoFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
         if (getArguments() != null) {
-            mCubeName.setText(getArguments().getString("cubeName"));
+            if(mListener != null) {
+                mListener.onFragmentInteractionStepTwo(getArguments().getString("cubeName"));
+            }
         }
 
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
         magicCardViewModel.getmAllCards().observe(this, new Observer<List<MagicCard>>() {
             // make a list of the ids to send off for draft vuilding
             List<Integer> ids = new ArrayList<>();
+            List<MagicCard> cards = new ArrayList<>();
+
             @Override
             public void onChanged(List<MagicCard> magicCards) {
                 try {
                     for (MagicCard c : magicCards) {
                         ids.add(c.getMultiverseid());
+                        cards.add(c);
                     }
                 } catch(Exception e) {
                     e.printStackTrace();
@@ -95,13 +87,22 @@ public class NewCubeStepTwoFragment extends Fragment {
                 if(ids.size() > 0) {
                     // there are ids, WOOHOO! lets build a draft!
                     getCardsFromIds(ids);
+                    getCubeCards(cards, view);
+
+                    // TODO: figure out where to put this crap
+                    String baseUrl = "https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=";
+                    String endUrl = "&type=card";
+//                    for (MagicCard c : magicCards) {
+//                        int multiverseid = c.getMultiverseid();
+//                        String url = baseUrl + multiverseid + endUrl;
+//
+//                        c.setImageUrl(url);
+//
+//                        magicCardViewModel.updateCard(c);
+//                    }
                 }
             }
         });
-
-        //insertCardsIntoDatabase();
-        //letsGetDone();
-
         return view;
     }
 
@@ -158,6 +159,43 @@ public class NewCubeStepTwoFragment extends Fragment {
         }).start();
     }
 
+    private void getCubeCards(List<MagicCard> cards, View view) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<MagicCard> allCards = cards;
+                List<MagicCard> cubeCards = new ArrayList<>();
+
+                // a cube is 360 cards.
+                int cubeSize = 360;
+
+
+                for (int i = 0; i < cubeSize; i++) {
+                    int r = getRandomNum(allCards.size());
+                    cubeCards.add(allCards.get(r));
+                    allCards.remove(r);
+
+                    // Percentage = (Obtained score x 100) / Total Score
+                    int percent = (i * 100) / cubeSize;
+                    Timber.tag("fart").i("VALUE:: %s", percent);
+
+                    // TODO: find out why this isnt working
+                    // android.content.res.Resources$NotFoundException: String resource ID #0x0
+                    // completePercent.setText(percent);
+                }
+
+                Timber.tag("fart").i("cards size: %s", allCards.size());
+
+                if (cubeCards.size() == cubeSize) {
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("cubeCards", Parcels.wrap(cubeCards));
+                    Navigation.findNavController(view).navigate(R.id.action_newCubeStepTwoFragment_to_fragmentCubeReview, bundle);
+                }
+            }
+        }).start();
+    }
+
     private void getCardsFromIds(List<Integer> ids) {
         // copy the list to we can change it.
         List<Integer> multiversePool = ids;
@@ -175,6 +213,7 @@ public class NewCubeStepTwoFragment extends Fragment {
             draftCardIds.add(multiversePool.get(r));
             multiversePool.remove(r);
         }
+
 
         // build the 3 packs that will be passed around for the draft
         if(draftCardIds.size() == cubeSize) {
@@ -239,7 +278,6 @@ public class NewCubeStepTwoFragment extends Fragment {
         //Runnable r = new CardRunnable(boosterIdsPack1, boosterIdsPack2, boosterIdsPack3);
         Runnable r = new CardRunnable(boosterIdsPack1, boosterIdsPack2, boosterIdsPack3);
         new Thread(r).start();
-
     }
 
     private int getRandomFromList(List<Integer> idPool, int max) {
@@ -290,9 +328,8 @@ public class NewCubeStepTwoFragment extends Fragment {
         List<Integer> b1;
         List<Integer> b2;
         List<Integer> b3;
-        List<MagicCard> pack1;
-        List<MagicCard> pack2;
-        List<MagicCard> pack3;
+
+        int packCount = 3;
 
         public CardRunnable(List<Integer> b1, List<Integer> b2, List<Integer> b3) {
             this.b1 = b1;
@@ -302,6 +339,34 @@ public class NewCubeStepTwoFragment extends Fragment {
 
         @Override
         public void run() {
+            List<MagicCard> pack1 = new ArrayList<>();
+            List<MagicCard> pack2 = new ArrayList<>();
+            List<MagicCard> pack3 = new ArrayList<>();
+
+            for(int i = 0; i < packCount; i++) {
+                if (i == 0) {
+                    for (int id : b1) {
+                        MagicCard card = magicCardViewModel.getmCard(id);
+                        pack1.add(card);
+                    }
+                }
+
+                if (i == 1) {
+                    for (int id : b2) {
+                        MagicCard card = magicCardViewModel.getmCard(id);
+                        pack2.add(card);
+                    }
+                }
+
+                if(i == 2) {
+                    for (int id : b3) {
+                        MagicCard card = magicCardViewModel.getmCard(id);
+                        pack3.add(card);
+                    }
+                }
+            }
+
+            Timber.tag("fart").i("pack 1 size: %s", pack1.size());
 
         }
     }
