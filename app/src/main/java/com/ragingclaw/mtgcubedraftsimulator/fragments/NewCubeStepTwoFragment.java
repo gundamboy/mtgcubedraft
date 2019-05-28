@@ -44,6 +44,7 @@ public class NewCubeStepTwoFragment extends Fragment {
     private OnFragmentInteractionListenerStepTwo mListener;
     private List<String> mSetCodes = new ArrayList<>();
     private List<Card> mCubeCards = new ArrayList<>();
+    private String cubeName;
 
     public NewCubeStepTwoFragment() {
         // Required empty public constructor
@@ -66,13 +67,14 @@ public class NewCubeStepTwoFragment extends Fragment {
 
         if (getArguments() != null) {
             if(mListener != null) {
-                mListener.onFragmentInteractionStepTwo(getArguments().getString("cubeName"));
+                cubeName = getArguments().getString(AllMyConstants.CUBE_NAME);
+                mListener.onFragmentInteractionStepTwo(cubeName);
             }
         }
 
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
         magicCardViewModel.getmAllCards().observe(this, new Observer<List<MagicCard>>() {
-            // make a list of the ids to send off for draft vuilding
+            // make a list of the ids to send off for draft building
             List<Integer> ids = new ArrayList<>();
             List<MagicCard> cards = new ArrayList<>();
 
@@ -128,6 +130,7 @@ public class NewCubeStepTwoFragment extends Fragment {
                 if (cubeCards.size() == cubeSize) {
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(AllMyConstants.CUBE_CARDS, Parcels.wrap(cubeCards));
+                    bundle.putString(AllMyConstants.CUBE_NAME, cubeName);
 
                     NavOptions.Builder navBuilder = new NavOptions.Builder();
                     NavOptions navOptions = navBuilder.setPopUpTo(R.id.newCubeStepOneFragment, true).build();

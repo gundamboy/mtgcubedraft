@@ -1,5 +1,6 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -49,9 +50,7 @@ public class MyCubesFragment extends Fragment {
     @BindView(R.id.create_cube_button) com.google.android.material.button.MaterialButton createCubeButton;
     private Unbinder unbinder;
     private CubeViewModel cubeViewModel;
-    private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
-    MyCubesAdapter myCubesAdapter;
+    private MyCubesAdapter myCubesAdapter;
 
     private OnMyCubesFragmentInteraction mListener;
 
@@ -79,8 +78,8 @@ public class MyCubesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_my_cubes, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (savedInstanceState == null) {
             cubeViewModel = ViewModelProviders.of(this).get(CubeViewModel.class);
@@ -110,6 +109,13 @@ public class MyCubesFragment extends Fragment {
                     myCubesAdapter = new MyCubesAdapter();
                     cubes_recyclerView.setAdapter(myCubesAdapter);
                     myCubesAdapter.setCubes(cubesEntities);
+
+                    myCubesAdapter.setOnClickListener(new MyCubesAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(int position, String cubeId, String cubeName) {
+
+                        }
+                    });
 
                 } else {
                     if (my_cubes_layout.getVisibility() == View.VISIBLE) {

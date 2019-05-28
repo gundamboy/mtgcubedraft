@@ -3,16 +3,16 @@ package com.ragingclaw.mtgcubedraftsimulator.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Parcel;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,7 +22,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.activities.MainActivity;
 import com.ragingclaw.mtgcubedraftsimulator.activities.NewDraftActivity;
@@ -41,6 +40,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,7 +64,9 @@ public class FragmentCubeReview extends Fragment {
     private String cubeName = "";
 
     private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
+    private String currentUserId;
+
+    private Handler handler;
 
     public FragmentCubeReview() {
         // Required empty public constructor
@@ -83,11 +85,16 @@ public class FragmentCubeReview extends Fragment {
 
         setHasOptionsMenu(true);
         if (getArguments() != null) {
+            cubeName = getArguments().getString(AllMyConstants.CUBE_NAME);
             cubeCards = Parcels.unwrap(getArguments().getParcelable(AllMyConstants.CUBE_CARDS));
-        }
 
-        cubeViewModel = ViewModelProviders.of(this).get(CubeViewModel.class);
-        getArguments().remove(AllMyConstants.CUBE_CARDS);
+            if(mListener != null) {
+                Bundle bundle = new Bundle();
+                bundle.putString(AllMyConstants.CUBE_NAME, cubeName);
+                bundle.putString(AllMyConstants.TOAST_MESSAGE, null);
+                sendDataToActivity(bundle);
+            }
+        }
     }
 
     @Override
@@ -95,6 +102,9 @@ public class FragmentCubeReview extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cube_card_review, container, false);
         unbinder = ButterKnife.bind(this, view);
         getFragmentManager().popBackStack();
+
+        mAuth = FirebaseAuth.getInstance();
+        currentUserId = mAuth.getCurrentUser().getUid();
 
         mCardsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mCardsRecyclerView.setHasFixedSize(true);
@@ -104,6 +114,7 @@ public class FragmentCubeReview extends Fragment {
         cubeAdapter.setCards(cubeCards);
 
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
+        cubeViewModel = ViewModelProviders.of(getActivity()).get(CubeViewModel.class);
 
         if (savedInstanceState != null) {
 
@@ -118,7 +129,7 @@ public class FragmentCubeReview extends Fragment {
                 // make a draft from the cubes cards
 
                 if(!isSaved) {
-                    saveCube();
+                    new SaveCube(cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName);
                 }
 
                 if(isSaved) {
@@ -144,51 +155,17 @@ public class FragmentCubeReview extends Fragment {
     }
 
     private void iAmAQuitter() {
-
+        getArguments().remove(AllMyConstants.CUBE_CARDS);
         Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
         getActivity().finish();
     }
 
 
-    public void onButtonPressed(Uri uri) {
+    public void sendDataToActivity(Bundle bundle) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onFragmentInteraction(bundle);
         }
-    }
-
-    private void saveCube() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // get all cards from adapter/recyclerView
-                List<MagicCard> cards = cubeAdapter.getItems();
-                List<Integer> cardIds = new ArrayList<>();
-
-
-                // for each, create a new cube
-                for (MagicCard c : cards) {
-                    cardIds.add(c.getMultiverseid());
-                }
-
-                if(cardIds.size() == cards.size()) {
-                    Cube cube = null;
-                    for (MagicCard c : cards) {
-                        cube = new Cube(0,
-                                mAuth.getCurrentUser().getUid(), cubeName, cards.size(), cardIds);
-                    }
-
-                    cubeViewModel.insertCube(cube);
-
-                    LiveData<Cube> verifyCube = cubeViewModel.getmUserCube(mAuth.getCurrentUser().getUid().toLowerCase(), cube.getCubeId());
-                    if (verifyCube != null) {
-                        // cube was inserted. show saved toast, disable save icon
-                        Toast.makeText(getActivity(), "Your Cube has been saved." , Toast.LENGTH_SHORT).show();
-                        isSaved = true;
-                    }
-                }
-            }
-        }).start();
     }
 
     @Override
@@ -228,7 +205,7 @@ public class FragmentCubeReview extends Fragment {
                 return true;
             case R.id.save:
                 if (!isSaved) {
-                    saveCube();
+                    new SaveCube(cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName).execute();
                 }
                 return true;
             default:
@@ -236,10 +213,54 @@ public class FragmentCubeReview extends Fragment {
         }
     }
 
-
-
     public interface OnCubeReviewFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(Bundle bundle);
+    }
+
+    public static class SaveCube extends AsyncTask<Void, Void, Void> {
+        CubeAdapter cubeAdapter;
+        FirebaseAuth mAuth;
+        String currentUserId;
+        CubeViewModel cubeViewModel;
+        String cubeName;
+
+        public SaveCube(CubeAdapter cubeAdapter, FirebaseAuth mAuth, String currentUserId, CubeViewModel cubeViewModel, String cubeName) {
+            this.cubeAdapter = cubeAdapter;
+            this.mAuth = mAuth;
+            this.currentUserId = currentUserId;
+            this.cubeViewModel = cubeViewModel;
+            this.cubeName = cubeName;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            // get all cards from adapter/recyclerView
+            List<MagicCard> cards = cubeAdapter.getItems();
+            List<Integer> cardIds = new ArrayList<>();
+
+            // for each, create a new cube
+            for (MagicCard c : cards) {
+                cardIds.add(c.getMultiverseid());
+            }
+
+            if(cardIds.size() == cards.size()) {
+                Cube cube = new Cube(0, mAuth.getCurrentUser().getUid(), cubeName, cards.size(), cardIds);
+                cubeViewModel.insertCube(cube);
+
+                LiveData<Cube> verifyCube = cubeViewModel.getmUserCube(currentUserId.toLowerCase(), cube.getCubeId());
+                if (verifyCube != null) {
+                    // cube was inserted. show saved toast, disable save icon
+                    Bundle bundle = new Bundle();
+                    bundle.putString(AllMyConstants.CUBE_NAME, null);
+                    bundle.putString(AllMyConstants.TOAST_MESSAGE, "Your Cube has been saved. Why not make a draft next?");
+
+                    Timber.tag("fart").i("cube should be good in the database");
+                } else {
+                    Timber.tag("fart").i("cube didn't go i guess...");
+                }
+            }
+            return null;
+        }
     }
 }

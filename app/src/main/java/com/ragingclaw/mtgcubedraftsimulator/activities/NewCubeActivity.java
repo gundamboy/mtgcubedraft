@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -110,7 +111,14 @@ public class NewCubeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onFragmentInteraction(Bundle bundle) {
+        if(bundle.getString(AllMyConstants.CUBE_NAME) != null) {
+            toolbar.setTitle(bundle.getString(AllMyConstants.CUBE_NAME));
+        }
+
+        if(bundle.getString(AllMyConstants.TOAST_MESSAGE) != null) {
+            Toast.makeText(this, bundle.getString(AllMyConstants.TOAST_MESSAGE) , Toast.LENGTH_SHORT).show();
+        }
 
     }
 

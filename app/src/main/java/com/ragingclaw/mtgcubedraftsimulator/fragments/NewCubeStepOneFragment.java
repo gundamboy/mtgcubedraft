@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.ragingclaw.mtgcubedraftsimulator.R;
+import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 
 
 import butterknife.BindView;
@@ -72,7 +73,7 @@ public class NewCubeStepOneFragment extends Fragment {
                 if(!TextUtils.isEmpty(cubeName.getText().toString())) {
                     String name = cubeName.getText().toString();
                     Bundle bundle = new Bundle();
-                    bundle.putString("cubeName", name);
+                    bundle.putString(AllMyConstants.CUBE_NAME, name);
                     Navigation.findNavController(view).navigate(R.id.action_newCubeStepOneFragment_to_newCubeStepTwoFragment, bundle);
                 } else {
                     // show toast because i dont have time for fancy shit.

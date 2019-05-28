@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,9 +20,19 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class MyCubesAdapter extends RecyclerView.Adapter<MyCubesAdapter.CubeHolder> {
     private List<Cube> cubes = new ArrayList<>();
+    private MyCubesAdapter.OnItemClickListener mListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(int position, String cubeId, String cubeName);
+    }
+
+    public void setOnClickListener(OnItemClickListener listener) {
+        mListener = listener;
+    }
 
     @NonNull
     @Override
@@ -29,18 +40,16 @@ public class MyCubesAdapter extends RecyclerView.Adapter<MyCubesAdapter.CubeHold
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.my_cubes_list_item, parent, false);
 
-        return new CubeHolder(itemView);
+        return new CubeHolder(itemView, mListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CubeHolder holder, int position) {
         Cube currentCube = cubes.get(position);
         String name = currentCube.getCube_name();
-        int count = currentCube.getTotal_cards();
         int id = currentCube.getCubeId();
 
         holder.cubeName.setText(name);
-        holder.cardCount.setText(String.valueOf(count));
         holder.cubeId.setText(String.valueOf(id));
     }
 
@@ -60,12 +69,22 @@ public class MyCubesAdapter extends RecyclerView.Adapter<MyCubesAdapter.CubeHold
 
     class CubeHolder extends RecyclerView.ViewHolder {
         @BindView (R.id.cube_name) TextView cubeName;
-        @BindView (R.id.card_count) TextView cardCount;
         @BindView (R.id.cube_id) TextView cubeId;
+        @BindView (R.id.imageButton) ImageButton imageButton;
 
-        public CubeHolder(@NonNull View itemView) {
+        public CubeHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            imageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onItemClick(position, cubeId.getText().toString(), cubeName.getText().toString());
+                    }
+                }
+            });
         }
     }
 }

@@ -9,4 +9,6 @@ public class AllMyConstants {
     public static final String MTG_API_URL = "https://api.magicthegathering.io/v1/";
     public static final String CARDS_FOR_DRAFT = "CARDS_FOR_DRAFT";
     public static final String CUBE_CARDS = "CUBE_CARDS";
+    public static final String CUBE_NAME = "CUBE_NAME";
+    public static final String TOAST_MESSAGE = "TOAST_MESSAGE";
 }
