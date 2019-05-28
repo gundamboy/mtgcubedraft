@@ -36,20 +36,25 @@ public class CubeAdapter extends RecyclerView.Adapter<CubeAdapter.CardHolder> {
     public void onBindViewHolder(@NonNull CardHolder holder, int position) {
         MagicCard currentCard = cards.get(position);
 
-        Timber.tag("fart").i("getManaCost: %s", currentCard.getManaCost());
-        Timber.tag("fart").i("cmc: %s", currentCard.getCmc());
-
         String cmc = currentCard.getManaCost();
+        String text = currentCard.getText();
+
+        // fix the stupid formatting in the json. its dumb, and i hate it.
+        // it looks like {4}{B}{B} and that's just stupid.
+        cmc = cmc.replace("}{"," ");
         cmc = cmc.replace("{","");
         cmc = cmc.replace("}","");
-        //Timber.tag("fart").i("cmc: %s", cmc);
+
+        text = text.replace("}{"," ");
+        text = text.replace("{","");
+        text = text.replace("}","");
 
         holder.cardName.setText(currentCard.getName());
         holder.rarity.setText(currentCard.getRarity());
         holder.manaCost.setText(cmc);
         holder.creature_type.setText(currentCard.getType());
         holder.setName.setText(currentCard.getSetName());
-        holder.cardText.setText(currentCard.getText());
+        holder.cardText.setText(text);
         holder.flavorText.setText(currentCard.getFlavor());
 
         if (TextUtils.isEmpty(currentCard.getSetName()) || currentCard.getSetName() == null) {

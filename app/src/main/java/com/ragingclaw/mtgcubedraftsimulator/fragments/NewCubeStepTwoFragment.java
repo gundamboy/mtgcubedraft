@@ -10,11 +10,14 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
 import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
+import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 
 import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
@@ -189,8 +192,11 @@ public class NewCubeStepTwoFragment extends Fragment {
 
                 if (cubeCards.size() == cubeSize) {
                     Bundle bundle = new Bundle();
-                    bundle.putParcelable("cubeCards", Parcels.wrap(cubeCards));
-                    Navigation.findNavController(view).navigate(R.id.action_newCubeStepTwoFragment_to_fragmentCubeReview, bundle);
+                    bundle.putParcelable(AllMyConstants.CUBE_CARDS, Parcels.wrap(cubeCards));
+
+                    NavOptions.Builder navBuilder = new NavOptions.Builder();
+                    NavOptions navOptions = navBuilder.setPopUpTo(R.id.fragmentCubeReview, true).build();
+                    Navigation.findNavController(view).navigate(R.id.action_newCubeStepTwoFragment_to_fragmentCubeReview, bundle, navOptions);
                 }
             }
         }).start();

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -19,6 +20,7 @@ import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.FragmentCubeReview;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeStepOneFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeStepTwoFragment;
+import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,6 +36,7 @@ public class NewCubeActivity extends AppCompatActivity implements
 
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+    ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,21 +46,20 @@ public class NewCubeActivity extends AppCompatActivity implements
 
         toolbar.setTitle(getString(R.string.new_cube_activity_title));
         setSupportActionBar(toolbar);
-
-
-        if (toolbar != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
-        } else {
-            Timber.tag("fart").i("actionbar is null... wtf");
-        }
+        actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setHomeButtonEnabled(true);
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+
+        if (savedInstanceState != null) {
+
+        }
     }
 
     public void setActionBarTitle(String title) {
-        toolbar.setTitle(title);
+        actionBar.setTitle(title);
     }
 
     public void goToLogin() {
@@ -111,6 +113,27 @@ public class NewCubeActivity extends AppCompatActivity implements
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+    @Override
+    public void onBackPressed() {
+        getFragmentManager().popBackStack();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+
+    }
+
+//    @Override
+//    public Parcelable saveState() {
+//        Bundle bundle = (Bundle) super.saveState();
+//        bundle.putParcelableArray(AllMyConstants.CUBE_CARDS, null); // Never maintain any states from the base class, just null it out
+//        return bundle;
+//    }
 
 
     class RetrieveMtgStuff extends AsyncTask<String, Void, Card> {
