@@ -129,6 +129,7 @@ public class NewCubeStepTwoFragment extends Fragment {
 
                 if (cubeCards.size() == cubeSize) {
                     Bundle bundle = new Bundle();
+                    bundle.putBoolean(AllMyConstants.NEW_CUBE, true);
                     bundle.putParcelable(AllMyConstants.CUBE_CARDS, Parcels.wrap(cubeCards));
                     bundle.putString(AllMyConstants.CUBE_NAME, cubeName);
 

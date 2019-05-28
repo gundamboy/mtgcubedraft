@@ -126,19 +126,19 @@ public class CRUDtestingActivity extends AppCompatActivity {
             }
         });
 
-        cubeViewModel.getmUserCube(logged_in_userID, cubeId).observe(this, new Observer <Cube>() {
-            @Override
-            public void onChanged(Cube cubesEntities) {
-                single_cube_observer = "SINGLE CUBE INFO:\n ";
-                // update stuff
-                try {
-                    single_cube_observer += cubesEntities.getCubeId() + ": " + cubesEntities.getUserId() + ": " + cubesEntities.getCube_name() + ", \n";
-                    tv_output_single.setText(single_cube_observer);
-                } catch(Exception e) {
-                    single_cube_observer = e.getMessage();
-                }
-            }
-        });
+//        cubeViewModel.getmUserCube(logged_in_userID, cubeId).observe(this, new Observer <Cube>() {
+//            @Override
+//            public void onChanged(Cube cubesEntities) {
+//                single_cube_observer = "SINGLE CUBE INFO:\n ";
+//                // update stuff
+//                try {
+//                    single_cube_observer += cubesEntities.getCubeId() + ": " + cubesEntities.getUserId() + ": " + cubesEntities.getCube_name() + ", \n";
+//                    tv_output_single.setText(single_cube_observer);
+//                } catch(Exception e) {
+//                    single_cube_observer = e.getMessage();
+//                }
+//            }
+//        });
 
         draftViewModel.getAllDrafts().observe(this, new Observer<List<Draft>>() {
             @Override

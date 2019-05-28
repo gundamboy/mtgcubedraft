@@ -27,7 +27,7 @@ public class MyCubesAdapter extends RecyclerView.Adapter<MyCubesAdapter.CubeHold
     private MyCubesAdapter.OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-        void onItemClick(int position, String cubeId, String cubeName);
+        void onItemClick(int position, int cubeId, String cubeName);
     }
 
     public void setOnClickListener(OnItemClickListener listener) {
@@ -81,7 +81,7 @@ public class MyCubesAdapter extends RecyclerView.Adapter<MyCubesAdapter.CubeHold
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(position, cubeId.getText().toString(), cubeName.getText().toString());
+                        listener.onItemClick(position, Integer.parseInt(cubeId.getText().toString()), cubeName.getText().toString());
                     }
                 }
             });

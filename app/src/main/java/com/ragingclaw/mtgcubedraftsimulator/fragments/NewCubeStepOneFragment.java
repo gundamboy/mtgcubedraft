@@ -62,8 +62,6 @@ public class NewCubeStepOneFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_new_cube_step_one, container, false);
         unbinder = ButterKnife.bind(this, view);
-        //setActionBarTitle("test test");
-
 
         generateCubeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +84,7 @@ public class NewCubeStepOneFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void setActionBarTitle(String title) {
+    public void sendDataToActivity(String title) {
         if (mListener != null) {
             mListener.onFragmentInteractionStepOne(title);
         }

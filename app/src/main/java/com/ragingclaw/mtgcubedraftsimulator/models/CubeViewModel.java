@@ -45,7 +45,7 @@ public class CubeViewModel extends AndroidViewModel {
        return  mApplicationRepository.getUserCubes(s);
     }
 
-    public LiveData<Cube> getmUserCube(String s, Integer i) {
+    public Cube getmUserCube(String s, Integer i) {
         return  mApplicationRepository.getUserCube(s, i);
     }
 }

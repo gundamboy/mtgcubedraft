@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -27,6 +28,9 @@ import com.ragingclaw.mtgcubedraftsimulator.activities.NewCubeActivity;
 import com.ragingclaw.mtgcubedraftsimulator.adapters.MyCubesAdapter;
 import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
 import com.ragingclaw.mtgcubedraftsimulator.models.CubeViewModel;
+import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -81,10 +85,7 @@ public class MyCubesFragment extends Fragment {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if (savedInstanceState == null) {
-            cubeViewModel = ViewModelProviders.of(this).get(CubeViewModel.class);
-            //checkUserCubes(view);
-        }
+        cubeViewModel = ViewModelProviders.of(this).get(CubeViewModel.class);
 
         createCubeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,8 +113,14 @@ public class MyCubesFragment extends Fragment {
 
                     myCubesAdapter.setOnClickListener(new MyCubesAdapter.OnItemClickListener() {
                         @Override
-                        public void onItemClick(int position, String cubeId, String cubeName) {
+                        public void onItemClick(int position, int cubeId, String cubeName) {
+                            Bundle bundle = new Bundle();
+                            bundle.putBoolean(AllMyConstants.NEW_CUBE, false);
+                            bundle.putBoolean(AllMyConstants.CUBE_CARDS, false);
+                            bundle.putString(AllMyConstants.CUBE_NAME, cubeName);
+                            bundle.putInt(AllMyConstants.CUBE_ID, cubeId);
 
+                            Navigation.findNavController(view).navigate(R.id.action_myCubesFragment_to_fragmentCubeReview, bundle, null);
                         }
                     });
 
@@ -130,9 +137,9 @@ public class MyCubesFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(String string) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onMyCubesFragmentInteraction(string);
         }
     }
 
@@ -161,6 +168,6 @@ public class MyCubesFragment extends Fragment {
 
     public interface OnMyCubesFragmentInteraction {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onMyCubesFragmentInteraction(String string);
     }
 }

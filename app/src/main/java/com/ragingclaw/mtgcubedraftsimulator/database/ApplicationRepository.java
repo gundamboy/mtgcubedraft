@@ -74,7 +74,7 @@ public class ApplicationRepository {
         return mCubesDoa.getUserCubes(userId);
     }
 
-    public LiveData<Cube> getUserCube(String userId, Integer cubeId) {
+    public Cube getUserCube(String userId, Integer cubeId) {
         return mCubesDoa.getUserCube(userId, cubeId);
     }
 

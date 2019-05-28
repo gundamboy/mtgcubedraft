@@ -68,7 +68,7 @@ public class NewCubeActivity extends AppCompatActivity implements
         startActivity(intent);
         finish();
     }
-    /*
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -80,14 +80,7 @@ public class NewCubeActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Timber.tag("fart").e("up was pressed");
                 onBackPressed();
-                return true;
-            case R.id.settings:
-
-                return true;
-            case R.id.save:
-
                 return true;
             case R.id.logout:
                 mAuth.signOut();
@@ -97,7 +90,6 @@ public class NewCubeActivity extends AppCompatActivity implements
                 return super.onOptionsItemSelected(item);
         }
     }
-    */
 
     @Override
     public void onFragmentInteractionStepOne(String title) {
@@ -111,7 +103,7 @@ public class NewCubeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onFragmentInteraction(Bundle bundle) {
+    public void onFragmentCubeReviewInteraction(Bundle bundle) {
         if(bundle.getString(AllMyConstants.CUBE_NAME) != null) {
             toolbar.setTitle(bundle.getString(AllMyConstants.CUBE_NAME));
         }
@@ -136,14 +128,6 @@ public class NewCubeActivity extends AppCompatActivity implements
 
 
     }
-
-//    @Override
-//    public Parcelable saveState() {
-//        Bundle bundle = (Bundle) super.saveState();
-//        bundle.putParcelableArray(AllMyConstants.CUBE_CARDS, null); // Never maintain any states from the base class, just null it out
-//        return bundle;
-//    }
-
 
     class RetrieveMtgStuff extends AsyncTask<String, Void, Card> {
         private Exception exception;

@@ -11,4 +11,6 @@ public class AllMyConstants {
     public static final String CUBE_CARDS = "CUBE_CARDS";
     public static final String CUBE_NAME = "CUBE_NAME";
     public static final String TOAST_MESSAGE = "TOAST_MESSAGE";
+    public static final String NEW_CUBE = "NEW_CUBE";
+    public static final String CUBE_ID = "CUBE_ID";
 }

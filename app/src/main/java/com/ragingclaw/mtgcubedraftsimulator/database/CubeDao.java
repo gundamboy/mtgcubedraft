@@ -30,7 +30,7 @@ public interface CubeDao {
 
     // get only a single users cube
     @Query("SELECT * From cubes Where cubes.userId = :userId AND cubes.cubeId = :cubeId")
-    LiveData<Cube> getUserCube(String userId, Integer cubeId);
+    Cube getUserCube(String userId, Integer cubeId);
 
     @Update
     void updateCube(Cube cube);

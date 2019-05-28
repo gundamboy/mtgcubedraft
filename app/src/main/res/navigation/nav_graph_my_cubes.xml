@@ -9,10 +9,12 @@
         android:id="@+id/myCubesFragment"
         android:name="com.ragingclaw.mtgcubedraftsimulator.fragments.MyCubesFragment"
         android:label="fragment_my_cubes"
-        tools:layout="@layout/fragment_my_cubes" >
+        tools:layout="@layout/fragment_my_cubes">
         <action
-            android:id="@+id/action_myCubesFragment_to_fragmentCubeReview3"
-            app:destination="@id/fragmentCubeReview" />
+            android:id="@+id/action_myCubesFragment_to_fragmentCubeReview"
+            app:destination="@id/fragmentCubeReview"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_right"/>
     </fragment>
     <fragment
         android:id="@+id/fragmentCubeReview"
