@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
 import com.ragingclaw.mtgcubedraftsimulator.database.Draft;
 import com.ragingclaw.mtgcubedraftsimulator.database.User;
+import com.ragingclaw.mtgcubedraftsimulator.fragments.MyCubesFragment;
 import com.ragingclaw.mtgcubedraftsimulator.models.CubeViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.models.DraftViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.models.PackViewModel;
@@ -26,7 +28,7 @@ import java.util.Random;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MyCubesActivity extends AppCompatActivity {
+public class MyCubesActivity extends AppCompatActivity implements MyCubesFragment.OnMyCubesFragmentInteraction {
 
 
     @Override
@@ -35,4 +37,8 @@ public class MyCubesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_cubes);
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }

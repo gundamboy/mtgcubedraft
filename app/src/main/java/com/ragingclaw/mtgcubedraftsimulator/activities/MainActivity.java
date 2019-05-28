@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        getFragmentManager().popBackStack();
 
         magicCardViewModel = ViewModelProviders.of(this).get(MagicCardViewModel.class);
 

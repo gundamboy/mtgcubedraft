@@ -119,6 +119,7 @@ public class NewCubeActivity extends AppCompatActivity implements
         getFragmentManager().popBackStack();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
     @Override

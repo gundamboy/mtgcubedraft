@@ -91,75 +91,10 @@ public class NewCubeStepTwoFragment extends Fragment {
                     // there are ids, WOOHOO! lets build a draft!
                     getCardsFromIds(ids);
                     getCubeCards(cards, view);
-
-                    // TODO: figure out where to put this crap
-                    String baseUrl = "https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=";
-                    String endUrl = "&type=card";
-//                    for (MagicCard c : magicCards) {
-//                        int multiverseid = c.getMultiverseid();
-//                        String url = baseUrl + multiverseid + endUrl;
-//
-//                        c.setImageUrl(url);
-//
-//                        magicCardViewModel.updateCard(c);
-//                    }
                 }
             }
         });
         return view;
-    }
-
-    private void letsGetDone() {
-        String[] list;
-        String output = "{ \"ids\": [";
-
-        try {
-            list = getActivity().getAssets().list("");
-
-            if (list.length > 0) {
-                for (String file : list) {
-                    if (file.contains(".json")) {
-                        //output += MTGUtils.parseJsonToString(getActivity(), file);
-
-                    }
-                }
-
-//                if(output.length() > 1) {
-//                    output = MTGUtils.removeLastCharacter(output);
-//                    output += "]}";
-//                    printToFile(output, "cardIds.json");
-//                }
-            }
-
-        } catch (IOException e) {
-            Timber.tag("fart").w(e);
-        }
-    }
-
-    private void printToFile(String str, String filename) {
-
-        // the JDK / API requires processes to run on a new thread.
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                File file = new File(getContext().getFilesDir(),"mtgcubedraft");
-
-                if(!file.exists()){
-                    file.mkdir();
-                }
-
-                try {
-                    File gpxfile = new File(file, filename);
-                    FileWriter writer = new FileWriter(gpxfile);
-                    writer.append(str);
-                    writer.flush();
-                    writer.close();
-                    Timber.tag("fart").w("Done... right?");
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
 
     private void getCubeCards(List<MagicCard> cards, View view) {
@@ -195,7 +130,7 @@ public class NewCubeStepTwoFragment extends Fragment {
                     bundle.putParcelable(AllMyConstants.CUBE_CARDS, Parcels.wrap(cubeCards));
 
                     NavOptions.Builder navBuilder = new NavOptions.Builder();
-                    NavOptions navOptions = navBuilder.setPopUpTo(R.id.fragmentCubeReview, true).build();
+                    NavOptions navOptions = navBuilder.setPopUpTo(R.id.newCubeStepOneFragment, true).build();
                     Navigation.findNavController(view).navigate(R.id.action_newCubeStepTwoFragment_to_fragmentCubeReview, bundle, navOptions);
                 }
             }

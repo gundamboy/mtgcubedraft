@@ -80,18 +80,21 @@ public class FragmentCubeReview extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            cubeCards = Parcels.unwrap(getArguments().getParcelable("cubeCards"));
+            cubeCards = Parcels.unwrap(getArguments().getParcelable(AllMyConstants.CUBE_CARDS));
         }
 
         cubeViewModel = ViewModelProviders.of(this).get(CubeViewModel.class);
+        getArguments().remove(AllMyConstants.CUBE_CARDS);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cube_card_review, container, false);
         unbinder = ButterKnife.bind(this, view);
+        getFragmentManager().popBackStack();
 
         mCardsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mCardsRecyclerView.setHasFixedSize(true);
@@ -141,9 +144,10 @@ public class FragmentCubeReview extends Fragment {
     }
 
     private void iAmAQuitter() {
+
         Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
-        onDestroy();
+        getActivity().finish();
     }
 
 
@@ -230,18 +234,6 @@ public class FragmentCubeReview extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    public static final FragmentCubeReview getInstance(FragmentManager fragmentManager )
-    {
-        FragmentCubeReview out = (FragmentCubeReview) fragmentManager.findFragmentByTag( "FragmentCubeReview" );
-
-        if ( out == null )
-        {
-            out = new FragmentCubeReview();
-            fragmentManager.beginTransaction().add( out, "FragmentCubeReview" ).commit();
-        }
-        return out;
     }
 
 
