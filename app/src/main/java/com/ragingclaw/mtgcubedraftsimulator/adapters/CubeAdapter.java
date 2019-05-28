@@ -18,7 +18,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class CubeAdapter extends RecyclerView.Adapter<CubeAdapter.CardHolder> {
     private List<MagicCard> cards = new ArrayList<>();
@@ -27,7 +26,7 @@ public class CubeAdapter extends RecyclerView.Adapter<CubeAdapter.CardHolder> {
     @Override
     public CardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.cube_list_item, parent, false);
+                .inflate(R.layout.cube_review_card_item, parent, false);
 
         return new CardHolder(itemView);
     }

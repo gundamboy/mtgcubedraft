@@ -1,8 +1,11 @@
 package com.ragingclaw.mtgcubedraftsimulator.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,10 +34,13 @@ import butterknife.ButterKnife;
 public class MyCubesActivity extends AppCompatActivity implements MyCubesFragment.OnMyCubesFragmentInteraction {
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_cubes);
+
+
     }
 
     @Override

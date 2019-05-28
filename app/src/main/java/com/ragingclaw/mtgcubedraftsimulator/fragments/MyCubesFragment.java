@@ -1,16 +1,38 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.ragingclaw.mtgcubedraftsimulator.R;
+import com.ragingclaw.mtgcubedraftsimulator.activities.NewCubeActivity;
+import com.ragingclaw.mtgcubedraftsimulator.adapters.MyCubesAdapter;
+import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
+import com.ragingclaw.mtgcubedraftsimulator.models.CubeViewModel;
+
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,14 +43,15 @@ import com.ragingclaw.mtgcubedraftsimulator.R;
  * create an instance of this fragment.
  */
 public class MyCubesFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    @BindView(R.id.no_cubes_found) androidx.constraintlayout.widget.ConstraintLayout no_cubes_found_layout;
+    @BindView(R.id.my_cubes_layout) androidx.constraintlayout.widget.ConstraintLayout my_cubes_layout;
+    @BindView(R.id.cubes_recyclerview) RecyclerView cubes_recyclerView;
+    @BindView(R.id.create_cube_button) com.google.android.material.button.MaterialButton createCubeButton;
+    private Unbinder unbinder;
+    private CubeViewModel cubeViewModel;
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
+    MyCubesAdapter myCubesAdapter;
 
     private OnMyCubesFragmentInteraction mListener;
 
@@ -36,38 +59,68 @@ public class MyCubesFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyCubesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MyCubesFragment newInstance(String param1, String param2) {
+
+    public static MyCubesFragment newInstance() {
         MyCubesFragment fragment = new MyCubesFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_cubes, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_cubes, container, false);
+        unbinder = ButterKnife.bind(this, view);
+
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+
+        if (savedInstanceState == null) {
+            cubeViewModel = ViewModelProviders.of(this).get(CubeViewModel.class);
+            //checkUserCubes(view);
+        }
+
+        createCubeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), NewCubeActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+
+        cubeViewModel.getmAllUsersCubes(currentUser.getUid()).observe(this, new Observer<List<Cube>>() {
+            @Override
+            public void onChanged(List<Cube> cubesEntities) {
+                // update stuff
+
+                if(cubesEntities.size() > 0) {
+                    my_cubes_layout.setVisibility(View.VISIBLE);
+                    no_cubes_found_layout.setVisibility(View.GONE);
+
+                    cubes_recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    cubes_recyclerView.setHasFixedSize(true);
+                    myCubesAdapter = new MyCubesAdapter();
+                    cubes_recyclerView.setAdapter(myCubesAdapter);
+                    myCubesAdapter.setCubes(cubesEntities);
+
+                } else {
+                    if (my_cubes_layout.getVisibility() == View.VISIBLE) {
+                        my_cubes_layout.setVisibility(View.GONE);
+                        no_cubes_found_layout.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -94,16 +147,12 @@ public class MyCubesFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+
     public interface OnMyCubesFragmentInteraction {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

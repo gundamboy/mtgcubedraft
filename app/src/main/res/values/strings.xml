@@ -36,4 +36,7 @@
     <string name="cube_review_info_text">You can review the cards in your cube here. When you\'re ready, you can make a draft.</string>
     <string name="start_over_button_text">Start Over</string>
     <string name="create_draft_button_text">Create Draft</string>
+    <string name="my_cubes_no_cubes_instructions">Okay, don\'t panic. You have some options here. Well, you have only 1 option. You need to make a cube... Push the button to do that. It\'s easy. Trust me.</string>
+    <string name="my_cubes_monster_text">OH NO!\nYou have no cubes!</string>
+    <string name="my_cubes_intro_blurb">Here is a handy dandy list off all you\'re amazing Cubes!</string>
 </resources>
