@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.ragingclaw.mtgcubedraftsimulator.R;
+import com.ragingclaw.mtgcubedraftsimulator.activities.LoginActivity;
 import com.ragingclaw.mtgcubedraftsimulator.activities.MainActivity;
 import com.ragingclaw.mtgcubedraftsimulator.activities.MyCubesActivity;
 import com.ragingclaw.mtgcubedraftsimulator.activities.NewDraftActivity;
@@ -148,6 +149,7 @@ public class FragmentCubeReview extends Fragment {
 
                 if(!isSaved) {
                     new SaveCube(cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener);
+                    isSaved = !isSaved;
                 }
 
                 if(isSaved) {
@@ -164,6 +166,12 @@ public class FragmentCubeReview extends Fragment {
         mGoToMyCubesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Timber.tag("fart").i("isSaved?");
+                if (!isSaved) {
+                    new SaveCube(cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener).execute();
+                    isSaved = !isSaved;
+                }
+
                 getFragmentManager().popBackStack();
                 Intent intent = new Intent(getActivity(), MyCubesActivity.class);
                 startActivity(intent);
@@ -241,6 +249,12 @@ public class FragmentCubeReview extends Fragment {
         unbinder.unbind();
     }
 
+    private void goToLogin() {
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -248,14 +262,20 @@ public class FragmentCubeReview extends Fragment {
         menu.clear();
         inflater.inflate(R.menu.cube_menu, menu);
 
+        if (!isSingle) {
+            MenuItem saveButton = menu.findItem(R.id.save);
+            saveButton.setVisible(true);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case R.id.save:
                 if (!isSaved) {
                     new SaveCube(cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener).execute();
+                    isSaved = !isSaved;
                 }
                 return true;
             default:
@@ -332,8 +352,10 @@ public class FragmentCubeReview extends Fragment {
             }
 
             if(cardIds.size() == cards.size()) {
-                Cube cube = new Cube(0, currentUserId, cubeName, cards.size(), cardIds);
-                cubeViewModel.insertCube(cube);
+                for(int i = 0; i < 1; i++) {
+                    Cube cube = new Cube(0, currentUserId, cubeName, cards.size(), cardIds);
+                    cubeViewModel.insertCube(cube);
+                }
             }
             return null;
         }

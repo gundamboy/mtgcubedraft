@@ -23,25 +23,27 @@ import java.util.List;
 public class Draft {
 
     @NonNull
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
     private int draftID;
 
     private int cubeId;
+    private String draftName;
     private int totalSeats;
+    private boolean draftComplete;
+    private int completePercentage;
+    private List<Integer> packIds;
+    private List<Integer> draftDeckCardIds;
 
-    public Draft(int draftID, int cubeId, int totalSeats, @Nullable List<Integer> booster_choices, @Nullable List<Integer> draft_deck) {
+    public Draft(int draftID, int cubeId, String draftName, int totalSeats, boolean draftComplete, int completePercentage, List<Integer> packIds, List<Integer> draftDeckCardIds) {
         this.draftID = draftID;
         this.cubeId = cubeId;
+        this.draftName = draftName;
         this.totalSeats = totalSeats;
-        this.booster_choices = booster_choices;
-        this.draft_deck = draft_deck;
+        this.draftComplete = draftComplete;
+        this.completePercentage = completePercentage;
+        this.packIds = packIds;
+        this.draftDeckCardIds = draftDeckCardIds;
     }
-
-    @Nullable
-    private List<Integer> booster_choices = null;
-
-    @Nullable
-    private List<Integer> draft_deck = null;
 
     public int getDraftID() {
         return draftID;
@@ -59,6 +61,14 @@ public class Draft {
         this.cubeId = cubeId;
     }
 
+    public String getDraftName() {
+        return draftName;
+    }
+
+    public void setDraftName(String draftName) {
+        this.draftName = draftName;
+    }
+
     public int getTotalSeats() {
         return totalSeats;
     }
@@ -67,19 +77,35 @@ public class Draft {
         this.totalSeats = totalSeats;
     }
 
-    public List<Integer> getBooster_choices() {
-        return booster_choices;
+    public boolean isDraftComplete() {
+        return draftComplete;
     }
 
-    public void setBooster_choices(List<Integer> booster_choices) {
-        this.booster_choices = booster_choices;
+    public void setDraftComplete(boolean draftComplete) {
+        this.draftComplete = draftComplete;
     }
 
-    public List<Integer> getDraft_deck() {
-        return draft_deck;
+    public int getCompletePercentage() {
+        return completePercentage;
     }
 
-    public void setDraft_deck(List<Integer> draft_deck) {
-        this.draft_deck = draft_deck;
+    public void setCompletePercentage(int completePercentage) {
+        this.completePercentage = completePercentage;
+    }
+
+    public List<Integer> getPackIds() {
+        return packIds;
+    }
+
+    public void setPackIds(List<Integer> packIds) {
+        this.packIds = packIds;
+    }
+
+    public List<Integer> getDraftDeckCardIds() {
+        return draftDeckCardIds;
+    }
+
+    public void setDraftDeckCardIds(List<Integer> draftDeckCardIds) {
+        this.draftDeckCardIds = draftDeckCardIds;
     }
 }

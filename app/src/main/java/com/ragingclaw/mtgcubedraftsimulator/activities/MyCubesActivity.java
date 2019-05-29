@@ -10,8 +10,11 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +44,7 @@ public class MyCubesActivity extends AppCompatActivity implements MyCubesFragmen
     @BindView(R.id.toolbar) Toolbar toolbar;
     ActionBar actionBar;
     NavHostFragment navHostFragment;
+    private FirebaseAuth mAuth;
 
 
     @Override
@@ -48,6 +52,8 @@ public class MyCubesActivity extends AppCompatActivity implements MyCubesFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_cubes);
         ButterKnife.bind(this);
+
+        mAuth = FirebaseAuth.getInstance();
 
         toolbar.setTitle(getString(R.string.my_cubes_activity_title));
         setSupportActionBar(toolbar);
@@ -58,6 +64,34 @@ public class MyCubesActivity extends AppCompatActivity implements MyCubesFragmen
 
     public void setActionBarTitle(String title) {
         actionBar.setTitle(title);
+    }
+
+    private void goToLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.logout_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.logout:
+                mAuth.signOut();
+                goToLogin();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

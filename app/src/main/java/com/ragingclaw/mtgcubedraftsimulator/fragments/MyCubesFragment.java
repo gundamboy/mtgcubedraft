@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +26,8 @@ import android.widget.FrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ragingclaw.mtgcubedraftsimulator.R;
+import com.ragingclaw.mtgcubedraftsimulator.activities.LoginActivity;
+import com.ragingclaw.mtgcubedraftsimulator.activities.MainActivity;
 import com.ragingclaw.mtgcubedraftsimulator.activities.NewCubeActivity;
 import com.ragingclaw.mtgcubedraftsimulator.adapters.MyCubesAdapter;
 import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
@@ -55,13 +59,13 @@ public class MyCubesFragment extends Fragment {
     private Unbinder unbinder;
     private CubeViewModel cubeViewModel;
     private MyCubesAdapter myCubesAdapter;
+    private FirebaseAuth mAuth;
 
     private OnMyCubesFragmentInteraction mListener;
 
     public MyCubesFragment() {
         // Required empty public constructor
     }
-
 
     public static MyCubesFragment newInstance() {
         MyCubesFragment fragment = new MyCubesFragment();
@@ -82,7 +86,7 @@ public class MyCubesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_my_cubes, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         cubeViewModel = ViewModelProviders.of(this).get(CubeViewModel.class);
@@ -163,6 +167,39 @@ public class MyCubesFragment extends Fragment {
     @Override public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.logout_menu, menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getFragmentManager().popBackStack();
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+                return true;
+            case R.id.logout:
+                mAuth.signOut();
+                goToLogin();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void goToLogin() {
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        startActivity(intent);
+        getActivity().finish();
     }
 
 

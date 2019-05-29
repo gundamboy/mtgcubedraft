@@ -73,6 +73,8 @@ public class NewCubeActivity extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.cube_menu, menu);
+        MenuItem saveButton = menu.findItem(R.id.save);
+        saveButton.setVisible(false);
         return true;
     }
 

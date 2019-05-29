@@ -2,6 +2,9 @@ package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +41,9 @@ import timber.log.Timber;
 public class NewCubeStepTwoFragment extends Fragment {
     @BindView(R.id.percentage_built) TextView completePercent;
     private Unbinder unbinder;
+    private Thread t;
+    private Handler handler;
+    private Bundle handlerBundle = new Bundle();
 
     private MagicCardViewModel magicCardViewModel;
 
@@ -90,13 +96,31 @@ public class NewCubeStepTwoFragment extends Fragment {
                 }
 
                 if(ids.size() > 0) {
-                    // there are ids, WOOHOO! lets build a draft!
+                    // there are ids, WOOHOO! lets build a cube!
                     getCardsFromIds(ids);
-                    getCubeCards(cards, view);
+                    buildCube(cards, view);
                 }
             }
         });
         return view;
+    }
+
+    private void buildCube(List<MagicCard> cards, View view) {
+
+        // separate threads cannot communicate with the UI thread directly. This lets them communicate.
+        handler = new Handler(Looper.getMainLooper()) {
+
+            @Override
+            public void handleMessage(Message msg) {
+                handlerBundle = msg.getData();
+                String percent = handlerBundle.getString("percent") + "%";
+                completePercent.setText(percent);
+            }
+        };
+
+        t = new Thread(new BuildCube(handler, cards, view));
+        t.start();
+
     }
 
     private void getCubeCards(List<MagicCard> cards, View view) {
@@ -110,7 +134,6 @@ public class NewCubeStepTwoFragment extends Fragment {
                 // a cube is 360 cards.
                 int cubeSize = 360;
 
-
                 for (int i = 0; i < cubeSize; i++) {
                     int r = getRandomNum(allCards.size());
                     cubeCards.add(allCards.get(r));
@@ -118,11 +141,6 @@ public class NewCubeStepTwoFragment extends Fragment {
 
                     // Percentage = (Obtained score x 100) / Total Score
                     int percent = (i * 100) / cubeSize;
-                    Timber.tag("fart").i("VALUE:: %s", percent);
-
-                    // TODO: find out why this isnt working
-                    // android.content.res.Resources$NotFoundException: String resource ID #0x0
-                    // completePercent.setText(percent);
                 }
 
                 Timber.tag("fart").i("cards size: %s", allCards.size());
@@ -235,7 +253,6 @@ public class NewCubeStepTwoFragment extends Fragment {
         return r.nextInt((max - 1) + 1);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void sendDataToActivity(String string) {
         if (mListener != null) {
             mListener.onFragmentInteractionStepTwo(string);
@@ -265,7 +282,7 @@ public class NewCubeStepTwoFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListenerStepTwo {
-        // TODO: Update argument type and name
+
         void onFragmentInteractionStepTwo(String string);
     }
 
@@ -312,6 +329,63 @@ public class NewCubeStepTwoFragment extends Fragment {
             }
 
             Timber.tag("fart").i("pack 1 size: %s", pack1.size());
+
+        }
+    }
+
+    public class BuildCube implements Runnable {
+        Handler handler;
+        List<MagicCard> cards;
+        View view;
+
+        public BuildCube(Handler handler, List<MagicCard> cards, View view) {
+            this.handler = handler;
+            this.cards = cards;
+            this.view = view;
+        }
+
+        @Override
+        public void run() {
+            List<MagicCard> allCards = cards;
+            List<MagicCard> cubeCards = new ArrayList<>();
+
+            // a cube is 360 cards.
+            int cubeSize = 360;
+
+            for (int i = 0; i < cubeSize; i++) {
+                int r = getRandomNum(allCards.size());
+                cubeCards.add(allCards.get(r));
+                allCards.remove(r);
+
+                // uhg, math.
+                String percent = String.valueOf((i * 100) / cubeSize);
+
+                Message m = Message.obtain();
+                Bundle b = new Bundle();
+
+                b.putString("percent", percent);
+                m.setData(b);
+                handler.sendMessage(m);
+
+            }
+
+            if (cubeCards.size() == cubeSize) {
+                Message m = Message.obtain();
+                Bundle b = new Bundle();
+
+                b.putString("percent", "100");
+                m.setData(b);
+                handler.sendMessage(m);
+
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(AllMyConstants.NEW_CUBE, true);
+                bundle.putParcelable(AllMyConstants.CUBE_CARDS, Parcels.wrap(cubeCards));
+                bundle.putString(AllMyConstants.CUBE_NAME, cubeName);
+
+                NavOptions.Builder navBuilder = new NavOptions.Builder();
+                NavOptions navOptions = navBuilder.setPopUpTo(R.id.newCubeStepOneFragment, true).build();
+                Navigation.findNavController(view).navigate(R.id.action_newCubeStepTwoFragment_to_fragmentCubeReview, bundle, navOptions);
+            }
 
         }
     }

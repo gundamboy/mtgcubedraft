@@ -43,7 +43,6 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity {
     @BindView(R.id.btn_new_cube) com.google.android.material.button.MaterialButton newCubeButton;
     @BindView(R.id.btn_my_cubes) com.google.android.material.button.MaterialButton myCubesButton;
-    @BindView(R.id.btn_new_draft) com.google.android.material.button.MaterialButton newDraftButton;
     @BindView(R.id.btn_my_drafts) com.google.android.material.button.MaterialButton myDraftsButton;
     @BindView(R.id.insetData) com.google.android.material.button.MaterialButton mInsertData;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -92,15 +91,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MyCubesActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        newDraftButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), NewDraftActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -218,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.logout_menu, menu);
         return true;
     }
 

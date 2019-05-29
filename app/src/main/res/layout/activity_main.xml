@@ -85,6 +85,7 @@
                 style="@style/CubeChoiceButton"
                 android:layout_width="0dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:text="New Cube"
                 app:layout_constraintEnd_toStartOf="@+id/btn_my_cubes"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -96,38 +97,25 @@
                 style="@style/CubeChoiceButton"
                 android:layout_width="0dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:text="My Cubes"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_my_drafts"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/btn_new_cube"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_new_draft"
-                style="@style/CubeChoiceButton"
-                android:layout_width="0dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-
-                android:text="New Draft"
-                app:layout_constraintEnd_toStartOf="@+id/btn_my_drafts"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_new_cube" />
-
-            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_my_drafts"
                 style="@style/CubeChoiceButton"
                 android:layout_width="0dp"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:text="My Drafts"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/btn_new_draft"
-                app:layout_constraintTop_toBottomOf="@+id/btn_my_cubes" />
+                app:layout_constraintStart_toEndOf="@+id/btn_my_cubes"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

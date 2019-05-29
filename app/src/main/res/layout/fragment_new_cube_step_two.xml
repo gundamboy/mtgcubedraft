@@ -39,7 +39,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="100%" />
+            android:text="@string/cube_built_base_percent" />
 
         <ImageView
             android:id="@+id/mtg_symbol_w"

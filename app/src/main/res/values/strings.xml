@@ -45,4 +45,6 @@
     <string name="create_draft_button_text">Create Draft</string>
     <string name="delete_cube_button_text">Delete Cube</string>
     <string name="cube_review_my_cubes_button">My Cubes</string>
+    <string name="cube_built_base_percent">0%</string>
+    <string name="my_drafts_intro_blurb">Look at all these sweet drafts!</string>
 </resources>
