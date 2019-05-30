@@ -1,10 +1,8 @@
 package com.ragingclaw.mtgcubedraftsimulator.adapters;
 
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -13,14 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
-import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class MyCubesAdapter extends RecyclerView.Adapter<MyCubesAdapter.CubeHolder> {
     private List<Cube> cubes = new ArrayList<>();
@@ -38,7 +34,7 @@ public class MyCubesAdapter extends RecyclerView.Adapter<MyCubesAdapter.CubeHold
     @Override
     public CubeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.my_cubes_list_item, parent, false);
+                .inflate(R.layout.list_item_my_cubes, parent, false);
 
         return new CubeHolder(itemView, mListener);
     }

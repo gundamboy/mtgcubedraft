@@ -93,7 +93,7 @@ public class CRUDtestingActivity extends AppCompatActivity {
         booster3 = fauxCardIdList(15);
         draft_booster_choices = fauxCardIdList(45);
         Cube cube1 = new Cube(cubeId, logged_in_userID, "First Cube", cube1Cards.size(), cube1Cards);
-        Draft draft1 = new Draft(1, 1, 8, draft_booster_choices, draft_booster_choices);
+        Draft draft1 = new Draft(1, 1, "test",8, "complete", 100, null, null);
         Pack pack1 = new Pack(1, 1, 1, 1, 1, booster1);
         Pack pack2 = new Pack(2, 1, 1, 2, 1, booster2);
         Pack pack3 = new Pack(3, 1, 1, 3, 1, booster3);
@@ -165,7 +165,7 @@ public class CRUDtestingActivity extends AppCompatActivity {
                 try {
                     single_draft_observer += "draft id: " + draft.getDraftID() + "\n";
                     single_draft_observer += "cube id: " + draft.getCubeId() + "\n";
-                    single_draft_observer += "booster choices: " + draft.getBooster_choices() + "\n";
+                    single_draft_observer += "booster choices: " + draft.getPackIds() + "\n";
                 } catch(Exception e) {
                     single_draft_observer = e.getMessage();
                 }

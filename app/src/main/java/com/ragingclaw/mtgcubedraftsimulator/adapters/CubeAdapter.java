@@ -26,7 +26,7 @@ public class CubeAdapter extends RecyclerView.Adapter<CubeAdapter.CardHolder> {
     @Override
     public CardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.cube_review_card_item, parent, false);
+                .inflate(R.layout.list_item_cube_review_card, parent, false);
 
         return new CardHolder(itemView);
     }

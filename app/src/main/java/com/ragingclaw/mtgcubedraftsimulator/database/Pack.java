@@ -31,12 +31,12 @@ public class Pack {
     private int cubeId;
     private List<Integer> cardIDs;
 
-    public Pack(int packId, int draftId, int cubeId, int booster_num, int seat_num, List<Integer> cardIDs) {
+    public Pack(int packId, int draftId, int booster_num, int seat_num, int cubeId, List<Integer> cardIDs) {
         this.packId = packId;
         this.draftId = draftId;
-        this.cubeId = cubeId;
         this.booster_num = booster_num;
         this.seat_num = seat_num;
+        this.cubeId = cubeId;
         this.cardIDs = cardIDs;
     }
 
@@ -56,14 +56,6 @@ public class Pack {
         this.draftId = draftId;
     }
 
-    public int getCubeId() {
-        return cubeId;
-    }
-
-    public void setCubeId(int cubeId) {
-        this.cubeId = cubeId;
-    }
-
     public int getBooster_num() {
         return booster_num;
     }
@@ -78,6 +70,14 @@ public class Pack {
 
     public void setSeat_num(int seat_num) {
         this.seat_num = seat_num;
+    }
+
+    public int getCubeId() {
+        return cubeId;
+    }
+
+    public void setCubeId(int cubeId) {
+        this.cubeId = cubeId;
     }
 
     public List<Integer> getCardIDs() {

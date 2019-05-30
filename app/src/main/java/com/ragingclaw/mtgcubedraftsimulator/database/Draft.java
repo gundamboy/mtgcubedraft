@@ -29,17 +29,17 @@ public class Draft {
     private int cubeId;
     private String draftName;
     private int totalSeats;
-    private boolean draftComplete;
+    private String draftStatus;
     private int completePercentage;
-    private List<Integer> packIds;
-    private List<Integer> draftDeckCardIds;
+    private List<Integer> packIds = null;
+    private List<Integer> draftDeckCardIds = null;
 
-    public Draft(int draftID, int cubeId, String draftName, int totalSeats, boolean draftComplete, int completePercentage, List<Integer> packIds, List<Integer> draftDeckCardIds) {
+    public Draft(int draftID, int cubeId, String draftName, int totalSeats, String draftStatus, int completePercentage, List<Integer> packIds, List<Integer> draftDeckCardIds) {
         this.draftID = draftID;
         this.cubeId = cubeId;
         this.draftName = draftName;
         this.totalSeats = totalSeats;
-        this.draftComplete = draftComplete;
+        this.draftStatus = draftStatus;
         this.completePercentage = completePercentage;
         this.packIds = packIds;
         this.draftDeckCardIds = draftDeckCardIds;
@@ -77,12 +77,12 @@ public class Draft {
         this.totalSeats = totalSeats;
     }
 
-    public boolean isDraftComplete() {
-        return draftComplete;
+    public String getDraftStatus() {
+        return draftStatus;
     }
 
-    public void setDraftComplete(boolean draftComplete) {
-        this.draftComplete = draftComplete;
+    public void setDraftStatus(String draftStatus) {
+        this.draftStatus = draftStatus;
     }
 
     public int getCompletePercentage() {

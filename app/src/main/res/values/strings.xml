@@ -23,15 +23,24 @@
     <string name="main_activity_title">MTG Cube Draft Simulator</string>
     <string name="cube_choice">Choose Your Adventure</string>
 
-    <!--New Cube Strings-->
+    <!--Cube Strings-->
     <string name="new_cube_activity_title">New Cube</string>
-
-    <!--New Cube Strings-->
     <string name="my_cubes_activity_title">My Cubes</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="my_cubes_no_cubes_instructions">Okay, don\'t panic. You have some options here. Well, you have only 1 option. You need to make a cube… Push the button to do that. It\'s easy. Trust me.</string>
     <string name="my_cubes_monster_text">OH NO!\nYou have no cubes!</string>
     <string name="my_cubes_intro_blurb">Here is a handy dandy list off all you\'re amazing Cubes!</string>
+    <string name="creating_cube">Creating your cube, hang tight.</string>
+
+    <!--Drafts-->
+    <string name="my_drafts_activity_title">Drafts</string>
+    <string name="my_drafts_monster_text">OH NO!\nYou have no drafts!</string>
+    <string name="my_drafts_intro_blurb">Look at all these sweet drafts!</string>
+    <string name="no_drafts_button_go_to_cubes">Go to My Cubes</string>
+    <string name="no_drafts_button_make_a_cube">Make a cube</string>
+    <string name="my_drafts_no_cubes_instructions">Okay, don\'t panic. You have some options here. Well, you have only 1 option. You need to make a cube… Push the button to do that. It\'s easy. Trust me.</string>
+    <string name="my_drafts_no_drafts_instructions">Okay, don\'t panic. You have some options here. Well, you have only 1 option. You need to make a draft using a cube… Push the button to do that. It\'s easy. Trust me.</string>
+    <string name="creating_draft">Creating your draft, hang tight.</string>
 
     <!--menus-->
     <string name="menu_settings">Settings</string>
@@ -46,5 +55,13 @@
     <string name="delete_cube_button_text">Delete Cube</string>
     <string name="cube_review_my_cubes_button">My Cubes</string>
     <string name="cube_built_base_percent">0%</string>
-    <string name="my_drafts_intro_blurb">Look at all these sweet drafts!</string>
+    <string name="step_1_title">Step 1:</string>
+    <string name="new_draft_instructions">Name your Draft then click the super big generate button.</string>
+    <string name="generate_an_awesome_draft_button">Generate An Awesome Draft</string>
+    <string name="draft_name_hint">Draft Name</string>
+    <string name="cube_name_hint">Cube Name</string>
+    <string name="new_cube_instructions">Name your Cube then click the super big generate button.</string>
+    <string name="generate_an_awesome_cube_button">Generate An Awesome Cube</string>
+
+
 </resources>

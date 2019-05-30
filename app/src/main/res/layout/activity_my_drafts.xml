@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.MyDraftsActivity" >
 
-    <include layout="@layout/layout_appbar" />
+    <include layout="@layout/appbar_layout" />
 
     <fragment
         android:id="@+id/nav_host_fragment_my_drafts"

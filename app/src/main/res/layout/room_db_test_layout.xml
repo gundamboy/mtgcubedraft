@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.NewCubeActivity">
 
-    <include layout="@layout/layout_appbar" />
+    <include layout="@layout/appbar_layout" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

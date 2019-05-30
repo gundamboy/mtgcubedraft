@@ -72,6 +72,12 @@ public class MyCubesActivity extends AppCompatActivity implements MyCubesFragmen
         finish();
     }
 
+    private void goToHome() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -84,6 +90,9 @@ public class MyCubesActivity extends AppCompatActivity implements MyCubesFragmen
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                return true;
+            case R.id.goHome:
+                goToHome();
                 return true;
             case R.id.logout:
                 mAuth.signOut();

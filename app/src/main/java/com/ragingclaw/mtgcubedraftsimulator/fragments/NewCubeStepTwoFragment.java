@@ -15,7 +15,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
@@ -25,9 +24,6 @@ import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -68,7 +64,7 @@ public class NewCubeStepTwoFragment extends Fragment {
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_new_cube_step_two, container, false);
+        View view = inflater.inflate(R.layout.creating_cube_or_draft_layout, container, false);
         unbinder = ButterKnife.bind(this, view);
 
         if (getArguments() != null) {

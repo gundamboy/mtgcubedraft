@@ -20,7 +20,7 @@
         android:id="@+id/newCubeStepTwoFragment"
         android:name="com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeStepTwoFragment"
         android:label="fragment_new_cube_step_two"
-        tools:layout="@layout/fragment_new_cube_step_two">
+        tools:layout="@layout/creating_cube_or_draft_layout">
         <argument android:name="cubeName"
             android:defaultValue="name"/>
         <action

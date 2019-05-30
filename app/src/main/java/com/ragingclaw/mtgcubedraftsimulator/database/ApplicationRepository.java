@@ -128,7 +128,7 @@ public class ApplicationRepository {
         return mDraftDao.getAllDrafts();
     }
 
-    public LiveData<Draft> getSingleDraft(int draftID) {
+    public LiveData<Draft> getSingleDraft(Integer draftID) {
         return mDraftDao.getSingleDraft(draftID);
     }
 

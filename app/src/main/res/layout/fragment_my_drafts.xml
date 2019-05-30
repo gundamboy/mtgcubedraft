@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="?android:attr/actionBarSize">
         <include
-            layout="@layout/no_cubes_found_layout"
+            layout="@layout/no_drafts_found_layout"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:itemCount="3"
-                tools:listitem="@layout/my_drafts_list_item">
+                tools:listitem="@layout/list_item_my_drafts">
             </androidx.recyclerview.widget.RecyclerView>
 
         </androidx.core.widget.NestedScrollView>

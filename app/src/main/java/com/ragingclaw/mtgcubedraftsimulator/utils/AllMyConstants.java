@@ -13,4 +13,5 @@ public class AllMyConstants {
     public static final String TOAST_MESSAGE = "TOAST_MESSAGE";
     public static final String NEW_CUBE = "NEW_CUBE";
     public static final String CUBE_ID = "CUBE_ID";
+    public static final String DRAFT_NAME = "DRAFT_NAME";
 }

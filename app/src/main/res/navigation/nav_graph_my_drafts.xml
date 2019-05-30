@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_my_drafts"
     app:startDestination="@id/myDraftsFragment">
-
     <fragment
         android:id="@+id/myDraftsFragment"
         android:name="com.ragingclaw.mtgcubedraftsimulator.fragments.MyDraftsFragment"

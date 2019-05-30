@@ -99,6 +99,7 @@ public class FragmentCubeReview extends Fragment {
 
         if (getArguments() != null) {
             cubeName = getArguments().getString(AllMyConstants.CUBE_NAME);
+            cubeId = getArguments().getInt(AllMyConstants.CUBE_ID);
 
             // send the cube name back to the activity so it can be set in the actionbar
             if(mListener != null) {
@@ -118,7 +119,6 @@ public class FragmentCubeReview extends Fragment {
         // standard stuff. firebase user id, RecyclerView set up.
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
-        Timber.tag("fart").i("current user id: %s", currentUserId);
 
         mCardsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mCardsRecyclerView.setHasFixedSize(true);
@@ -156,8 +156,9 @@ public class FragmentCubeReview extends Fragment {
                     // go to create draft. send over the list of cards.
                     Intent intent = new Intent(getActivity(), NewDraftActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putParcelable(AllMyConstants.CUBE_CARDS, Parcels.wrap(cubeAdapter.getItems()));
-                    intent.putExtra(AllMyConstants.CARDS_FOR_DRAFT, bundle);
+                    bundle.putInt(AllMyConstants.CUBE_ID, cubeId);
+                    intent.putExtras(bundle);
+                    getFragmentManager().popBackStack();
                     startActivity(intent);
                 }
             }

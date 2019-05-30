@@ -110,7 +110,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:itemCount="3"
-                tools:listitem="@layout/my_cubes_list_item">
+                tools:listitem="@layout/list_item_my_cubes">
             </androidx.recyclerview.widget.RecyclerView>
 
         </androidx.core.widget.NestedScrollView>

@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ragingclaw.mtgcubedraftsimulator.R;
-import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
 import com.ragingclaw.mtgcubedraftsimulator.database.Draft;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class MyDraftsAdapter extends RecyclerView.Adapter<MyDraftsAdapter.DraftH
     @Override
     public DraftHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.my_drafts_list_item, parent, false);
+                .inflate(R.layout.list_item_my_drafts, parent, false);
 
         return new DraftHolder(itemView, mListener);
     }

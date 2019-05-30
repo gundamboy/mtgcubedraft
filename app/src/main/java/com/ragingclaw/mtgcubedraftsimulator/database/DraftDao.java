@@ -30,7 +30,7 @@ public interface DraftDao {
 
     @Query("SELECT * From drafts " +
             "Where drafts.draftID = :draftId")
-    LiveData<Draft> getSingleDraft(int draftId);
+    LiveData<Draft> getSingleDraft(Integer draftId);
 
     @Insert()
     void insertDraft(Draft... draftsEntities);

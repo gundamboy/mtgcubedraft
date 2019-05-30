@@ -9,12 +9,12 @@ import androidx.room.Query;
 import androidx.room.TypeConverters;
 import androidx.room.Update;
 
-import com.ragingclaw.mtgcubedraftsimulator.converters.ListTypeConverter;
+import com.ragingclaw.mtgcubedraftsimulator.converters.CubeToListTypeConverter;
 
 import java.util.List;
 
 @Dao
-@TypeConverters(ListTypeConverter.class)
+@TypeConverters(CubeToListTypeConverter.class)
 public interface CubeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

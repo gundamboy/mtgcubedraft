@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 
-public class ListTypeConverter {
+public class CubeToListTypeConverter {
 
     @TypeConverter
     public static List<Cube> stringToList(String json) {

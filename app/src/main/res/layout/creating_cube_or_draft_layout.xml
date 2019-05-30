@@ -19,12 +19,27 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:text="Creating your cube, hang tight."
+            android:text="@string/creating_cube"
             android:textSize="24sp"
             app:layout_constraintBottom_toTopOf="@+id/mtg_symbol_w"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/creating_draft_static_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/creating_draft"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/mtg_symbol_w"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/percentage_built"
