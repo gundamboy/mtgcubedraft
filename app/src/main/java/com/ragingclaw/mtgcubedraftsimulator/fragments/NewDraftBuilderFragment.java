@@ -174,56 +174,24 @@ public class NewDraftBuilderFragment extends Fragment {
 
         @Override
         public void run() {
-            ArrayList<ArrayList<Integer>> player1 = new ArrayList<>(packsPerPlayer);
-            List<Integer> player1pack1ids = new ArrayList<>();
-            List<Integer> player1pack2ids = new ArrayList<>();
-            List<Integer> player1pack3ids = new ArrayList<>();
-            List<Integer> player2pack1ids = new ArrayList<>();
-            List<Integer> player2pack2ids = new ArrayList<>();
-            List<Integer> player2pack3ids = new ArrayList<>();
-            List<Integer> player3pack1ids = new ArrayList<>();
-            List<Integer> player3pack2ids = new ArrayList<>();
-            List<Integer> player3pack3ids = new ArrayList<>();
-            List<Integer> player4pack1ids = new ArrayList<>();
-            List<Integer> player4pack2ids = new ArrayList<>();
-            List<Integer> player4pack3ids = new ArrayList<>();
-            List<Integer> player5pack1ids = new ArrayList<>();
-            List<Integer> player5pack2ids = new ArrayList<>();
-            List<Integer> player5pack3ids = new ArrayList<>();
-            List<Integer> player6pack1ids = new ArrayList<>();
-            List<Integer> player6pack2ids = new ArrayList<>();
-            List<Integer> player6pack3ids = new ArrayList<>();
-            List<Integer> player7pack1ids = new ArrayList<>();
-            List<Integer> player7pack2ids = new ArrayList<>();
-            List<Integer> player7pack3ids = new ArrayList<>();
-            List<Integer> player8pack1ids = new ArrayList<>();
-            List<Integer> player8pack2ids = new ArrayList<>();
-            List<Integer> player8pack3ids = new ArrayList<>();
+            ArrayList<ArrayList<Integer>> player1Packs = new ArrayList<>(packsPerPlayer);
+            ArrayList<ArrayList<Integer>> player2Packs = new ArrayList<>(packsPerPlayer);
+            ArrayList<ArrayList<Integer>> player3Packs = new ArrayList<>(packsPerPlayer);
+            ArrayList<ArrayList<Integer>> player4Packs = new ArrayList<>(packsPerPlayer);
+            ArrayList<ArrayList<Integer>> player5Packs = new ArrayList<>(packsPerPlayer);
+            ArrayList<ArrayList<Integer>> player6Packs = new ArrayList<>(packsPerPlayer);
+            ArrayList<ArrayList<Integer>> player7Packs = new ArrayList<>(packsPerPlayer);
+            ArrayList<ArrayList<Integer>> player8Packs = new ArrayList<>(packsPerPlayer);
 
-            List<MagicCard> player1pack1cards = new ArrayList<>();
-            List<MagicCard> player1pack2cards = new ArrayList<>();
-            List<MagicCard> player1pack3cards = new ArrayList<>();
-            List<MagicCard> player2pack1cards = new ArrayList<>();
-            List<MagicCard> player2pack2cards = new ArrayList<>();
-            List<MagicCard> player2pack3cards = new ArrayList<>();
-            List<MagicCard> player3pack1cards = new ArrayList<>();
-            List<MagicCard> player3pack2cards = new ArrayList<>();
-            List<MagicCard> player3pack3cards = new ArrayList<>();
-            List<MagicCard> player4pack1cards = new ArrayList<>();
-            List<MagicCard> player4pack2cards = new ArrayList<>();
-            List<MagicCard> player4pack3cards = new ArrayList<>();
-            List<MagicCard> player5pack1cards = new ArrayList<>();
-            List<MagicCard> player5pack2cards = new ArrayList<>();
-            List<MagicCard> player5pack3cards = new ArrayList<>();
-            List<MagicCard> player6pack1cards = new ArrayList<>();
-            List<MagicCard> player6pack2cards = new ArrayList<>();
-            List<MagicCard> player6pack3cards = new ArrayList<>();
-            List<MagicCard> player7pack1cards = new ArrayList<>();
-            List<MagicCard> player7pack2cards = new ArrayList<>();
-            List<MagicCard> player7pack3cards = new ArrayList<>();
-            List<MagicCard> player8pack1cards = new ArrayList<>();
-            List<MagicCard> player8pack2cards = new ArrayList<>();
-            List<MagicCard> player8pack3cards = new ArrayList<>();
+            ArrayList<Integer> player1Picks = new ArrayList<>();
+            ArrayList<Integer> player2Picks = new ArrayList<>();
+            ArrayList<Integer> player3Picks = new ArrayList<>();
+            ArrayList<Integer> player4Picks = new ArrayList<>();
+            ArrayList<Integer> player5Picks = new ArrayList<>();
+            ArrayList<Integer> player6Picks = new ArrayList<>();
+            ArrayList<Integer> player7Picks = new ArrayList<>();
+            ArrayList<Integer> player8Picks = new ArrayList<>();
+
 
             Cube userCube  = cubeViewModel.getmUserCube(userId, cubeId);
 
@@ -232,53 +200,41 @@ public class NewDraftBuilderFragment extends Fragment {
             List<Integer> cardIdPool = cardsFromTheCube;
 
             for(int i=0; i < packsPerPlayer; i++) {
-                player1.add(new ArrayList());
+                player1Packs.add(new ArrayList());
+                player2Packs.add(new ArrayList());
+                player3Packs.add(new ArrayList());
+                player4Packs.add(new ArrayList());
+                player5Packs.add(new ArrayList());
+                player6Packs.add(new ArrayList());
+                player7Packs.add(new ArrayList());
+                player8Packs.add(new ArrayList());
             }
 
-            // each player has 1 pack. there are 8 players.
-            // everyone takes 1 card, 14 are left in each pack.
-            // packs rotate left.
-            // everyone takes a card. 13 cards are left in each pack, each person has 2 cards.
-            // when my pack comes back, its pick 9.
 
-            for (int packs = 3; packs > 0; packs--) {
+            // generate the packs
+            for (int pack = 0; pack < 3; pack++) {
                 for (int cards = 15; cards > 0; cards--) {
+                    for(int player = 0; player < 8; player++) {
 
-                }
-            }
-
-
-            for (int p = 0; p < totalPlayers; p++) {
-
-                // player 1. this is the user.
-                if(p == 0) {
-                    int packToInsertInto = 0;
-                    for( int i = 0; i < packSize; i++ ) {
-                        // get a random id from the card id pool
                         int cardId = getRandomFromList(cardIdPool);
                         int index = cardIdPool.indexOf(cardId);
 
-                        player1.get(packToInsertInto).add(cardId);
-
-                        packToInsertInto++;
-                        if(packToInsertInto == 3) {packToInsertInto = 0;}
+                        if (player == 0) { player1Packs.get(pack).add(cardId); }
+                        if (player == 1) { player2Packs.get(pack).add(cardId); }
+                        if (player == 2) { player3Packs.get(pack).add(cardId); }
+                        if (player == 3) { player4Packs.get(pack).add(cardId); }
+                        if (player == 4) { player5Packs.get(pack).add(cardId); }
+                        if (player == 5) { player6Packs.get(pack).add(cardId); }
+                        if (player == 6) { player7Packs.get(pack).add(cardId); }
+                        if (player == 7) { player8Packs.get(pack).add(cardId); }
 
                         cardIdPool.remove(index);
                     }
                 }
-
-                if(p == 1) {}
-                if(p == 2) {}
-                if(p == 3) {}
-                if(p == 4) {}
-                if(p == 5) {}
-                if(p == 6) {}
-                if(p == 7) {}
             }
 
-            Timber.tag("fart").i("Player 1 pack 1 size: %s", player1.get(0).size());
-            Timber.tag("fart").i("Player 1 pack 2 size: %s", player1.get(1).size());
-            Timber.tag("fart").i("Player 1 pack 3 size: %s", player1.get(2).size());
+
+            // packs are created. insert stuff into the DB
         }
 
         private int getRandomFromList(List<Integer> idPool) {
