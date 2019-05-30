@@ -60,7 +60,7 @@ public class NewDraftStepOneFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cubeId = getActivity().getIntent().getExtras().getInt(AllMyConstants.CUBE_ID);
+        cubeId = getArguments().getInt(AllMyConstants.CUBE_ID);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class NewDraftStepOneFragment extends Fragment {
                     Bundle bundle = new Bundle();
                     bundle.putString(AllMyConstants.DRAFT_NAME, name);
                     bundle.putInt(AllMyConstants.CUBE_ID, cubeId);
-                    Navigation.findNavController(view).navigate(R.id.action_newDraftStepOneFragment_to_newDraftBuildDraftScreen, bundle);
+                    Navigation.findNavController(view).navigate(R.id.action_newDraftStepOneFragment_to_newDraftBuilderFragment, bundle);
                 } else {
                     Toast.makeText(getContext(), "You must give your draft a name to continue", Toast.LENGTH_SHORT).show();
                 }

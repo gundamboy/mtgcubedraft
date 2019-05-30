@@ -34,7 +34,7 @@ import butterknife.Unbinder;
 import io.magicthegathering.javasdk.resource.Card;
 import timber.log.Timber;
 
-public class NewCubeStepTwoFragment extends Fragment {
+public class NewCubeBuilderFragment extends Fragment {
     @BindView(R.id.percentage_built) TextView completePercent;
     private Unbinder unbinder;
     private Thread t;
@@ -48,12 +48,12 @@ public class NewCubeStepTwoFragment extends Fragment {
     private List<Card> mCubeCards = new ArrayList<>();
     private String cubeName;
 
-    public NewCubeStepTwoFragment() {
+    public NewCubeBuilderFragment() {
         // Required empty public constructor
     }
 
-    public static NewCubeStepTwoFragment newInstance(String param1, String param2) {
-        NewCubeStepTwoFragment fragment = new NewCubeStepTwoFragment();
+    public static NewCubeBuilderFragment newInstance(String param1, String param2) {
+        NewCubeBuilderFragment fragment = new NewCubeBuilderFragment();
         return fragment;
     }
 
@@ -117,42 +117,6 @@ public class NewCubeStepTwoFragment extends Fragment {
         t = new Thread(new BuildCube(handler, cards, view));
         t.start();
 
-    }
-
-    private void getCubeCards(List<MagicCard> cards, View view) {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<MagicCard> allCards = cards;
-                List<MagicCard> cubeCards = new ArrayList<>();
-
-                // a cube is 360 cards.
-                int cubeSize = 360;
-
-                for (int i = 0; i < cubeSize; i++) {
-                    int r = getRandomNum(allCards.size());
-                    cubeCards.add(allCards.get(r));
-                    allCards.remove(r);
-
-                    // Percentage = (Obtained score x 100) / Total Score
-                    int percent = (i * 100) / cubeSize;
-                }
-
-                Timber.tag("fart").i("cards size: %s", allCards.size());
-
-                if (cubeCards.size() == cubeSize) {
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean(AllMyConstants.NEW_CUBE, true);
-                    bundle.putParcelable(AllMyConstants.CUBE_CARDS, Parcels.wrap(cubeCards));
-                    bundle.putString(AllMyConstants.CUBE_NAME, cubeName);
-
-                    NavOptions.Builder navBuilder = new NavOptions.Builder();
-                    NavOptions navOptions = navBuilder.setPopUpTo(R.id.newCubeStepOneFragment, true).build();
-                    Navigation.findNavController(view).navigate(R.id.action_newCubeStepTwoFragment_to_fragmentCubeReview, bundle, navOptions);
-                }
-            }
-        }).start();
     }
 
     private void getCardsFromIds(List<Integer> ids) {
@@ -380,9 +344,8 @@ public class NewCubeStepTwoFragment extends Fragment {
 
                 NavOptions.Builder navBuilder = new NavOptions.Builder();
                 NavOptions navOptions = navBuilder.setPopUpTo(R.id.newCubeStepOneFragment, true).build();
-                Navigation.findNavController(view).navigate(R.id.action_newCubeStepTwoFragment_to_fragmentCubeReview, bundle, navOptions);
+                Navigation.findNavController(view).navigate(R.id.action_newCubeBuilderFragment_to_cubeCardsReview, bundle, navOptions);
             }
-
         }
     }
 }

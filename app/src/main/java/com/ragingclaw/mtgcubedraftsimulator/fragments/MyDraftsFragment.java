@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,8 +23,6 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.ragingclaw.mtgcubedraftsimulator.R;
-import com.ragingclaw.mtgcubedraftsimulator.activities.MyCubesActivity;
-import com.ragingclaw.mtgcubedraftsimulator.activities.NewCubeActivity;
 import com.ragingclaw.mtgcubedraftsimulator.adapters.MyDraftsAdapter;
 import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
 import com.ragingclaw.mtgcubedraftsimulator.database.Draft;
@@ -126,9 +125,7 @@ public class MyDraftsFragment extends Fragment {
                                 goToCubesButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        getFragmentManager().popBackStack();
-                                        Intent intent = new Intent(getActivity(), MyCubesActivity.class);
-                                        startActivity(intent);
+                                        Navigation.findNavController(view).navigate(R.id.action_myDraftsFragment_to_myCubesFragment);
 
                                     }
                                 });
@@ -144,8 +141,8 @@ public class MyDraftsFragment extends Fragment {
                     goToCubesButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(getActivity(), NewCubeActivity.class);
-                            startActivity(intent);
+//                            Intent intent = new Intent(getActivity(), NewCubeActivity.class);
+//                            startActivity(intent);
                         }
                     });
                 }

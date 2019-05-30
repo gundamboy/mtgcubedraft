@@ -69,8 +69,6 @@ public class NewDraftBuilderFragment extends Fragment {
         if (getArguments() != null) {
             cubeId = getArguments().getInt(AllMyConstants.CUBE_ID);
             draftName = getArguments().getString(AllMyConstants.DRAFT_NAME);
-            
-            Timber.tag("fart").i("cubeId: %s, draftName: %s", cubeId, draftName);
         }
     }
 
@@ -230,26 +228,42 @@ public class NewDraftBuilderFragment extends Fragment {
             Cube userCube  = cubeViewModel.getmUserCube(userId, cubeId);
 
             // get the 360 card ids from the cube
-            List<Integer> cardIdPool = userCube.getCard_ids();
+            List<Integer> cardsFromTheCube = userCube.getCard_ids();
+            List<Integer> cardIdPool = cardsFromTheCube;
 
             for(int i=0; i < packsPerPlayer; i++) {
                 player1.add(new ArrayList());
             }
 
-            for (int p = 0; p > totalPlayers; p++) {
+            // each player has 1 pack. there are 8 players.
+            // everyone takes 1 card, 14 are left in each pack.
+            // packs rotate left.
+            // everyone takes a card. 13 cards are left in each pack, each person has 2 cards.
+            // when my pack comes back, its pick 9.
+
+            for (int packs = 3; packs > 0; packs--) {
+                for (int cards = 15; cards > 0; cards--) {
+
+                }
+            }
+
+
+            for (int p = 0; p < totalPlayers; p++) {
+
                 // player 1. this is the user.
                 if(p == 0) {
-                    for( int i = 0; i > packSize; i++ ) {
+                    int packToInsertInto = 0;
+                    for( int i = 0; i < packSize; i++ ) {
                         // get a random id from the card id pool
-                        int cardId = getRandomFromList(cardIdPool);;
-                        if(i == 0) {
-                            //player1pack1ids.add(cardId);
-                            player1.get(0).add(cardId);
-                        }
-                        if(i == 1) { player1pack2ids.add(cardId); }
-                        if(i == 2) { player1pack3ids.add(cardId); }
+                        int cardId = getRandomFromList(cardIdPool);
+                        int index = cardIdPool.indexOf(cardId);
 
-                        cardIdPool.remove(cardId);
+                        player1.get(packToInsertInto).add(cardId);
+
+                        packToInsertInto++;
+                        if(packToInsertInto == 3) {packToInsertInto = 0;}
+
+                        cardIdPool.remove(index);
                     }
                 }
 
@@ -264,7 +278,7 @@ public class NewDraftBuilderFragment extends Fragment {
 
             Timber.tag("fart").i("Player 1 pack 1 size: %s", player1.get(0).size());
             Timber.tag("fart").i("Player 1 pack 2 size: %s", player1.get(1).size());
-            Timber.tag("fart").i("Player 1 pack 3 size: %s", player1.get(3).size());
+            Timber.tag("fart").i("Player 1 pack 3 size: %s", player1.get(2).size());
         }
 
         private int getRandomFromList(List<Integer> idPool) {

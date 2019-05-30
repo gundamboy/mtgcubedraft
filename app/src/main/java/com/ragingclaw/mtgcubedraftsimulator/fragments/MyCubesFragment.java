@@ -1,16 +1,12 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,27 +17,22 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.activities.LoginActivity;
 import com.ragingclaw.mtgcubedraftsimulator.activities.MainActivity;
-import com.ragingclaw.mtgcubedraftsimulator.activities.NewCubeActivity;
 import com.ragingclaw.mtgcubedraftsimulator.adapters.MyCubesAdapter;
 import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
 import com.ragingclaw.mtgcubedraftsimulator.models.CubeViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
-
-import org.parceler.Parcels;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -94,9 +85,9 @@ public class MyCubesFragment extends Fragment {
         createCubeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), NewCubeActivity.class);
-                startActivity(intent);
-                getActivity().finish();
+//                Intent intent = new Intent(getActivity(), NewCubeActivity.class);
+//                startActivity(intent);
+//                getActivity().finish();
             }
         });
 
@@ -124,7 +115,7 @@ public class MyCubesFragment extends Fragment {
                             bundle.putString(AllMyConstants.CUBE_NAME, cubeName);
                             bundle.putInt(AllMyConstants.CUBE_ID, cubeId);
 
-                            Navigation.findNavController(view).navigate(R.id.action_myCubesFragment_to_fragmentCubeReview, bundle, null);
+                            Navigation.findNavController(view).navigate(R.id.action_myCubesFragment_to_cubeCardsReview, bundle, null);
                         }
                     });
 
