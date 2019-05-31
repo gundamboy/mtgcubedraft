@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.FragmentNavigator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -94,7 +96,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
         gridLayoutManager = new GridLayoutManager(getActivity(), 3);
         draftCardsRecyclerView.setLayoutManager(gridLayoutManager);
         draftCardsRecyclerView.setHasFixedSize(true);
-        draftCardsRecyclerView.addItemDecoration(new EqualSpacingItemDecoration(36, EqualSpacingItemDecoration.GRID));
+        //draftCardsRecyclerView.addItemDecoration(new EqualSpacingItemDecoration(36, EqualSpacingItemDecoration.GRID));
         draftCardsAdapter = new DraftCardsAdapter();
         draftCardsRecyclerView.setAdapter(draftCardsAdapter);
 
@@ -121,8 +123,13 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                                 draftCardsAdapter.setCards(currentCards);
                                 draftCardsAdapter.setOnClickListener(new DraftCardsAdapter.OnItemClickListener() {
                                     @Override
-                                    public void onItemClick(int position, int cardId) {
+                                    public void onItemClick(int position, int cardId, View v, String url) {
                                         Timber.tag("fart").i("card position: %s, card id: %s", position, cardId);
+                                        Bundle b = new Bundle();
+                                        b.putInt(AllMyConstants.CARD_ID, cardId);
+                                        b.putString(AllMyConstants.CARD_URL, url);
+                                        FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, "mtgCardScale").build();
+                                        Navigation.findNavController(view).navigate(R.id.action_draftingHappyFunTimeFragment_to_singleCardDisplayFragment, b, null, extras);
                                     }
                                 });
                             }
@@ -174,6 +181,11 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     public interface OnDraftingHappyFunTimeInteraction {

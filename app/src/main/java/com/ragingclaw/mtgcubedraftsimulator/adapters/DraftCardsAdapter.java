@@ -26,7 +26,7 @@ public class DraftCardsAdapter extends RecyclerView.Adapter<DraftCardsAdapter.Ca
     private DraftCardsAdapter.OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-        void onItemClick(int position, int cardId);
+        void onItemClick(int position, int cardId, View view, String url);
     }
 
     public void setOnClickListener(OnItemClickListener listener) {
@@ -46,14 +46,13 @@ public class DraftCardsAdapter extends RecyclerView.Adapter<DraftCardsAdapter.Ca
     public void onBindViewHolder(@NonNull CardHolder holder, int position) {
         MagicCard currentCard = cards.get(position);
         String url = currentCard.getImageUrl();
+        holder.cardUrl.setText(url);
 
-        Timber.tag("fart").i("current card url: %s", url);
-        
         Picasso.get().load(url).placeholder(R.color.colorAccent).into(holder.mtgCardImage, new com.squareup.picasso.Callback(){
 
             @Override
             public void onSuccess() {
-                Timber.tag("fart").i("picasso was successull");
+                Timber.tag("fart").i("picasso was successul");
             }
 
             @Override
@@ -78,6 +77,7 @@ public class DraftCardsAdapter extends RecyclerView.Adapter<DraftCardsAdapter.Ca
     class CardHolder extends RecyclerView.ViewHolder {
         @BindView (R.id.mtg_card) ImageView mtgCardImage;
         @BindView (R.id.cardId) TextView cardId;
+        @BindView (R.id.cardUrl) TextView cardUrl;
 
         public CardHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
@@ -88,7 +88,7 @@ public class DraftCardsAdapter extends RecyclerView.Adapter<DraftCardsAdapter.Ca
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if(position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(position, Integer.parseInt(cardId.getText().toString()));
+                        listener.onItemClick(position, Integer.parseInt(cardId.getText().toString()), mtgCardImage, cardUrl.getText().toString());
                     }
                 }
             });

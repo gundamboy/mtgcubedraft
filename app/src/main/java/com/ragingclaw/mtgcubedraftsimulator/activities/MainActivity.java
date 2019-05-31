@@ -22,6 +22,7 @@ import com.ragingclaw.mtgcubedraftsimulator.fragments.MyCubesFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeBuilderFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeStepOneFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.NewDraftBuilderFragment;
+import com.ragingclaw.mtgcubedraftsimulator.fragments.SingleCardDisplayFragment;
 import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 import com.ragingclaw.mtgcubedraftsimulator.utils.NotLoggingTree;
@@ -38,7 +39,8 @@ public class MainActivity extends AppCompatActivity implements
         CubeCardsReview.OnCubeReviewFragmentInteractionListener,
         MyCubesFragment.OnMyCubesFragmentInteraction,
         NewDraftBuilderFragment.OnBuildDraftFragmentInteractionListener,
-        DraftingHappyFunTimeFragment.OnDraftingHappyFunTimeInteraction {
+        DraftingHappyFunTimeFragment.OnDraftingHappyFunTimeInteraction,
+        SingleCardDisplayFragment.OnSingleCardFragmentInteractionListener {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     ActionBar actionBar;
@@ -155,5 +157,10 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onDraftingHappyFunTimeInteraction(String title) {
         setActionBarTitle(title);
+    }
+
+    @Override
+    public void onSingleCardFragmentInteraction(Uri uri) {
+        
     }
 }

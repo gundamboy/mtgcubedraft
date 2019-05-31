@@ -121,5 +121,19 @@
         android:id="@+id/draftingHappyFunTimeFragment"
         android:name="com.ragingclaw.mtgcubedraftsimulator.fragments.DraftingHappyFunTimeFragment"
         android:label="fragment_drafting_happy_fun_time"
-        tools:layout="@layout/fragment_drafting_happy_fun_time" />
+        tools:layout="@layout/fragment_drafting_happy_fun_time" >
+        <action
+            android:id="@+id/action_draftingHappyFunTimeFragment_to_singleCardDisplayFragment"
+            app:destination="@id/singleCardDisplayFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/singleCardDisplayFragment"
+        android:name="com.ragingclaw.mtgcubedraftsimulator.fragments.SingleCardDisplayFragment"
+        android:label="fragment_single_card_display"
+        tools:layout="@layout/fragment_single_card_display" >
+        <action
+            android:id="@+id/action_singleCardDisplayFragment_to_draftingHappyFunTimeFragment"
+            app:destination="@id/draftingHappyFunTimeFragment"
+            app:popUpTo="@+id/draftingHappyFunTimeFragment" />
+    </fragment>
 </navigation>

@@ -5,32 +5,37 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.FragmentNavigator;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.ragingclaw.mtgcubedraftsimulator.R;
+import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
+import com.squareup.picasso.Picasso;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SingleCardDisplayFragment.OnFragmentInteractionListener} interface
+ * {@link SingleCardDisplayFragment.OnSingleCardFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link SingleCardDisplayFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class SingleCardDisplayFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
+    @BindView(R.id.mtg_card) ImageView mtgCardImage;
+    private Unbinder unbinder;
+    private int multiVerseId;
+    private String cardUrl;
+    private OnSingleCardFragmentInteractionListener mListener;
 
     public SingleCardDisplayFragment() {
         // Required empty public constructor
@@ -47,10 +52,7 @@ public class SingleCardDisplayFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static SingleCardDisplayFragment newInstance(String param1, String param2) {
         SingleCardDisplayFragment fragment = new SingleCardDisplayFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -58,8 +60,8 @@ public class SingleCardDisplayFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            multiVerseId = getArguments().getInt(AllMyConstants.CARD_ID);
+            cardUrl = getArguments().getString(AllMyConstants.CARD_URL);
         }
     }
 
@@ -67,24 +69,47 @@ public class SingleCardDisplayFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_single_card_display, container, false);
+        View view =  inflater.inflate(R.layout.fragment_single_card_display, container, false);
+        unbinder = ButterKnife.bind(this, view);
+
+        Picasso.get().load(cardUrl).placeholder(R.color.colorAccent).into(mtgCardImage, new com.squareup.picasso.Callback(){
+
+            @Override
+            public void onSuccess() {
+                Timber.tag("fart").i("picasso was successful");
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Timber.tag("fart").i("picasso failed: %s", e.getMessage());
+            }
+        });
+
+        mtgCardImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, "mtgCardScale").build();
+                Navigation.findNavController(view).navigate(R.id.action_singleCardDisplayFragment_to_draftingHappyFunTimeFragment, null, null, extras);
+            }
+        });
+
+        return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onSingleCardFragmentInteraction(uri);
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnSingleCardFragmentInteractionListener) {
+            mListener = (OnSingleCardFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnSingleCardFragmentInteractionListener");
         }
     }
 
@@ -94,18 +119,13 @@ public class SingleCardDisplayFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    public interface OnSingleCardFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onSingleCardFragmentInteraction(Uri uri);
     }
 }
