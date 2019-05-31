@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.FragmentNavigator;
 
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +80,7 @@ public class SingleCardDisplayFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_single_card_display, container, false);
         unbinder = ButterKnife.bind(this, view);
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         Picasso.get().load(cardUrl).placeholder(R.color.colorAccent).into(mtgCardImage);
 
@@ -99,9 +101,9 @@ public class SingleCardDisplayFragment extends Fragment {
                 mEditor.putInt(AllMyConstants.CARD_ID, multiVerseId);
                 mEditor.putInt(AllMyConstants.CURRENT_SEAT, currentSeat);
                 mEditor.putInt(AllMyConstants.PACKS_NUMBER, packNumber);
-                mEditor.apply();
+                mEditor.commit();
 
-                FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, "mtgCardScale").build();
+                FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(mtgCardImage, "mtgCardScale").build();
                 Navigation.findNavController(view).navigate(R.id.action_singleCardDisplayFragment_to_draftingHappyFunTimeFragment, null, null, extras);
             }
         });

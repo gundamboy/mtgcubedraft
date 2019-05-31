@@ -1,6 +1,7 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +63,9 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     private GridLayoutManager gridLayoutManager;
     private DraftCardsAdapter draftCardsAdapter;
     private OnDraftingHappyFunTimeInteraction mListener;
+    private SharedPreferences mPreferences;
+    private SharedPreferences.Editor mEditor;
+
     private int packNum = 0;
     private int pickNum = 1;
     private int currentSeatNum = 1;
@@ -78,6 +83,28 @@ public class DraftingHappyFunTimeFragment extends Fragment {
         return fragment;
     }
 
+    SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+
+            if(key.equals(AllMyConstants.CARD_ID)) {
+                // TODO: the card got picked.
+                //  remove the card from the packNum. Store it into a sharedprefs list
+                //  Change the seat and pack number. load the next pack into the adapter
+                //  Take 7 random cards out of the packNum
+                //  Change the packNum global
+                updateBoard();
+            }
+
+            if(key.equals(AllMyConstants.CURRENT_SEAT)) {
+                //currentSeatNum = sharedPreferences.getInt(AllMyConstants.CURRENT_SEAT, 0);
+                Timber.tag("fart").i("seat pref changed.");
+            }
+            if(key.equals(AllMyConstants.PACKS_NUMBER)) {packNum = sharedPreferences.getInt(AllMyConstants.PACKS_NUMBER, 0);}
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +119,9 @@ public class DraftingHappyFunTimeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_drafting_happy_fun_time, container, false);
         unbinder = ButterKnife.bind(this, view);
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        mPreferences.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
 
         gridLayoutManager = new GridLayoutManager(getActivity(), 3);
         draftCardsRecyclerView.setLayoutManager(gridLayoutManager);
@@ -102,6 +132,8 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
         packViewModel = ViewModelProviders.of(getActivity()).get(PackViewModel.class);
+
+
 
         packViewModel.getAllPacks().observe(this, new Observer<List<Pack>>() {
             @Override
@@ -146,6 +178,21 @@ public class DraftingHappyFunTimeFragment extends Fragment {
         return view;
     }
 
+    private void updateBoard() {
+
+        handler = new Handler(Looper.getMainLooper()) {
+
+            @Override
+            public void handleMessage(Message msg) {
+                handlerBundle = msg.getData();
+                currentCards = Parcels.unwrap(handlerBundle.getParcelable(AllMyConstants.CURRENT_CARDS));
+            }
+        };
+
+        t = new Thread(new UpdateBoard(handler, mPreferences, mEditor, packViewModel));
+        t.start();
+    }
+
     private void getPack(PackViewModel packViewModel, MagicCardViewModel magicCardViewModel, int seatNumber, int packNumber) {
 
         // separate threads cannot communicate with the UI thread directly. This lets them communicate.
@@ -162,7 +209,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
         t.start();
     }
 
-    public void onButtonPressed(String string) {
+    public void sendDataBackToActivity(String string) {
         if (mListener != null) {
             mListener.onDraftingHappyFunTimeInteraction(string);
         }
@@ -193,6 +240,27 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     public interface OnDraftingHappyFunTimeInteraction {
         // TODO: Update argument type and name
         void onDraftingHappyFunTimeInteraction(String string);
+    }
+
+    public class UpdateBoard implements Runnable {
+        Handler handler;
+        SharedPreferences prefs;
+        SharedPreferences.Editor mEditor;
+        PackViewModel packViewModel;
+
+        public UpdateBoard(Handler handler, SharedPreferences prefs, SharedPreferences.Editor mEditor, PackViewModel packViewModel) {
+            this.handler = handler;
+            this.prefs = prefs;
+            this.mEditor = mEditor;
+            this.packViewModel = packViewModel;
+        }
+
+        @Override
+        public void run() {
+            mEditor = prefs.edit();
+            mEditor.putInt(AllMyConstants.CURRENT_SEAT, 2);
+            mEditor.commit();
+        }
     }
 
     public class BuildPack implements Runnable {

@@ -48,18 +48,7 @@ public class DraftCardsAdapter extends RecyclerView.Adapter<DraftCardsAdapter.Ca
         String url = currentCard.getImageUrl();
         holder.cardUrl.setText(url);
 
-        Picasso.get().load(url).placeholder(R.color.colorAccent).into(holder.mtgCardImage, new com.squareup.picasso.Callback(){
-
-            @Override
-            public void onSuccess() {
-                Timber.tag("fart").i("picasso was successul");
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Timber.tag("fart").i("picasso failed: %s", e.getMessage());
-            }
-        });
+        Picasso.get().load(url).placeholder(R.color.colorAccent).into(holder.mtgCardImage);
 
         holder.cardId.setText(String.valueOf(currentCard.getMultiverseid()));
     }
