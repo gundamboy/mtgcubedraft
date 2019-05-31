@@ -91,10 +91,10 @@ public class DraftingHappyFunTimeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_drafting_happy_fun_time, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        gridLayoutManager = new GridLayoutManager(getActivity(), 1);
-        draftCardsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        gridLayoutManager = new GridLayoutManager(getActivity(), 3);
+        draftCardsRecyclerView.setLayoutManager(gridLayoutManager);
         draftCardsRecyclerView.setHasFixedSize(true);
-        //draftCardsRecyclerView.addItemDecoration(new EqualSpacingItemDecoration(36, EqualSpacingItemDecoration.GRID));
+        draftCardsRecyclerView.addItemDecoration(new EqualSpacingItemDecoration(36, EqualSpacingItemDecoration.GRID));
         draftCardsAdapter = new DraftCardsAdapter();
         draftCardsRecyclerView.setAdapter(draftCardsAdapter);
 
