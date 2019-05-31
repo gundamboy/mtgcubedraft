@@ -24,13 +24,6 @@
             app:exitAnim="@anim/slide_out_to_left"
             app:popEnterAnim="@anim/slide_in_from_right"
             app:popExitAnim="@anim/slide_out_to_left" />
-        <action
-            android:id="@+id/action_hostFragment_to_myDraftsFragment"
-            app:destination="@id/myDraftsFragment"
-            app:enterAnim="@anim/slide_in_from_right"
-            app:exitAnim="@anim/slide_out_to_left"
-            app:popEnterAnim="@anim/slide_in_from_right"
-            app:popExitAnim="@anim/slide_out_to_left"/>
     </fragment>
     <fragment
         android:id="@+id/myCubesFragment"
@@ -70,23 +63,6 @@
             app:popExitAnim="@anim/slide_out_to_left"/>
     </fragment>
     <fragment
-        android:id="@+id/newDraftStepOneFragment"
-        android:name="com.ragingclaw.mtgcubedraftsimulator.fragments.NewDraftStepOneFragment"
-        android:label="fragment_new_draft_step_one"
-        tools:layout="@layout/fragment_new_draft_step_one"
-        app:enterAnim="@anim/slide_in_from_right"
-        app:exitAnim="@anim/slide_out_to_left"
-        app:popEnterAnim="@anim/slide_in_from_right"
-        app:popExitAnim="@anim/slide_out_to_left">
-        <action
-            android:id="@+id/action_newDraftStepOneFragment_to_newDraftBuilderFragment"
-            app:destination="@id/newDraftBuilderFragment"
-            app:enterAnim="@anim/slide_in_from_right"
-            app:exitAnim="@anim/slide_out_to_left"
-            app:popEnterAnim="@anim/slide_in_from_right"
-            app:popExitAnim="@anim/slide_out_to_left"/>
-    </fragment>
-    <fragment
         android:id="@+id/cubeCardsReview"
         android:name="com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview"
         android:label="fragment_cube_card_review"
@@ -96,38 +72,15 @@
         app:popEnterAnim="@anim/slide_in_from_right"
         app:popExitAnim="@anim/slide_out_to_left">
         <action
-            android:id="@+id/action_cubeCardsReview_to_newDraftStepOneFragment"
-            app:destination="@id/newDraftStepOneFragment"
-            app:enterAnim="@anim/slide_in_from_right"
-            app:exitAnim="@anim/slide_out_to_left"
-            app:popEnterAnim="@anim/slide_in_from_right"
-            app:popExitAnim="@anim/slide_out_to_left"/>
-        <action
             android:id="@+id/action_cubeCardsReview_to_hostFragment"
-            app:destination="@id/hostFragment" />
+            app:destination="@id/hostFragment"
+            app:popUpTo="@+id/myCubesFragment" />
         <action
             android:id="@+id/action_cubeCardsReview_to_myCubesFragment"
             app:destination="@id/myCubesFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/myDraftsFragment"
-        android:name="com.ragingclaw.mtgcubedraftsimulator.fragments.MyDraftsFragment"
-        android:label="fragment_my_drafts"
-        tools:layout="@layout/fragment_my_drafts"
-        app:enterAnim="@anim/slide_in_from_right"
-        app:exitAnim="@anim/slide_out_to_left"
-        app:popEnterAnim="@anim/slide_in_from_right"
-        app:popExitAnim="@anim/slide_out_to_left">
         <action
-            android:id="@+id/action_myDraftsFragment_to_myCubesFragment"
-            app:destination="@id/myCubesFragment"
-            app:enterAnim="@anim/slide_in_from_right"
-            app:exitAnim="@anim/slide_out_to_left"
-            app:popEnterAnim="@anim/slide_in_from_right"
-            app:popExitAnim="@anim/slide_out_to_left"/>
-        <action
-            android:id="@+id/action_myDraftsFragment_to_newCubeStepOneFragment"
-            app:destination="@id/newCubeStepOneFragment" />
+            android:id="@+id/action_cubeCardsReview_to_newDraftBuilderFragment"
+            app:destination="@id/newDraftBuilderFragment" />
     </fragment>
     <fragment
         android:id="@+id/newDraftBuilderFragment"
@@ -137,7 +90,16 @@
         app:enterAnim="@anim/slide_in_from_right"
         app:exitAnim="@anim/slide_out_to_left"
         app:popEnterAnim="@anim/slide_in_from_right"
-        app:popExitAnim="@anim/slide_out_to_left"/>
+        app:popExitAnim="@anim/slide_out_to_left">
+        <action
+            android:id="@+id/action_newDraftBuilderFragment_to_draftingHappyFunTimeFragment"
+            app:destination="@id/draftingHappyFunTimeFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_right"
+            app:popExitAnim="@anim/slide_out_to_left"
+            app:popUpTo="@+id/cubeCardsReview" />
+    </fragment>
     <fragment
         android:id="@+id/newCubeBuilderFragment"
         android:name="com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeBuilderFragment"
@@ -155,4 +117,9 @@
             app:popEnterAnim="@anim/slide_in_from_right"
             app:popExitAnim="@anim/slide_out_to_left"/>
     </fragment>
+    <fragment
+        android:id="@+id/draftingHappyFunTimeFragment"
+        android:name="com.ragingclaw.mtgcubedraftsimulator.fragments.DraftingHappyFunTimeFragment"
+        android:label="fragment_drafting_happy_fun_time"
+        tools:layout="@layout/fragment_drafting_happy_fun_time" />
 </navigation>

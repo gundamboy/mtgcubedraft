@@ -33,6 +33,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -78,24 +79,22 @@ public class MyCubesFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        String currentUser = mAuth.getCurrentUser().getUid();
 
         cubeViewModel = ViewModelProviders.of(this).get(CubeViewModel.class);
 
         createCubeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(getActivity(), NewCubeActivity.class);
-//                startActivity(intent);
-//                getActivity().finish();
+                Navigation.findNavController(view).navigate(R.id.action_myCubesFragment_to_newCubeStepOneFragment);
             }
         });
 
-        cubeViewModel.getmAllUsersCubes(currentUser.getUid()).observe(this, new Observer<List<Cube>>() {
+        cubeViewModel.getmAllUsersCubes(currentUser).observe(this, new Observer<List<Cube>>() {
             @Override
             public void onChanged(List<Cube> cubesEntities) {
                 // update stuff
-
+                Timber.tag("fart").i("observing. cubeEntities size: %s", cubesEntities.size());
                 if(cubesEntities.size() > 0) {
                     my_cubes_layout.setVisibility(View.VISIBLE);
                     no_cubes_found_layout.setVisibility(View.GONE);

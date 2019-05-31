@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,14 +16,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.ragingclaw.mtgcubedraftsimulator.BuildConfig;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview;
+import com.ragingclaw.mtgcubedraftsimulator.fragments.DraftingHappyFunTimeFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.MainActivityFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.MyCubesFragment;
-import com.ragingclaw.mtgcubedraftsimulator.fragments.MyDraftsFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeBuilderFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeStepOneFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.NewDraftBuilderFragment;
-import com.ragingclaw.mtgcubedraftsimulator.fragments.NewDraftStepOneFragment;
 import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
+import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 import com.ragingclaw.mtgcubedraftsimulator.utils.NotLoggingTree;
 
 import butterknife.BindView;
@@ -37,8 +38,7 @@ public class MainActivity extends AppCompatActivity implements
         CubeCardsReview.OnCubeReviewFragmentInteractionListener,
         MyCubesFragment.OnMyCubesFragmentInteraction,
         NewDraftBuilderFragment.OnBuildDraftFragmentInteractionListener,
-        NewDraftStepOneFragment.OnMyDraftStepOneFragmentInteractionListener,
-        MyDraftsFragment.OnMyDraftsInteractionListener {
+        DraftingHappyFunTimeFragment.OnDraftingHappyFunTimeInteraction {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     ActionBar actionBar;
@@ -123,27 +123,28 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onFragmentCubeReviewInteraction(Bundle bundle) {
+        if(bundle.getString(AllMyConstants.CUBE_NAME) != null) {
+            setActionBarTitle(bundle.getString(AllMyConstants.CUBE_NAME));
+        }
 
+        if(bundle.getString(AllMyConstants.TOAST_MESSAGE) != null) {
+            Toast.makeText(this, bundle.getString(AllMyConstants.TOAST_MESSAGE) , Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
-    public void onMyCubesFragmentInteraction(String string) {
-
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
+    public void onMyCubesFragmentInteraction(String title) {
+        setActionBarTitle(title);
     }
 
     @Override
     public void onFragmentInteractionStepOne(String title) {
-
+        setActionBarTitle(title);
     }
 
     @Override
-    public void onFragmentInteractionStepTwo(String string) {
-
+    public void onFragmentInteractionStepTwo(String title) {
+        setActionBarTitle(title);
     }
 
     @Override
@@ -152,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void OnMyDraftStepOneFragmentInteractionListener(Uri uri) {
-
+    public void onDraftingHappyFunTimeInteraction(String title) {
+        setActionBarTitle(title);
     }
 }

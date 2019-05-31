@@ -1,11 +1,13 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -19,13 +21,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
 import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
+import com.ragingclaw.mtgcubedraftsimulator.database.Pack;
 import com.ragingclaw.mtgcubedraftsimulator.models.CubeViewModel;
-import com.ragingclaw.mtgcubedraftsimulator.models.DraftViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.models.PackViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -48,7 +53,6 @@ public class NewDraftBuilderFragment extends Fragment {
     private OnBuildDraftFragmentInteractionListener mListener;
     private CubeViewModel cubeViewModel;
     private MagicCardViewModel magicCardViewModel;
-    private DraftViewModel draftViewModel;
     private PackViewModel packViewModel;
     private FirebaseAuth mAuth;
     private String currentUserId;
@@ -79,7 +83,6 @@ public class NewDraftBuilderFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         cubeViewModel = ViewModelProviders.of(getActivity()).get(CubeViewModel.class);
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
-        draftViewModel = ViewModelProviders.of(getActivity()).get(DraftViewModel.class);
         packViewModel = ViewModelProviders.of(getActivity()).get(PackViewModel.class);
 
         mAuth = FirebaseAuth.getInstance();
@@ -93,12 +96,12 @@ public class NewDraftBuilderFragment extends Fragment {
             }
         }
 
-        buildDraft(cubeId, currentUserId, cubeViewModel, magicCardViewModel, draftViewModel, packViewModel);
+        buildDraft(cubeId, currentUserId, cubeViewModel, magicCardViewModel, packViewModel, view);
 
         return view;
     }
 
-    private void buildDraft(int cubeId, String userId, CubeViewModel cubeViewModel, MagicCardViewModel magicCardViewModel, DraftViewModel draftViewModel, PackViewModel packViewModel) {
+    private void buildDraft(int cubeId, String userId, CubeViewModel cubeViewModel, MagicCardViewModel magicCardViewModel, PackViewModel packViewModel, View view) {
 
         // separate threads cannot communicate with the UI thread directly. This lets them communicate.
         handler = new Handler(Looper.getMainLooper()) {
@@ -111,10 +114,9 @@ public class NewDraftBuilderFragment extends Fragment {
             }
         };
 
-        t = new Thread(new BuildDraft(handler, cubeId, userId, cubeViewModel, magicCardViewModel, draftViewModel, packViewModel));
+        t = new Thread(new BuildDraft(handler, cubeId, userId, cubeViewModel, magicCardViewModel, packViewModel, view));
         t.start();
     }
-
 
     public void sendDataToActivity(Uri uri) {
         if (mListener != null) {
@@ -156,24 +158,28 @@ public class NewDraftBuilderFragment extends Fragment {
         String userId;
         CubeViewModel cubeViewModel;
         MagicCardViewModel magicCardViewModel;
-        DraftViewModel draftViewModel;
         PackViewModel packViewModel;
-        int totalPlayers = 8;
         int packsPerPlayer = 3;
-        int packSize = 15;
+        View view;
 
-        public BuildDraft(Handler handler, int cubeId, String userId, CubeViewModel cubeViewModel, MagicCardViewModel magicCardViewModel, DraftViewModel draftViewModel, PackViewModel packViewModel) {
+        SharedPreferences sharedPreferences;
+        SharedPreferences.Editor editor;
+
+        public BuildDraft(Handler handler, int cubeId, String userId, CubeViewModel cubeViewModel, MagicCardViewModel magicCardViewModel, PackViewModel packViewModel, View view) {
             this.handler = handler;
             this.cubeId = cubeId;
             this.userId = userId;
             this.cubeViewModel = cubeViewModel;
             this.magicCardViewModel = magicCardViewModel;
-            this.draftViewModel = draftViewModel;
             this.packViewModel = packViewModel;
+            this.view = view;
         }
 
         @Override
         public void run() {
+            packViewModel.deleteAllPacks();
+
+            // lists to hold each players 3 booster packs
             ArrayList<ArrayList<Integer>> player1Packs = new ArrayList<>(packsPerPlayer);
             ArrayList<ArrayList<Integer>> player2Packs = new ArrayList<>(packsPerPlayer);
             ArrayList<ArrayList<Integer>> player3Packs = new ArrayList<>(packsPerPlayer);
@@ -183,22 +189,13 @@ public class NewDraftBuilderFragment extends Fragment {
             ArrayList<ArrayList<Integer>> player7Packs = new ArrayList<>(packsPerPlayer);
             ArrayList<ArrayList<Integer>> player8Packs = new ArrayList<>(packsPerPlayer);
 
-            ArrayList<Integer> player1Picks = new ArrayList<>();
-            ArrayList<Integer> player2Picks = new ArrayList<>();
-            ArrayList<Integer> player3Picks = new ArrayList<>();
-            ArrayList<Integer> player4Picks = new ArrayList<>();
-            ArrayList<Integer> player5Picks = new ArrayList<>();
-            ArrayList<Integer> player6Picks = new ArrayList<>();
-            ArrayList<Integer> player7Picks = new ArrayList<>();
-            ArrayList<Integer> player8Picks = new ArrayList<>();
-
-
             Cube userCube  = cubeViewModel.getmUserCube(userId, cubeId);
 
             // get the 360 card ids from the cube
             List<Integer> cardsFromTheCube = userCube.getCard_ids();
             List<Integer> cardIdPool = cardsFromTheCube;
 
+            // adds in 3 lists to each of the player pack master ArrayList objects.
             for(int i=0; i < packsPerPlayer; i++) {
                 player1Packs.add(new ArrayList());
                 player2Packs.add(new ArrayList());
@@ -210,12 +207,12 @@ public class NewDraftBuilderFragment extends Fragment {
                 player8Packs.add(new ArrayList());
             }
 
-
             // generate the packs
+            int maxCardsPerPlayer = 45;
+
             for (int pack = 0; pack < 3; pack++) {
                 for (int cards = 15; cards > 0; cards--) {
                     for(int player = 0; player < 8; player++) {
-
                         int cardId = getRandomFromList(cardIdPool);
                         int index = cardIdPool.indexOf(cardId);
 
@@ -229,23 +226,47 @@ public class NewDraftBuilderFragment extends Fragment {
                         if (player == 7) { player8Packs.get(pack).add(cardId); }
 
                         cardIdPool.remove(index);
+
+                        // shuffles the id list to help make things more random.
+                        Collections.shuffle(cardIdPool);
                     }
                 }
             }
 
+            // for each pack in the players packs array
+            for(int p = 0; p < 3; p++) {
+                packViewModel.insertPack(new Pack(0, p, 1, cubeId, player1Packs.get(p)));
+                packViewModel.insertPack(new Pack(0, p, 2, cubeId, player2Packs.get(p)));
+                packViewModel.insertPack(new Pack(0, p, 3, cubeId, player3Packs.get(p)));
+                packViewModel.insertPack(new Pack(0, p, 4, cubeId, player4Packs.get(p)));
+                packViewModel.insertPack(new Pack(0, p, 5, cubeId, player5Packs.get(p)));
+                packViewModel.insertPack(new Pack(0, p, 6, cubeId, player6Packs.get(p)));
+                packViewModel.insertPack(new Pack(0, p, 7, cubeId, player7Packs.get(p)));
+                packViewModel.insertPack(new Pack(0, p, 8, cubeId, player8Packs.get(p)));
+            }
 
-            // packs are created. insert stuff into the DB
+            int timeout = 2000;
+            for(int t = 0; t < timeout; t++) {
+                // uhg, math.
+                String percent = String.valueOf((t * 100) / timeout);
+
+                Message m = Message.obtain();
+                Bundle b = new Bundle();
+
+                b.putString("percent", percent);
+                m.setData(b);
+                handler.sendMessage(m);
+            }
+
+            List<Pack> packs = packViewModel.getAllPacksStatic();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(AllMyConstants.PACKS, Parcels.wrap(packs));
+            Navigation.findNavController(view).navigate(R.id.action_newDraftBuilderFragment_to_draftingHappyFunTimeFragment);
         }
 
         private int getRandomFromList(List<Integer> idPool) {
             Random r = new Random();
             return idPool.get(r.nextInt(idPool.size()));
-        }
-
-        private List<Integer> buildBoosterPackIds(List<Integer> draftCardPool) {
-            List<Integer> boosterIds = new ArrayList<>();
-
-            return boosterIds;
         }
     }
 }

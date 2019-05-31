@@ -9,16 +9,12 @@ public class ApplicationRepository {
 
     private MagicCardDao mMagicCardDao;
     private CubeDao mCubesDoa;
-    private UserDao mUserDao;
-    private DraftDao mDraftDao;
     private PackDao mPackDao;
 
     public ApplicationRepository(Application application) {
         ApplicationDatabase db = ApplicationDatabase.getDatabase(application);
         mMagicCardDao = db.mtgCardDao();
         mCubesDoa = db.cubesDao();
-        mUserDao = db.userDao();
-        mDraftDao = db.draftDoa();
         mPackDao = db.packDoa();
     }
 
@@ -78,63 +74,7 @@ public class ApplicationRepository {
         return mCubesDoa.getUserCube(userId, cubeId);
     }
 
-    // USER *************************************************
-    public LiveData<List<User>> getAllUsers() {
-        return mUserDao.getAllUsers();
-    }
 
-    public User getUserId(String email, String password) {
-        return mUserDao.getUserId(email, password);
-    }
-
-    public void insertUser(User user) {
-        new InsertUserAsyncTask(mUserDao).execute(user);
-    }
-
-    public void deletetUser(User user) {
-        new DeleteUserAsyncTask(mUserDao).execute(user);
-    }
-
-    public void updateUser(User user) {
-        new UpdateUserAsyncTask(mUserDao).execute(user);
-    }
-
-    public void deleteAllUsers() {
-        new DeleteAllUserAsyncTask(mUserDao).execute();
-    }
-
-    public void deleteUser(User user) {
-        new DeleteUserAsyncTask(mUserDao).execute(user);
-    }
-
-    // DRAFT *************************************************
-    public void insertDraft(Draft draft) {
-        new InsertDraftAsyncTask(mDraftDao).execute(draft);
-    }
-
-    public void updateDraft(Draft draft) {
-        new UpdateDraftAsyncTask(mDraftDao).execute(draft);
-    }
-
-    public void deleteAllDrafts() {
-        new DeleteAllDraftsAsyncTask(mDraftDao).execute();
-    }
-
-    public void deleteDraft(Draft draft) {
-        new DeleteDraftAsyncTask(mDraftDao).execute(draft);
-    }
-
-    public LiveData<List<Draft>> getAllDrafts() {
-        return mDraftDao.getAllDrafts();
-    }
-
-    public LiveData<Draft> getSingleDraft(Integer draftID) {
-        return mDraftDao.getSingleDraft(draftID);
-    }
-
-    public LiveData<List<Draft>> getUserDrafts(String userId) {
-        return mDraftDao.getUserDrafts(userId);
-    }
 
     // Packs *************************************************
     public void insertPack(Pack pack) {
@@ -156,6 +96,15 @@ public class ApplicationRepository {
     public LiveData<List<Pack>> getAllPacks() {
         return mPackDao.getAllPacks();
     }
+
+    public LiveData<List<Pack>> getLivePlayerPacks(int seatNum) {
+        return mPackDao.getLivePlayerPacks(seatNum);
+    }
+
+    public List<Pack> getAllPacksStatic() {return mPackDao.getAllPacksStatic();}
+
+    public List<Pack> getPlayerPacks(int seatNum) {return mPackDao.getPlayerPacks(seatNum);}
+    public Pack getPlayerPacksByNum(int seatNum, int boosterNum) {return mPackDao.getPlayerPacksByNum(seatNum, boosterNum);}
 
     // Card AsyncTasks *************************************************
     private static class InsertCardAsyncTask extends android.os.AsyncTask<MagicCard, Void, Void> {
@@ -273,120 +222,6 @@ public class ApplicationRepository {
         }
     }
 
-    // User AsyncTasks *************************************************
-    private static class InsertUserAsyncTask extends AsyncTask<User, Void, Void> {
-        private UserDao userDao;
-
-        public InsertUserAsyncTask(UserDao userDao) {
-            this.userDao = userDao;
-        }
-
-        @Override
-        protected Void doInBackground(User... usersEntities) {
-            userDao.insertUser(usersEntities[0]);
-            return null;
-        }
-    }
-
-    private static class UpdateUserAsyncTask extends AsyncTask<User, Void, Void> {
-        private UserDao userDao;
-
-        public UpdateUserAsyncTask(UserDao userDao) {
-            this.userDao = userDao;
-        }
-
-        @Override
-        protected Void doInBackground(User... usersEntities) {
-            userDao.updateUser(usersEntities[0]);
-            return null;
-        }
-    }
-
-    private static class DeleteAllUserAsyncTask extends AsyncTask<Void, Void, Void> {
-        private UserDao userDao;
-
-        public DeleteAllUserAsyncTask(UserDao userDao) {
-            this.userDao = userDao;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            userDao.deleteAllUsers();
-            return null;
-        }
-    }
-
-    private static class DeleteUserAsyncTask extends AsyncTask<User, Void, Void> {
-        private UserDao userDao;
-
-        public DeleteUserAsyncTask(UserDao userDao) {
-            this.userDao = userDao;
-        }
-
-        @Override
-        protected Void doInBackground(User... users) {
-            userDao.deleteUser(users[0]);
-            return null;
-        }
-    }
-
-    // Draft AsyncTasks *************************************************
-    private static class InsertDraftAsyncTask extends AsyncTask<Draft, Void, Void> {
-        DraftDao draftDao;
-
-        private InsertDraftAsyncTask(DraftDao draftDao) {
-            this.draftDao = draftDao;
-        }
-
-        @Override
-        protected Void doInBackground(Draft... drafts) {
-            draftDao.insertDraft(drafts[0]);
-            return null;
-        }
-    }
-
-    private static class UpdateDraftAsyncTask extends AsyncTask<Draft, Void, Void> {
-        DraftDao draftDao;
-
-        private UpdateDraftAsyncTask(DraftDao draftDao) {
-            this.draftDao = draftDao;
-        }
-
-        @Override
-        protected Void doInBackground(Draft... drafts) {
-            draftDao.updateDraft(drafts[0]);
-            return null;
-        }
-    }
-
-    private static class DeleteAllDraftsAsyncTask extends AsyncTask<Void, Void, Void> {
-        DraftDao draftDao;
-
-        private DeleteAllDraftsAsyncTask(DraftDao draftDao) {
-            this.draftDao = draftDao;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            draftDao.deleteAllDrafts();
-            return null;
-        }
-    }
-
-    private static class DeleteDraftAsyncTask extends AsyncTask<Draft, Void, Void> {
-        DraftDao draftDao;
-
-        private DeleteDraftAsyncTask(DraftDao draftDao) {
-            this.draftDao = draftDao;
-        }
-
-        @Override
-        protected Void doInBackground(Draft... drafts) {
-            draftDao.deleteDraft(drafts[0]);
-            return null;
-        }
-    }
-
     // Packs AsyncTasks *************************************************
     private static class InsertPackAsyncTask extends AsyncTask<Pack, Void, Void> {
         private PackDao packDao;
@@ -433,7 +268,7 @@ public class ApplicationRepository {
     private static class DeleteAllPacksAsyncTask extends AsyncTask<Void, Void, Void> {
         PackDao packDao;
 
-        private DeleteAllPacksAsyncTask(PackDao draftDao) {
+        private DeleteAllPacksAsyncTask(PackDao packDao) {
             this.packDao = packDao;
         }
 

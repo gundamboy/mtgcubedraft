@@ -62,6 +62,9 @@
     <string name="cube_name_hint">Cube Name</string>
     <string name="new_cube_instructions">Name your Cube then click the super big generate button.</string>
     <string name="generate_an_awesome_cube_button">Generate An Awesome Cube</string>
+    <string name="draft_instructions_text">Click a card to make it larger. You can draft it by clicking the \"Draft Me\" button</string>
+    <string name="mtg_card_scale_transition_name">mtgCardScale</string>
+    <string name="mtg_card_content_description">mtg card</string>
 
 
 </resources>

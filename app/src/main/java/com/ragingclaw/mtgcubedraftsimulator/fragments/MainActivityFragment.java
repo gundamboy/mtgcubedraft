@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
@@ -35,7 +36,6 @@ import timber.log.Timber;
 public class MainActivityFragment extends Fragment {
     @BindView(R.id.btn_new_cube) com.google.android.material.button.MaterialButton newCubeButton;
     @BindView(R.id.btn_my_cubes) com.google.android.material.button.MaterialButton myCubesButton;
-    @BindView(R.id.btn_my_drafts) com.google.android.material.button.MaterialButton myDraftsButton;
     @BindView(R.id.insetData) com.google.android.material.button.MaterialButton mInsertData;
     private Unbinder unbinder;
 
@@ -71,6 +71,8 @@ public class MainActivityFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
 
+        magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
+
         newCubeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,14 +84,6 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Navigation.findNavController(view).navigate(R.id.action_hostFragment_to_myCubesFragment);
-            }
-        });
-
-        myDraftsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(view).navigate(R.id.action_hostFragment_to_myDraftsFragment);
-
             }
         });
 

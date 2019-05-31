@@ -64,7 +64,7 @@ public class CubeCardsReview extends Fragment {
     private boolean isSingle = false;
     private CubeAdapter cubeAdapter;
     private String cubeName = "";
-    private int cubeId = -1;
+    private int cubeId = 0;
     private Thread t;
     private Handler handler;
     private Bundle handlerBundle = new Bundle();
@@ -93,6 +93,10 @@ public class CubeCardsReview extends Fragment {
         if (getArguments() != null) {
             cubeName = getArguments().getString(AllMyConstants.CUBE_NAME);
             cubeId = getArguments().getInt(AllMyConstants.CUBE_ID);
+
+            Timber.tag("fart").i("isSingle: %s", isSingle);
+
+            Timber.tag("fart").i("arguments:: cubeName: %s, cubeId: %s ", cubeName, cubeId);
 
             // send the cube name back to the activity so it can be set in the actionbar
             if(mListener != null) {
@@ -128,7 +132,6 @@ public class CubeCardsReview extends Fragment {
             cubeAdapter.setCards(cubeCards);
         } else {
             isSingle = true;
-            cubeId = getArguments().getInt(AllMyConstants.CUBE_ID);
             mCubeMultiFunctionButton.setText(getString(R.string.delete_cube_button_text));
             getMyCube(cubeId);
         }
@@ -151,7 +154,7 @@ public class CubeCardsReview extends Fragment {
                     getArguments().remove(AllMyConstants.CUBE_CARDS);
                     Bundle bundle = new Bundle();
                     bundle.putInt(AllMyConstants.CUBE_ID, cubeId);
-                    Navigation.findNavController(view).navigate(R.id.action_cubeCardsReview_to_newDraftStepOneFragment, bundle);
+                    Navigation.findNavController(view).navigate(R.id.action_cubeCardsReview_to_newDraftBuilderFragment, bundle);
                 }
             }
         });
@@ -159,7 +162,7 @@ public class CubeCardsReview extends Fragment {
         mGoToMyCubesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Timber.tag("fart").i("isSaved?");
+                Timber.tag("fart").i("isSaved? %s", isSaved);
                 if (!isSaved) {
                     new SaveCube(cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener).execute();
                     isSaved = !isSaved;
@@ -253,6 +256,7 @@ public class CubeCardsReview extends Fragment {
         switch (item.getItemId()) {
             case R.id.save:
                 if (!isSaved) {
+                    Timber.tag("fart").i("saving cube");
                     new SaveCube(cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener).execute();
                     isSaved = !isSaved;
                 }
@@ -301,7 +305,6 @@ public class CubeCardsReview extends Fragment {
 
     public static class SaveCube extends AsyncTask<Void, Void, Void> {
         // save the cube info in the database
-
         int cubeId;
         OnCubeReviewFragmentInteractionListener onCubeReviewFragmentInteractionListener;
         CubeAdapter cubeAdapter;
@@ -322,20 +325,27 @@ public class CubeCardsReview extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            if(cubeId == -1) {
+            Timber.tag("fart").i("inside doInBackground of SaveCube");
+            Timber.tag("fart").i("cubeId is: %s", cubeId);
+            if(cubeId == 0) {
                 // get all cards from adapter/recyclerView
                 List<MagicCard> cards = cubeAdapter.getItems();
                 List<Integer> cardIds = new ArrayList<>();
 
+                Timber.tag("fart").i("cards from adapter size: %s", cards.size());
                 // for each, create a new cube
                 for (MagicCard c : cards) {
                     cardIds.add(c.getMultiverseid());
                 }
 
+                Timber.tag("fart").i("cardIds size: %s", cardIds.size());
+
                 if (cardIds.size() == cards.size()) {
                     for (int i = 0; i < 1; i++) {
+                        Timber.tag("fart").i("should be inserting cube now");
                         Cube cube = new Cube(0, currentUserId, cubeName, cards.size(), cardIds);
                         cubeViewModel.insertCube(cube);
+                        Timber.tag("fart").i("cube insert should be done now");
                     }
                 }
             }

@@ -32,7 +32,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magicthegathering.javasdk.resource.Card;
-import timber.log.Timber;
 
 public class NewCubeBuilderFragment extends Fragment {
     @BindView(R.id.percentage_built) TextView completePercent;
@@ -40,12 +39,8 @@ public class NewCubeBuilderFragment extends Fragment {
     private Thread t;
     private Handler handler;
     private Bundle handlerBundle = new Bundle();
-
     private MagicCardViewModel magicCardViewModel;
-
     private OnFragmentInteractionListenerStepTwo mListener;
-    private List<String> mSetCodes = new ArrayList<>();
-    private List<Card> mCubeCards = new ArrayList<>();
     private String cubeName;
 
     public NewCubeBuilderFragment() {
@@ -93,7 +88,6 @@ public class NewCubeBuilderFragment extends Fragment {
 
                 if(ids.size() > 0) {
                     // there are ids, WOOHOO! lets build a cube!
-                    getCardsFromIds(ids);
                     buildCube(cards, view);
                 }
             }
@@ -102,7 +96,6 @@ public class NewCubeBuilderFragment extends Fragment {
     }
 
     private void buildCube(List<MagicCard> cards, View view) {
-
         // separate threads cannot communicate with the UI thread directly. This lets them communicate.
         handler = new Handler(Looper.getMainLooper()) {
 
@@ -117,95 +110,6 @@ public class NewCubeBuilderFragment extends Fragment {
         t = new Thread(new BuildCube(handler, cards, view));
         t.start();
 
-    }
-
-    private void getCardsFromIds(List<Integer> ids) {
-        // copy the list to we can change it.
-        List<Integer> multiversePool = ids;
-
-        // a list to hold only the cards picked for the 3 boosters
-        List<Integer> draftCardIds = new ArrayList<>();
-
-        // a cube is 360 cards.
-        int cubeSize = 360;
-
-        // get 360 random ids (cards) from the total card id list
-        // cubes cannot have duplicate cards
-        for (int i = 0; i < cubeSize; i++) {
-            int r = getRandomNum(multiversePool.size());
-            draftCardIds.add(multiversePool.get(r));
-            multiversePool.remove(r);
-        }
-
-
-        // build the 3 packs that will be passed around for the draft
-        if(draftCardIds.size() == cubeSize) {
-            buildBoosterPacks(draftCardIds);
-        }
-
-    }
-
-    private void buildBoosterPacks(List<Integer> draftCardIds) {
-        // copy the id list so we can make changes
-        // 3 list copies. boosters dont have copies, but we have 3 booster, so there can be
-        // the same cards in different boosters.
-        List<Integer> idPool = draftCardIds;
-        List<Integer> idPool2 = draftCardIds;
-        List<Integer> idPool3 = draftCardIds;
-
-        // 3 id lists. 1 for each booster pack
-        List<Integer> boosterIdsPack1 = new ArrayList<>();
-        List<Integer> boosterIdsPack2 = new ArrayList<>();
-        List<Integer> boosterIdsPack3 = new ArrayList<>();
-
-        // there are 3 packs
-        int packCount = 3;
-
-        // a pack (booster) is 15 cards
-        int boosterPackSize = 15;
-
-        // build the booster ids
-        for(int p = 0; p < packCount; p++) {
-
-            if(p == 0) {
-                for(int i = 0; i < boosterPackSize; i++) {
-                    int id = getRandomFromList(idPool, idPool.size());
-                    int index = idPool.indexOf(id);
-                    boosterIdsPack1.add(id);
-                    idPool.remove(index);
-                }
-            }
-
-            if(p == 1) {
-                for(int i = 0; i < boosterPackSize; i++) {
-                    int id = getRandomFromList(idPool2, idPool2.size());
-                    int index = idPool2.indexOf(id);
-                    boosterIdsPack2.add(id);
-                    idPool2.remove(index);
-                }
-            }
-
-            if(p == 2) {
-                for(int i = 0; i < boosterPackSize; i++) {
-                    int id = getRandomFromList(idPool3, idPool3.size());
-                    int index = idPool3.indexOf(id);
-                    boosterIdsPack3.add(id);
-                    idPool3.remove(index);
-                }
-            }
-        }
-
-        // we can build the card objects now. The sdk requires this to be on a separate thread,
-        // which is why I am doing id lists THEN card objects, and not at the same time.
-
-        //Runnable r = new CardRunnable(boosterIdsPack1, boosterIdsPack2, boosterIdsPack3);
-        Runnable r = new CardRunnable(boosterIdsPack1, boosterIdsPack2, boosterIdsPack3);
-        new Thread(r).start();
-    }
-
-    private int getRandomFromList(List<Integer> idPool, int max) {
-        Random r = new Random();
-        return idPool.get(r.nextInt(max));
     }
 
     private int getRandomNum(int max) {
@@ -244,53 +148,6 @@ public class NewCubeBuilderFragment extends Fragment {
     public interface OnFragmentInteractionListenerStepTwo {
 
         void onFragmentInteractionStepTwo(String string);
-    }
-
-    public class CardRunnable implements Runnable {
-        List<Integer> b1;
-        List<Integer> b2;
-        List<Integer> b3;
-
-        int packCount = 3;
-
-        public CardRunnable(List<Integer> b1, List<Integer> b2, List<Integer> b3) {
-            this.b1 = b1;
-            this.b2 = b2;
-            this.b3 = b3;
-        }
-
-        @Override
-        public void run() {
-            List<MagicCard> pack1 = new ArrayList<>();
-            List<MagicCard> pack2 = new ArrayList<>();
-            List<MagicCard> pack3 = new ArrayList<>();
-
-            for(int i = 0; i < packCount; i++) {
-                if (i == 0) {
-                    for (int id : b1) {
-                        MagicCard card = magicCardViewModel.getmCard(id);
-                        pack1.add(card);
-                    }
-                }
-
-                if (i == 1) {
-                    for (int id : b2) {
-                        MagicCard card = magicCardViewModel.getmCard(id);
-                        pack2.add(card);
-                    }
-                }
-
-                if(i == 2) {
-                    for (int id : b3) {
-                        MagicCard card = magicCardViewModel.getmCard(id);
-                        pack3.add(card);
-                    }
-                }
-            }
-
-            Timber.tag("fart").i("pack 1 size: %s", pack1.size());
-
-        }
     }
 
     public class BuildCube implements Runnable {

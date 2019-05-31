@@ -16,8 +16,20 @@ public interface PackDao {
     @Query("SELECT * From packs")
     LiveData<List<Pack>> getAllPacks();
 
+    @Query("SELECT * From packs")
+    List<Pack> getAllPacksStatic();
+
+    @Query("SELECT * From packs WHERE seat_num = :seatNum")
+    List<Pack> getPlayerPacks(int seatNum);
+
+    @Query("SELECT * From packs WHERE seat_num = :seatNum AND booster_num = :boosterNum")
+    Pack getPlayerPacksByNum(int seatNum, int boosterNum);
+
+    @Query("SELECT * From packs WHERE seat_num = :seatNum")
+    LiveData<List<Pack>> getLivePlayerPacks(int seatNum);
+
     @Insert()
-    void insertPack(Pack pack);
+    long insertPack(Pack pack);
 
     // packs should actually delete with the draft ids
     @Query("DELETE FROM packs")

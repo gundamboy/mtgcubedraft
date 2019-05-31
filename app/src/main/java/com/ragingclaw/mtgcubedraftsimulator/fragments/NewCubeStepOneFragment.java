@@ -40,7 +40,7 @@ public class NewCubeStepOneFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static NewCubeStepOneFragment newInstance(String param1, String param2) {
+    public static NewCubeStepOneFragment newInstance() {
         NewCubeStepOneFragment fragment = new NewCubeStepOneFragment();
         Bundle args = new Bundle();
 
@@ -72,6 +72,7 @@ public class NewCubeStepOneFragment extends Fragment {
                     String name = cubeName.getText().toString();
                     Bundle bundle = new Bundle();
                     bundle.putString(AllMyConstants.CUBE_NAME, name);
+                    bundle.putInt(AllMyConstants.CUBE_ID, 0);
                     Navigation.findNavController(view).navigate(R.id.action_newCubeStepOneFragment_to_newCubeBuilderFragment, bundle);
                 } else {
                     // show toast because i dont have time for fancy shit.

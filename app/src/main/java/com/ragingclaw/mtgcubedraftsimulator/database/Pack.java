@@ -9,31 +9,29 @@ import androidx.room.TypeConverters;
 
 import com.ragingclaw.mtgcubedraftsimulator.converters.IntegerIdTypeConverter;
 
+import org.parceler.Parcel;
+import org.parceler.ParcelConstructor;
+
 import java.util.List;
 
 @Entity(tableName = "packs",
-        foreignKeys = @ForeignKey(
-                entity = Draft.class,
-                parentColumns = "draftID",
-                childColumns = "draftId",
-                onDelete = ForeignKey.CASCADE),
-        indices = {@Index(name = "idx_pack", value = {"draftId"})}
-        )
+        indices = {@Index(name = "idx_pack", value = {"packId"})})
 @TypeConverters(IntegerIdTypeConverter.class)
+@Parcel(Parcel.Serialization.BEAN)
 public class Pack {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private int packId;
-    private int draftId;
+
     private int booster_num;
     private int seat_num;
     private int cubeId;
     private List<Integer> cardIDs;
 
-    public Pack(int packId, int draftId, int booster_num, int seat_num, int cubeId, List<Integer> cardIDs) {
+    @ParcelConstructor
+    public Pack(int packId, int booster_num, int seat_num, int cubeId, List<Integer> cardIDs) {
         this.packId = packId;
-        this.draftId = draftId;
         this.booster_num = booster_num;
         this.seat_num = seat_num;
         this.cubeId = cubeId;
@@ -46,14 +44,6 @@ public class Pack {
 
     public void setPackId(int packId) {
         this.packId = packId;
-    }
-
-    public int getDraftId() {
-        return draftId;
-    }
-
-    public void setDraftId(int draftId) {
-        this.draftId = draftId;
     }
 
     public int getBooster_num() {
