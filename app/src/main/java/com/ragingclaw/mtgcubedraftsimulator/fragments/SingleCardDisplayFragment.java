@@ -32,6 +32,7 @@ import timber.log.Timber;
  */
 public class SingleCardDisplayFragment extends Fragment {
     @BindView(R.id.mtg_card) ImageView mtgCardImage;
+    @BindView(R.id.draft_me_button) com.google.android.material.button.MaterialButton draftMeButton;
     private Unbinder unbinder;
     private int multiVerseId;
     private String cardUrl;
@@ -88,6 +89,16 @@ public class SingleCardDisplayFragment extends Fragment {
         mtgCardImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, "mtgCardScale").build();
+                Navigation.findNavController(view).navigate(R.id.action_singleCardDisplayFragment_to_draftingHappyFunTimeFragment, null, null, extras);
+            }
+        });
+
+        draftMeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: store the id of the chosen card into shared preferences, or send it back in a bundle
+
                 FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, "mtgCardScale").build();
                 Navigation.findNavController(view).navigate(R.id.action_singleCardDisplayFragment_to_draftingHappyFunTimeFragment, null, null, extras);
             }

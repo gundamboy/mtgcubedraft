@@ -14,8 +14,10 @@ public class AllMyConstants {
     public static final String CUBE_ID = "CUBE_ID";
     public static final String CARD_ID = "CARD_ID";
     public static final String CARD_URL = "CARD_URL";
+    public static final String CURRENT_SEAT = "CURRENT_SEAT";
     public static final String DRAFT_NAME = "DRAFT_NAME";
     public static final String PACKS = "PACKS";
+    public static final String PACKS_NUMBER = "PACKS_NUMBER";
     public static final String SHARED_PREFS = "SHARED_PREFS";
     public static final String CURRENT_CARDS = "CURRENT_CARDS";
     public static final String PLAYER_1 = "PLAYER_1";

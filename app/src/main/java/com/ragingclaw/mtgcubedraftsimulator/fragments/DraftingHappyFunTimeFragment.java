@@ -127,6 +127,8 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                                         Timber.tag("fart").i("card position: %s, card id: %s", position, cardId);
                                         Bundle b = new Bundle();
                                         b.putInt(AllMyConstants.CARD_ID, cardId);
+                                        b.putInt(AllMyConstants.CURRENT_SEAT, currentSeatNum);
+                                        b.putInt(AllMyConstants.PACKS_NUMBER, packNum);
                                         b.putString(AllMyConstants.CARD_URL, url);
                                         FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, "mtgCardScale").build();
                                         Navigation.findNavController(view).navigate(R.id.action_draftingHappyFunTimeFragment_to_singleCardDisplayFragment, b, null, extras);
