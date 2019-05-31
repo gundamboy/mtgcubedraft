@@ -83,6 +83,7 @@ public class NewCubeBuilderFragment extends Fragment {
                         boolean isLand = false;
 
                         if(land.contains("Basic Land")) isLand = true;
+                        if(land.contains("Basic Snow Land")) isLand = false;
 
                         if (!isLand) {
                             ids.add(c.getMultiverseid());
