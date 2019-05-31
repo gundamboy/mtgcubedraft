@@ -79,8 +79,15 @@ public class NewCubeBuilderFragment extends Fragment {
             public void onChanged(List<MagicCard> magicCards) {
                 try {
                     for (MagicCard c : magicCards) {
-                        ids.add(c.getMultiverseid());
-                        cards.add(c);
+                        String land = c.getType();
+                        boolean isLand = false;
+
+                        if(land.contains("Basic Land")) isLand = true;
+
+                        if (!isLand) {
+                            ids.add(c.getMultiverseid());
+                            cards.add(c);
+                        }
                     }
                 } catch(Exception e) {
                     e.printStackTrace();

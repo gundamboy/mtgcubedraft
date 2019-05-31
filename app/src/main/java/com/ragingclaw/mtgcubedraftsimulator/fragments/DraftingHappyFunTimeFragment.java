@@ -119,7 +119,12 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                                 }
 
                                 draftCardsAdapter.setCards(currentCards);
-                                Timber.tag("fart").i("adapter size test: %s", draftCardsAdapter.getItemCount());
+                                draftCardsAdapter.setOnClickListener(new DraftCardsAdapter.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(int position, int cardId) {
+                                        Timber.tag("fart").i("card position: %s, card id: %s", position, cardId);
+                                    }
+                                });
                             }
                         });
                     }
