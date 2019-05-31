@@ -1,6 +1,7 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -35,8 +36,12 @@ public class SingleCardDisplayFragment extends Fragment {
     @BindView(R.id.draft_me_button) com.google.android.material.button.MaterialButton draftMeButton;
     private Unbinder unbinder;
     private int multiVerseId;
+    private int currentSeat;
+    private int packNumber;
     private String cardUrl;
     private OnSingleCardFragmentInteractionListener mListener;
+    private SharedPreferences mPreferences;
+    private SharedPreferences.Editor mEditor;
 
     public SingleCardDisplayFragment() {
         // Required empty public constructor
@@ -63,6 +68,8 @@ public class SingleCardDisplayFragment extends Fragment {
         if (getArguments() != null) {
             multiVerseId = getArguments().getInt(AllMyConstants.CARD_ID);
             cardUrl = getArguments().getString(AllMyConstants.CARD_URL);
+            currentSeat = getArguments().getInt(AllMyConstants.CURRENT_SEAT);
+            packNumber = getArguments().getInt(AllMyConstants.PACKS_NUMBER);
         }
     }
 
@@ -73,18 +80,7 @@ public class SingleCardDisplayFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_single_card_display, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        Picasso.get().load(cardUrl).placeholder(R.color.colorAccent).into(mtgCardImage, new com.squareup.picasso.Callback(){
-
-            @Override
-            public void onSuccess() {
-                Timber.tag("fart").i("picasso was successful");
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Timber.tag("fart").i("picasso failed: %s", e.getMessage());
-            }
-        });
+        Picasso.get().load(cardUrl).placeholder(R.color.colorAccent).into(mtgCardImage);
 
         mtgCardImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +94,12 @@ public class SingleCardDisplayFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // TODO: store the id of the chosen card into shared preferences, or send it back in a bundle
+
+                mEditor = mPreferences.edit();
+                mEditor.putInt(AllMyConstants.CARD_ID, multiVerseId);
+                mEditor.putInt(AllMyConstants.CURRENT_SEAT, currentSeat);
+                mEditor.putInt(AllMyConstants.PACKS_NUMBER, packNumber);
+                mEditor.apply();
 
                 FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, "mtgCardScale").build();
                 Navigation.findNavController(view).navigate(R.id.action_singleCardDisplayFragment_to_draftingHappyFunTimeFragment, null, null, extras);
