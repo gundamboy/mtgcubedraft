@@ -20,6 +20,7 @@ public class AllMyConstants {
     public static final String PACKS_NUMBER = "PACKS_NUMBER";
     public static final String SHARED_PREFS = "SHARED_PREFS";
     public static final String CURRENT_CARDS = "CURRENT_CARDS";
+    public static final String THE_CHOSEN_CARDS = "THE_CHOSEN_CARDS";
     public static final String PLAYER_1 = "PLAYER_1";
     public static final String PLAYER_2 = "PLAYER_2";
     public static final String PLAYER_3 = "PLAYER_3";

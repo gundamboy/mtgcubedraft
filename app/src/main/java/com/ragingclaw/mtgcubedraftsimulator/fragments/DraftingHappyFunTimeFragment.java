@@ -36,7 +36,9 @@ import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -89,11 +91,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
 
             if(key.equals(AllMyConstants.CARD_ID)) {
-                // TODO: the card got picked.
-                //  remove the card from the packNum. Store it into a sharedprefs list
-                //  Change the seat and pack number. load the next pack into the adapter
-                //  Take 7 random cards out of the packNum
-                //  Change the packNum global
+
                 updateBoard();
             }
 
@@ -189,7 +187,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
             }
         };
 
-        t = new Thread(new UpdateBoard(handler, mPreferences, mEditor, packViewModel));
+        t = new Thread(new UpdateBoard(handler, mPreferences, mEditor, packViewModel, magicCardViewModel));
         t.start();
     }
 
@@ -247,18 +245,62 @@ public class DraftingHappyFunTimeFragment extends Fragment {
         SharedPreferences prefs;
         SharedPreferences.Editor mEditor;
         PackViewModel packViewModel;
+        MagicCardViewModel magicCardViewModel;
 
-        public UpdateBoard(Handler handler, SharedPreferences prefs, SharedPreferences.Editor mEditor, PackViewModel packViewModel) {
+        public UpdateBoard(Handler handler, SharedPreferences prefs, SharedPreferences.Editor mEditor, PackViewModel packViewModel, MagicCardViewModel magicCardViewModel) {
             this.handler = handler;
             this.prefs = prefs;
             this.mEditor = mEditor;
             this.packViewModel = packViewModel;
+            this.magicCardViewModel = magicCardViewModel;
         }
 
         @Override
         public void run() {
+            // TODO: the card got picked.
+            //  remove the card from the packNum. Store it into a sharedprefs list
+            //  Change the seat and pack number. load the next pack into the adapter
+            //  Take 7 random cards out of the packNum
+            //  Change the packNum global
+            // set to hold the chosen card ids
+            Set<String> cardsHash = new HashSet<>();
             mEditor = prefs.edit();
-            mEditor.putInt(AllMyConstants.CURRENT_SEAT, 2);
+
+            // the card id that was picked, the current seat, and the current pack number
+            int cardIdPicked = prefs.getInt(AllMyConstants.CARD_ID, 0);
+            int seat = prefs.getInt(AllMyConstants.CURRENT_SEAT, 0);
+            int packNum = prefs.getInt(AllMyConstants.PACKS_NUMBER, 0);
+
+            // check for the string set so we can assign it and not overwrite stuff
+            if(prefs.contains(AllMyConstants.THE_CHOSEN_CARDS)) {
+                cardsHash = prefs.getStringSet(AllMyConstants.THE_CHOSEN_CARDS, null);
+            }
+
+            // add the chosen id to the string set
+            cardsHash.add(String.valueOf(cardIdPicked));
+
+            // put the string set into prefs.
+            mEditor.putStringSet(AllMyConstants.THE_CHOSEN_CARDS, cardsHash);
+
+            // adjust the seat count
+            if(seat == 8) {
+                // this is the last seat, start a new pack
+                packNum += 1;
+
+                // reset the seat
+                seat = 1;
+            }
+
+            mEditor.putInt(AllMyConstants.CURRENT_SEAT, seat);
+
+
+
+
+
+
+
+
+
             mEditor.commit();
         }
     }
