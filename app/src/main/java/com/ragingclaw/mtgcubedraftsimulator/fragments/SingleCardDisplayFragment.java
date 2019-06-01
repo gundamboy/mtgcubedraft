@@ -101,6 +101,7 @@ public class SingleCardDisplayFragment extends Fragment {
                 mEditor.putInt(AllMyConstants.CARD_ID, multiVerseId);
                 mEditor.putInt(AllMyConstants.CURRENT_SEAT, currentSeat);
                 mEditor.putInt(AllMyConstants.PACKS_NUMBER, packNumber);
+                mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, true);
                 mEditor.commit();
 
                 FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(mtgCardImage, "mtgCardScale").build();
