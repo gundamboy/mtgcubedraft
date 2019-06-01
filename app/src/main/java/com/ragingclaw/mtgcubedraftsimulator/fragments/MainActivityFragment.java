@@ -1,6 +1,7 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,8 @@ public class MainActivityFragment extends Fragment {
     private MagicCardViewModel magicCardViewModel;
     private FirebaseAuth mAuth;
     private String currentUserId;
+    private SharedPreferences mPreferences;
+    private SharedPreferences.Editor mEditor;
 
 
 
@@ -68,6 +72,12 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_activity, container, false);
         unbinder = ButterKnife.bind(this, view);
+
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mEditor = mPreferences.edit();
+        mEditor.clear();
+        mEditor.commit();
+
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
 

@@ -3,6 +3,13 @@ package com.ragingclaw.mtgcubedraftsimulator.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -11,14 +18,6 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.FragmentNavigator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.preference.PreferenceManager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.adapters.DraftCardsAdapter;
@@ -68,6 +67,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     private int currentPackNum = 0;
     private int currentPickNum = 1;
     private int currentSeatNum = 1;
+    private int cardsThatShouldBeShown = 15;
 
     private List<Pack> packs;
     private List<MagicCard> currentCards = new ArrayList<>();
@@ -84,16 +84,16 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
     SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
-            if(key.equals(AllMyConstants.CARD_ID) && sharedPreferences.getBoolean(AllMyConstants.UPDATE_DRAFT, false)) {
+        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+            if(key.equals(AllMyConstants.CARD_ID) && prefs.getBoolean(AllMyConstants.UPDATE_DRAFT, false)) {
 
                 updateBoard();
             }
 
-            if(key.equals(AllMyConstants.CURRENT_SEAT)) { currentSeatNum = sharedPreferences.getInt(AllMyConstants.CURRENT_SEAT, 0); }
-            if(key.equals(AllMyConstants.PACKS_NUMBER)) { currentPackNum = sharedPreferences.getInt(AllMyConstants.PACKS_NUMBER, 0); }
-            if(key.equals(AllMyConstants.CURRENT_PICK)) { currentPickNum = sharedPreferences.getInt(AllMyConstants.CURRENT_PICK, 1); }
+            if(key.equals(AllMyConstants.CURRENT_SEAT)) { currentSeatNum = prefs.getInt(AllMyConstants.CURRENT_SEAT, 0); }
+            if(key.equals(AllMyConstants.PACKS_NUMBER)) { currentPackNum = prefs.getInt(AllMyConstants.PACKS_NUMBER, 0); }
+            if(key.equals(AllMyConstants.CURRENT_PICK)) { currentPickNum = prefs.getInt(AllMyConstants.CURRENT_PICK, 1); }
+            if(key.equals("cards_left")) { cardsThatShouldBeShown = prefs.getInt("cards_left", 15); }
         }
     };
 
@@ -110,9 +110,11 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_drafting_happy_fun_time, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        unbinder = ButterKnife.bind(this, view);;
+        String title = "Pack " + currentPackNum + ", Pick " + currentPickNum + ", Seat " + currentSeatNum + ", Cards: " + cardsThatShouldBeShown;
+        sendDataBackToActivity(title);
 
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mPreferences.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
 
         gridLayoutManager = new GridLayoutManager(getActivity(), 3);
@@ -124,19 +126,20 @@ public class DraftingHappyFunTimeFragment extends Fragment {
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
         packViewModel = ViewModelProviders.of(getActivity()).get(PackViewModel.class);
 
-        Timber.tag("fart").i("current seat: %s, current pack: %s", currentSeatNum, currentPackNum);
-
         packViewModel.getAllPacks().observe(this, new Observer<List<Pack>>() {
             @Override
             public void onChanged(List<Pack> packs) {
-                Timber.tag("fart").i("current seat: %s, current pack: %s", currentSeatNum, currentPackNum);
+                String title = "PA" + currentPackNum + ", PK" + currentPickNum + ", S" + currentSeatNum + ", Cs:" + cardsThatShouldBeShown;
+                sendDataBackToActivity(title);
                 for(Pack p : packs) {
                     List<Integer> cardIds = p.getCardIDs();
-
                     if (p.getSeat_num() == currentSeatNum && p.getBooster_num() == currentPackNum) {
                         magicCardViewModel.getmAllCards().observe(getActivity(), new Observer<List<MagicCard>>() {
                             @Override
                             public void onChanged(List<MagicCard> magicCards) {
+                                String title = "PA" + currentPackNum + ", PK" + currentPickNum + ", S" + currentSeatNum + ", Cs:" + cardsThatShouldBeShown;
+                                sendDataBackToActivity(title);
+                                currentCards.clear();
                                 for (MagicCard card : magicCards) {
                                     if (cardIds.contains(card.getMultiverseid())) {
                                         currentCards.add(card);
@@ -147,7 +150,6 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                                 draftCardsAdapter.setOnClickListener(new DraftCardsAdapter.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(int position, int cardId, View v, String url) {
-                                        Timber.tag("fart").i("card position: %s, card id: %s", position, cardId);
                                         Bundle b = new Bundle();
                                         b.putInt(AllMyConstants.CARD_ID, cardId);
                                         b.putInt(AllMyConstants.CURRENT_SEAT, currentSeatNum);
@@ -193,6 +195,8 @@ public class DraftingHappyFunTimeFragment extends Fragment {
             public void handleMessage(Message msg) {
                 handlerBundle = msg.getData();
                 currentCards = Parcels.unwrap(handlerBundle.getParcelable(AllMyConstants.CURRENT_CARDS));
+                String title = "Seat: " + handlerBundle.getInt("seat") + ", Pack: " + handlerBundle.getInt("pack") + ", Pick: " + handlerBundle.getInt("pick");
+                sendDataBackToActivity(title);
             }
         };
 
@@ -230,7 +234,12 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
     private int getRandomNum(int max) {
         Random r = new Random();
-        return r.nextInt((max - 1) + 1);
+        return r.nextInt((max - 1));
+    }
+
+    private int getRandomFromList(List<Integer> idPool) {
+        Random r = new Random();
+        return idPool.get(r.nextInt(idPool.size()));
     }
 
     public interface OnDraftingHappyFunTimeInteraction {
@@ -255,6 +264,8 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
         @Override
         public void run() {
+            Timber.tag("fart").i(" ");
+            Timber.tag("fart").d("*******");
             // set to hold the chosen card ids
             Set<String> cardsHash = new HashSet<>();
             mEditor = prefs.edit();
@@ -262,9 +273,9 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
             // the card id that was picked, the current seat, and the current pack number
             int cardIdPicked = prefs.getInt(AllMyConstants.CARD_ID, 0);
-            int seat = prefs.getInt(AllMyConstants.CURRENT_SEAT, 0);
+            int seat = prefs.getInt(AllMyConstants.CURRENT_SEAT, 1);
             int packNum = prefs.getInt(AllMyConstants.PACKS_NUMBER, 0);
-            int pick = prefs.getInt(AllMyConstants.CURRENT_PICK, 0);
+            int pick = 1;
 
             // check for the string set so we can assign it and not overwrite stuff
             if(prefs.contains(AllMyConstants.THE_CHOSEN_CARDS)) {
@@ -273,56 +284,112 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
             // add the chosen id to the string set
             cardsHash.add(String.valueOf(cardIdPicked));
+            pick = cardsHash.size() + 1;
+            Timber.tag("fart").i("total cards picked: %s", cardsHash.size());
 
-            // put the string set into prefs.
-            mEditor.putStringSet(AllMyConstants.THE_CHOSEN_CARDS, cardsHash);
-
-            // i just want to know whats in the hash.
+            StringBuilder stringBuilder = new StringBuilder();
             Iterator<String> itr = cardsHash.iterator();
             while(itr.hasNext()) {
                 String id = itr.next();
                 int currentId = Integer.parseInt(id);
-                Timber.tag("fart").i("current player picks: %s", currentId);
+                stringBuilder.append(id).append(", ");
+
             }
+            Timber.tag("fart").i("current player picks: %s", stringBuilder);
 
-            // get the current pack object
-            // SELECT * From packs WHERE seat_num = :seatNum AND booster_num = :boosterNum
-            Pack currentPack = packViewModel.getPlayerPacksByNum(seat, packNum);
-            List<Integer> packCardIds = currentPack.getCardIDs();
 
-            // remove the players pick from the list
-            packCardIds.remove(cardIdPicked);
+            // put the string set into prefs.
+            mEditor.putStringSet(AllMyConstants.THE_CHOSEN_CARDS, cardsHash);
 
-            // take out 7 random cards from this pack. this represents the other 7 players picking
-            // a card from it.
-            for(int i = 0; i < 7; i++) {
-                int r = getRandomNum(packCardIds.size());
-                int idToRemove = packCardIds.get(r);
-                packCardIds.remove(idToRemove);
+            if (cardsHash.size() == 45) {
+                mEditor.commit();
+                // game's over man. send it off to the next fragment
+            } else {
+
+                // get the current pack object
+                Pack currentPack = packViewModel.getPlayerPacksByNum(seat, packNum);
+                List<Integer> packCardIds = currentPack.getCardIDs();
+                Timber.tag("fart").i("packCardIds size = %s", packCardIds.size());
+
+                if (packCardIds.size() != 0) {
+                    // remove the players pick from the list
+                    int index = packCardIds.indexOf(cardIdPicked);
+
+                    Timber.tag("fart").i("index to remove from packCardIds = %s", index);
+
+                    try {
+                        packCardIds.remove(Integer.valueOf(cardIdPicked));
+                    } catch (Exception e) {
+                        Timber.tag("fart").w(" ");
+                        Timber.tag("fart").w("---------------------------------------");
+                        Timber.tag("fart").w("CRASH AT SINGLE USER PACK");
+                        Timber.tag("fart").w("crashed at Integer.valueOf(cardIdPicked): %s, packCardIds size is: %s", cardIdPicked, packCardIds.size());
+                        //Timber.tag("fart").w("card at index is %s", packCardIds.get(index));
+                        e.printStackTrace();
+                        Timber.tag("fart").w("STACKTRACE MESSAGE::: %s", e.getMessage());
+                        Timber.tag("fart").w("---------------------------------------");
+                        Timber.tag("fart").w(" ");
+                    }
+
+
+                    List<Pack> allPacks = packViewModel.getAllPacksStatic();
+                    for (Pack p : allPacks) {
+                        if (p.getSeat_num() != seat && p.getBooster_num() == packNum) {
+                            List<Integer> ids = p.getCardIDs();
+                            int cardID = getRandomFromList(ids);
+                            Timber.tag("fart").i("pack size = %s || pack seat = %s, cardID = %s", ids.size(), p.getSeat_num(), cardID);
+                            ids.remove(Integer.valueOf(cardID));
+                            p.setCardIDs(ids);
+
+                            try {
+                                packViewModel.updatePack(p);
+                            } catch (Exception e) {
+                                Timber.tag("fart").w(" ");
+                                Timber.tag("fart").w("---------------------------------------");
+                                Timber.tag("fart").w("CRASH AT ALL NON USER PACKS Integer.valueOf(cardID)");
+                                Timber.tag("fart").w("pack size = %s || pack seat = %s, cardID = %s", ids.size(), p.getSeat_num(), cardID);
+                                e.printStackTrace();
+                                Timber.tag("fart").w("---------------------------------------");
+                                Timber.tag("fart").w("STACKTRACE MESSAGE::: %s", e.getMessage());
+                                Timber.tag("fart").w(" ");
+                            }
+                        }
+                    }
+
+                    // update the pack
+                    currentPack.setCardIDs(packCardIds);
+
+                    // adjust the seat
+                    seat = (seat == 8) ? 1 : seat + 1;
+
+                } else {
+                    Timber.tag("fart").i("packCardIds size is zero???? = %s", packCardIds.size());
+
+                    if(packNum < 2) {
+                        packNum += 1;
+                        seat = 1;
+                    } else {
+                        // this is the end game stuff. final card in final pack has been reached
+                        // cardsHash.size() should be 45 so this should never be reached
+                    }
+                }
+
+                Timber.tag("fart").i("next seat: %s, next pack: %s, cards on the board: %s", seat, packNum, packCardIds.size());
+                // update the SharedPreferences
+                mEditor.putInt(AllMyConstants.CURRENT_SEAT, seat);
+                mEditor.putInt(AllMyConstants.PACKS_NUMBER, packNum);
+                mEditor.putInt(AllMyConstants.CURRENT_PICK, pick);
+                mEditor.putInt("cards_left", packCardIds.size());
+
+
+                // update the database
+                packViewModel.updatePack(currentPack);
             }
-
-            // update the pack
-            currentPack.setCardIDs(packCardIds);
-            packViewModel.updatePack(currentPack);
-
-            Timber.tag("fart").i(" ");
-            Timber.tag("fart").i("inside run");
-            Timber.tag("fart").i("current seat: %s, current pack: %s", seat, packNum);
-
-            // if the pack is 3 (starts at zero so 0,1,2), start it over. otherwise, go up 1.
-            packNum = (packCardIds.size() == 0) ? packNum + 1 : packNum;
-
-            // adjust the seat count and pack number
-            seat = (seat == 8) ? 1 : seat;
-
-            // update the SharedPreferences
-            mEditor.putInt(AllMyConstants.CURRENT_SEAT, seat);
-            mEditor.putInt(AllMyConstants.PACKS_NUMBER, packNum);
-            mEditor.putInt(AllMyConstants.CURRENT_PICK, pick + 1);
-
-            Timber.tag("fart").i("bext seat: %s, next pack: %s", seat, packNum);
 
             mEditor.commit();
+            Timber.tag("fart").d("*******");
+            Timber.tag("fart").i(" ");
+
         }
     }
 

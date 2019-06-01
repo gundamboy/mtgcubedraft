@@ -226,8 +226,8 @@ public class ApplicationRepository {
     private static class InsertPackAsyncTask extends AsyncTask<Pack, Void, Void> {
         private PackDao packDao;
 
-        private InsertPackAsyncTask(PackDao draftDao) {
-            this.packDao = draftDao;
+        private InsertPackAsyncTask(PackDao packDao) {
+            this.packDao = packDao;
         }
 
         @Override
@@ -240,7 +240,7 @@ public class ApplicationRepository {
     private static class UpdatePackAsyncTask extends AsyncTask<Pack, Void, Void> {
         PackDao packDao;
 
-        private UpdatePackAsyncTask(PackDao draftDao) {
+        private UpdatePackAsyncTask(PackDao packDao) {
             this.packDao = packDao;
         }
 
@@ -254,7 +254,7 @@ public class ApplicationRepository {
     private static class DeletePackAsyncTask extends AsyncTask<Pack, Void, Void> {
         PackDao packDao;
 
-        private DeletePackAsyncTask(PackDao draftDao) {
+        private DeletePackAsyncTask(PackDao packDao) {
             this.packDao = packDao;
         }
 

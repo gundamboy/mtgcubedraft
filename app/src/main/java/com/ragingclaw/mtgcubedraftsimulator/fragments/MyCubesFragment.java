@@ -94,7 +94,6 @@ public class MyCubesFragment extends Fragment {
             @Override
             public void onChanged(List<Cube> cubesEntities) {
                 // update stuff
-                Timber.tag("fart").i("observing. cubeEntities size: %s", cubesEntities.size());
                 if(cubesEntities.size() > 0) {
                     my_cubes_layout.setVisibility(View.VISIBLE);
                     no_cubes_found_layout.setVisibility(View.GONE);
