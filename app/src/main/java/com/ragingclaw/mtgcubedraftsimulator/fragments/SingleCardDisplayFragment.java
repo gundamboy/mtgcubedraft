@@ -82,7 +82,9 @@ public class SingleCardDisplayFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        Picasso.get().load(cardUrl).placeholder(R.color.colorAccent).into(mtgCardImage);
+        //Picasso.get().load(cardUrl).placeholder(R.color.colorAccent).into(mtgCardImage);
+        mtgCardImage.setImageResource(R.drawable.nissa_temp_card);
+
 
         mtgCardImage.setOnClickListener(new View.OnClickListener() {
             @Override

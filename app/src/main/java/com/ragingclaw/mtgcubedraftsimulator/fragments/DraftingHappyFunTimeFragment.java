@@ -30,6 +30,7 @@ import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -133,6 +134,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                 sendDataBackToActivity(title);
                 for(Pack p : packs) {
                     List<Integer> cardIds = p.getCardIDs();
+
                     if (p.getSeat_num() == currentSeatNum && p.getBooster_num() == currentPackNum) {
                         magicCardViewModel.getmAllCards().observe(getActivity(), new Observer<List<MagicCard>>() {
                             @Override
@@ -244,10 +246,11 @@ public class DraftingHappyFunTimeFragment extends Fragment {
             Timber.tag("fart").i(" ");
             Timber.tag("fart").d("*******");
 
-            // set to hold the chosen card ids
-            Set<String> cardsHash = new HashSet<>();
             mEditor = prefs.edit();
             mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, false);
+
+
+
 
             // the card id that was picked, the current seat, and the current pack number
             int cardIdPicked = prefs.getInt(AllMyConstants.CARD_ID, 0);
@@ -256,19 +259,29 @@ public class DraftingHappyFunTimeFragment extends Fragment {
             int pick = 1;
 
 
+            /********************************************************/
+            List<Pack> allPacks = packViewModel.getAllPacksStatic();
+            Timber.tag("fart").w("BEFORE PROCESSING");
+            for (Pack p : allPacks) {
+                if(p.getBooster_num() == currentPackNumber) {
+                    Timber.tag("fart").d("      Seat: %s, PackID: %s, BoosterNum: %s, CardIdsSize: %s", p.getSeat_num(), p.getPackId(), p.getBooster_num(), p.getCardIDs().size());
+                }
+            }
 
 
 
 
+            // set to hold the chosen card ids
+            Set<String> cardsHash = new HashSet<>();
             // check for the string set so we can assign it and not overwrite stuff
+
             if(prefs.contains(AllMyConstants.THE_CHOSEN_CARDS)) {
                 cardsHash = prefs.getStringSet(AllMyConstants.THE_CHOSEN_CARDS, null);
             }
 
             cardsHash.add(String.valueOf(cardIdPicked));
             pick = cardsHash.size() + 1;
-            Timber.tag("fart CARDHASH:").i("total cards picked: %s", cardsHash.size());
-            Timber.tag("fart CARDHASH:").i("current player picks: %s", cardsHash.toString());
+            //Timber.tag("fart CARDHASH:").i("total cards picked: %s, current player picks: %s", cardsHash.size(), cardsHash.toString());
 
             // put the string set into prefs.
             mEditor.putStringSet(AllMyConstants.THE_CHOSEN_CARDS, cardsHash);
@@ -281,11 +294,16 @@ public class DraftingHappyFunTimeFragment extends Fragment {
             if (cardsHash.size() == 45) {
                 mEditor.commit();
                 // game's over man. send it off to the next fragment
+                Timber.tag("fart").i("GAME OVER MAN!");
             } else {
                 // get the current pack object
                 Pack currentPack = packViewModel.getPlayerPacksByNum(seat, currentPackNumber);
                 List<Integer> currentPackCardIds = currentPack.getCardIDs();
-                Timber.tag("fart CURRENT PACK").i("currentPackCardIds size = %s", currentPackCardIds.size());
+                //Timber.tag("fart CURRENT PACK").i("currentPackCardIds size = %s", currentPackCardIds.size());
+
+
+
+
 
 
 
@@ -299,11 +317,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                     currentPack.setCardIDs(currentPackCardIds);
 
 
-
-
-
                     // a card from each other pack also needs to be removed.
-                    List<Pack> allPacks = packViewModel.getAllPacksStatic();
                     for (Pack p : allPacks) {
                         // only get packs that are using the current pack number and not the current pack
                         if(p.getPackId() != currentPack.getPackId() && p.getBooster_num() == currentPackNumber) {
@@ -313,8 +327,12 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
                             // get a random card out of the list and remove it
                             int randomCardId = getRandomFromList(ids);
-                            Timber.tag("fart").i("pack size = %s || pack seat = %s, cardID = %s", ids.size(), p.getSeat_num(), randomCardId);
-                            ids.remove(Integer.valueOf(randomCardId));
+                            //Timber.tag("fart").i("BEFORE:: pack size = %s || pack seat = %s, cardID = %s", ids.size(), p.getSeat_num(), randomCardId);
+//                            ids.remove(Integer.valueOf(randomCardId));
+
+                            Collections.shuffle(ids);
+                            ids.remove(0);
+                            // Timber.tag("fart").i("AFTER:: pack size = %s || pack seat = %s, cardID = %s", ids.size(), p.getSeat_num(), randomCardId);
 
                             // reset the ids in the pack
                             p.setCardIDs(ids);
@@ -323,6 +341,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
                             // update this pack in the database
                             try {
+                                Timber.tag("fart").i("the Pack being updated: ID: %s, Seat: %s, PackNumber: %s, cardIds: %s", p.getPackId(), p.getSeat_num(), p.getBooster_num(),  p.getCardIDs().toString());
                                 packViewModel.updatePack(p);
                             } catch (Exception e) {
                                 Timber.tag("fart").w(" ");
@@ -338,12 +357,8 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                     }
 
 
-
-
-
                     // adjust the seat
                     seat = (seat == 8) ? 1 : seat + 1;
-
 
 
                     // ends: if currentPackCardIds.size() != 0
@@ -371,6 +386,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
                 // update the database
                 try {
+                    Timber.tag("fart").i("the CurrentPack being updated: ID: %s, Seat: %s, PackNumber: %s, cardIds: %s", currentPack.getPackId(), currentPack.getSeat_num(), currentPack.getBooster_num(),  currentPack.getCardIDs().toString());
                     packViewModel.updatePack(currentPack);
                 } catch (Exception e) {
                     Timber.tag("fart").w(" ");
@@ -381,6 +397,14 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                     Timber.tag("fart").e("---------------------------------------");
                     Timber.tag("fart").e("STACKTRACE MESSAGE::: %s", e.getMessage());
                     Timber.tag("fart").w(" ");
+                }
+
+                /******************************************************/
+                Timber.tag("fart").w("AFTER PROCESSING");
+                for (Pack p : allPacks) {
+                    if(p.getBooster_num() == currentPackNumber) {
+                        Timber.tag("fart").d("      Seat: %s, PackID: %s, BoosterNum: %s, CardIdsSize: %s", p.getSeat_num(), p.getPackId(), p.getBooster_num(), p.getCardIDs().size());
+                    }
                 }
 
                 mEditor.commit();

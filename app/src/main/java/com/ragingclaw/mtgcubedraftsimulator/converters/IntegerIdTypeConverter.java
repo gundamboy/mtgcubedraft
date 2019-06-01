@@ -6,6 +6,8 @@ import androidx.room.util.StringUtil;
 import java.util.Collections;
 import java.util.List;
 
+import timber.log.Timber;
+
 public class IntegerIdTypeConverter {
     @TypeConverter
     public static List<Integer> stringToIntList(String data) {
@@ -17,6 +19,7 @@ public class IntegerIdTypeConverter {
 
     @TypeConverter
     public static String intListToString(List<Integer> list) {
+        Timber.tag("fart").w("IntegerIdTypeConverter list size: %s", list.size());
         StringBuilder stringBuilder = new StringBuilder();
         for (Integer i : list) {
             String s = Integer.toString(i);
