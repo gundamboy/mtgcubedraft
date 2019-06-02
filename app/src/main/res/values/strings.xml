@@ -65,6 +65,8 @@
     <string name="draft_instructions_text">Click a card to make it larger. You can draft it by clicking the \"Draft Me\" button</string>
     <string name="mtg_card_scale_transition_name">mtgCardScale</string>
     <string name="mtg_card_content_description">mtg card</string>
+    <string name="_button_text">New Cube</string>
+    <string name="my_cubes_button_text">My Cubes</string>
 
 
 </resources>
