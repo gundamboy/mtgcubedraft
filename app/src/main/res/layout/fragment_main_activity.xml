@@ -27,8 +27,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:contentDescription="logo"
-                android:src="@drawable/temp_icon"
+                android:contentDescription="@string/magic_the_gathering_arena_logo_description"
+                android:src="@drawable/mtg_arena_logo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

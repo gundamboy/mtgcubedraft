@@ -272,14 +272,13 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                                 draftCardsAdapter.setCards(currentCards);
                                 draftCardsAdapter.setOnClickListener(new DraftCardsAdapter.OnItemClickListener() {
                                     @Override
-                                    public void onItemClick(int position, int cardId, View v, String url) {
+                                    public void onItemClick(int position, int cardId, View v, String url, FragmentNavigator.Extras extras) {
                                         Timber.tag("fart").i("the id of the clicked card: %s", cardId);
                                         Bundle b = new Bundle();
                                         b.putInt(AllMyConstants.CARD_ID, cardId);
                                         b.putInt(AllMyConstants.CURRENT_SEAT, currentSeatNum);
                                         b.putInt(AllMyConstants.CURRENT_PACK, currentPackNum);
                                         b.putString(AllMyConstants.CARD_URL, url);
-                                        FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, "mtgCardScale").build();
                                         Navigation.findNavController(view).navigate(R.id.action_draftingHappyFunTimeFragment_to_singleCardDisplayFragment, b, null, extras);
                                     }
                                 });

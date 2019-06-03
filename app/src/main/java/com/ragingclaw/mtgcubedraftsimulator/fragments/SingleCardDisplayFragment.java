@@ -36,6 +36,7 @@ import timber.log.Timber;
 public class SingleCardDisplayFragment extends Fragment {
     @BindView(R.id.mtg_card) ImageView mtgCardImage;
     @BindView(R.id.draft_me_button) com.google.android.material.button.MaterialButton draftMeButton;
+    @BindView(R.id.draft_me_button_go_back) com.google.android.material.button.MaterialButton goBackButton;
     private Unbinder unbinder;
     private int multiVerseId;
     private int currentSeat;
@@ -82,6 +83,7 @@ public class SingleCardDisplayFragment extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -94,9 +96,15 @@ public class SingleCardDisplayFragment extends Fragment {
 
         mtgCardImage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, "mtgCardScale").build();
-                Navigation.findNavController(view).navigate(R.id.action_singleCardDisplayFragment_to_draftingHappyFunTimeFragment, null, null, extras);
+            public void onClick(View view) {
+                goBackToDraftList(view);
+            }
+        });
+
+        goBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goBackToDraftList(view);
             }
         });
 
@@ -115,13 +123,18 @@ public class SingleCardDisplayFragment extends Fragment {
 
                 Timber.tag("fart").i("the id of the drafted card: %s", multiVerseId);
 
-                FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(mtgCardImage, "mtgCardScale").build();
-                Navigation.findNavController(view).navigate(R.id.action_singleCardDisplayFragment_to_draftingHappyFunTimeFragment, null, null, extras);
+                goBackToDraftList(view);
             }
         });
 
         return view;
     }
+
+    private void goBackToDraftList(View view) {
+        //FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(view, "mtgCardScale").build();
+        Navigation.findNavController(view).navigate(R.id.action_singleCardDisplayFragment_to_draftingHappyFunTimeFragment, null, null, null);
+    }
+
 
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {

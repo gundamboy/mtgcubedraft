@@ -24,6 +24,9 @@ public interface CubeDao {
     @Query("SELECT * From cubes")
     LiveData<List<Cube>> getAllCubes();
 
+    @Query("SELECT * From cubes")
+    List<Cube> getAllCubesStatic();
+
     // get only the current users cubes
     @Query("SELECT * From cubes Where cubes.userId = :userId")
     LiveData<List<Cube>> getUserCubes(String userId);

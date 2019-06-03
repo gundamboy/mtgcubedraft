@@ -41,6 +41,11 @@ public class CubeViewModel extends AndroidViewModel {
         return mAllCubes;
     }
 
+    public List<Cube> getAllCubesStatic() {
+        return mApplicationRepository.getAllCubesStatic();
+    }
+
+
     public LiveData<List<Cube>> getmAllUsersCubes(String s) {
        return  mApplicationRepository.getUserCubes(s);
     }

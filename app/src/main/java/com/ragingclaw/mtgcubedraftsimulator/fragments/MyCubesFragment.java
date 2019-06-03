@@ -2,6 +2,7 @@ package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -12,6 +13,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,14 +47,16 @@ import timber.log.Timber;
  * create an instance of this fragment.
  */
 public class MyCubesFragment extends Fragment {
-    @BindView(R.id.no_cubes_found) androidx.constraintlayout.widget.ConstraintLayout no_cubes_found_layout;
-    @BindView(R.id.my_cubes_layout) androidx.constraintlayout.widget.ConstraintLayout my_cubes_layout;
+    @BindView(R.id.no_cubes_found) androidx.core.widget.NestedScrollView no_cubes_found_layout;
+    @BindView(R.id.my_cubes_layout) androidx.core.widget.NestedScrollView my_cubes_layout;
     @BindView(R.id.cubes_recyclerview) RecyclerView cubes_recyclerView;
     @BindView(R.id.create_cube_button) com.google.android.material.button.MaterialButton createCubeButton;
     private Unbinder unbinder;
     private CubeViewModel cubeViewModel;
     private MyCubesAdapter myCubesAdapter;
     private FirebaseAuth mAuth;
+    private SharedPreferences mPreferences;
+    private SharedPreferences.Editor mEditor;
 
     private OnMyCubesFragmentInteraction mListener;
 
@@ -78,6 +82,8 @@ public class MyCubesFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_cubes, container, false);
         unbinder = ButterKnife.bind(this, view);
+
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         mAuth = FirebaseAuth.getInstance();
         String currentUser = mAuth.getCurrentUser().getUid();
@@ -113,6 +119,13 @@ public class MyCubesFragment extends Fragment {
                             bundle.putBoolean(AllMyConstants.CUBE_CARDS, false);
                             bundle.putString(AllMyConstants.CUBE_NAME, cubeName);
                             bundle.putInt(AllMyConstants.CUBE_ID, cubeId);
+
+                            mEditor = mPreferences.edit();
+                            mEditor.putBoolean(AllMyConstants.NEW_CUBE, false);
+                            mEditor.putBoolean(AllMyConstants.CUBE_CARDS, false);
+                            mEditor.putString(AllMyConstants.CUBE_NAME, cubeName);
+                            mEditor.putInt(AllMyConstants.CUBE_ID, cubeId);
+                            mEditor.commit();
 
                             Navigation.findNavController(view).navigate(R.id.action_myCubesFragment_to_cubeCardsReview, bundle, null);
                         }

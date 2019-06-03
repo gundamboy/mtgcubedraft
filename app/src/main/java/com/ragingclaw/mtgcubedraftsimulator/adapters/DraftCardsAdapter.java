@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.fragment.FragmentNavigator;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ragingclaw.mtgcubedraftsimulator.R;
@@ -26,7 +27,7 @@ public class DraftCardsAdapter extends RecyclerView.Adapter<DraftCardsAdapter.Ca
     private DraftCardsAdapter.OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-        void onItemClick(int position, int cardId, View view, String url);
+        void onItemClick(int position, int cardId, View view, String url, FragmentNavigator.Extras extras);
     }
 
     public void setOnClickListener(OnItemClickListener listener) {
@@ -77,7 +78,8 @@ public class DraftCardsAdapter extends RecyclerView.Adapter<DraftCardsAdapter.Ca
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if(position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(position, Integer.parseInt(cardId.getText().toString()), mtgCardImage, cardUrl.getText().toString());
+                        FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(mtgCardImage, "mtg_card_scale").build();
+                        listener.onItemClick(position, Integer.parseInt(cardId.getText().toString()), mtgCardImage, cardUrl.getText().toString(), extras);
                     }
                 }
             });

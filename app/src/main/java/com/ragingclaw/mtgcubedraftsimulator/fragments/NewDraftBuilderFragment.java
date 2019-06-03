@@ -227,31 +227,6 @@ public class NewDraftBuilderFragment extends Fragment {
             }
 
 
-            Set<String> seat1_pack1 = new HashSet<>();
-            Set<String> seat1_pack2 = new HashSet<>();
-            Set<String> seat1_pack3 = new HashSet<>();
-            Set<String> seat2_pack1 = new HashSet<>();
-            Set<String> seat2_pack2 = new HashSet<>();
-            Set<String> seat2_pack3 = new HashSet<>();
-            Set<String> seat3_pack1 = new HashSet<>();
-            Set<String> seat3_pack2 = new HashSet<>();
-            Set<String> seat3_pack3 = new HashSet<>();
-            Set<String> seat4_pack1 = new HashSet<>();
-            Set<String> seat4_pack2 = new HashSet<>();
-            Set<String> seat4_pack3 = new HashSet<>();
-            Set<String> seat5_pack1 = new HashSet<>();
-            Set<String> seat5_pack2 = new HashSet<>();
-            Set<String> seat5_pack3 = new HashSet<>();
-            Set<String> seat6_pack1 = new HashSet<>();
-            Set<String> seat6_pack2 = new HashSet<>();
-            Set<String> seat6_pack3 = new HashSet<>();
-            Set<String> seat7_pack1 = new HashSet<>();
-            Set<String> seat7_pack2 = new HashSet<>();
-            Set<String> seat7_pack3 = new HashSet<>();
-            Set<String> seat8_pack1 = new HashSet<>();
-            Set<String> seat8_pack2 = new HashSet<>();
-            Set<String> seat8_pack3 = new HashSet<>();
-
 
             // generate the packs
             int maxCardsPerPlayer = 45;
@@ -297,30 +272,6 @@ public class NewDraftBuilderFragment extends Fragment {
                 packViewModel.insertPack(new Pack(0, p, 8, cubeId, player8Packs.get(p)));
             }
 
-            seat1_pack1 = new HashSet<String>(Lists.transform(player1Packs.get(0), Functions.toStringFunction()));
-            seat1_pack2 = new HashSet<String>(Lists.transform(player1Packs.get(1), Functions.toStringFunction()));
-            seat1_pack3 = new HashSet<String>(Lists.transform(player1Packs.get(2), Functions.toStringFunction()));
-            seat2_pack1 = new HashSet<String>(Lists.transform(player2Packs.get(0), Functions.toStringFunction()));
-            seat2_pack2 = new HashSet<String>(Lists.transform(player2Packs.get(1), Functions.toStringFunction()));
-            seat2_pack3 = new HashSet<String>(Lists.transform(player2Packs.get(2), Functions.toStringFunction()));
-            seat3_pack1 = new HashSet<String>(Lists.transform(player3Packs.get(0), Functions.toStringFunction()));
-            seat3_pack2 = new HashSet<String>(Lists.transform(player3Packs.get(1), Functions.toStringFunction()));
-            seat3_pack3 = new HashSet<String>(Lists.transform(player3Packs.get(2), Functions.toStringFunction()));
-            seat4_pack1 = new HashSet<String>(Lists.transform(player4Packs.get(0), Functions.toStringFunction()));
-            seat4_pack2 = new HashSet<String>(Lists.transform(player4Packs.get(1), Functions.toStringFunction()));
-            seat4_pack3 = new HashSet<String>(Lists.transform(player4Packs.get(2), Functions.toStringFunction()));
-            seat5_pack1 = new HashSet<String>(Lists.transform(player5Packs.get(0), Functions.toStringFunction()));
-            seat5_pack2 = new HashSet<String>(Lists.transform(player5Packs.get(1), Functions.toStringFunction()));
-            seat5_pack3 = new HashSet<String>(Lists.transform(player5Packs.get(2), Functions.toStringFunction()));
-            seat6_pack1 = new HashSet<String>(Lists.transform(player6Packs.get(0), Functions.toStringFunction()));
-            seat6_pack2 = new HashSet<String>(Lists.transform(player6Packs.get(1), Functions.toStringFunction()));
-            seat6_pack3 = new HashSet<String>(Lists.transform(player6Packs.get(2), Functions.toStringFunction()));
-            seat7_pack1 = new HashSet<String>(Lists.transform(player7Packs.get(0), Functions.toStringFunction()));
-            seat7_pack2 = new HashSet<String>(Lists.transform(player7Packs.get(1), Functions.toStringFunction()));
-            seat7_pack3 = new HashSet<String>(Lists.transform(player7Packs.get(2), Functions.toStringFunction()));
-            seat8_pack1 = new HashSet<String>(Lists.transform(player8Packs.get(0), Functions.toStringFunction()));
-            seat8_pack2 = new HashSet<String>(Lists.transform(player8Packs.get(1), Functions.toStringFunction()));
-            seat8_pack3 = new HashSet<String>(Lists.transform(player8Packs.get(2), Functions.toStringFunction()));
 
 
             // put all this crap into shared prefs
@@ -329,30 +280,6 @@ public class NewDraftBuilderFragment extends Fragment {
             mEditor.putInt(AllMyConstants.CURRENT_SEAT, 1);
             mEditor.putInt(AllMyConstants.CURRENT_PICK, 1);
             mEditor.putInt(AllMyConstants.CUBE_ID, cubeId);
-            mEditor.putStringSet(AllMyConstants.SEAT1_PACK1, seat1_pack1);
-            mEditor.putStringSet(AllMyConstants.SEAT1_PACK2, seat1_pack2);
-            mEditor.putStringSet(AllMyConstants.SEAT1_PACK3, seat1_pack3);
-            mEditor.putStringSet(AllMyConstants.SEAT2_PACK1, seat2_pack1);
-            mEditor.putStringSet(AllMyConstants.SEAT2_PACK2, seat2_pack2);
-            mEditor.putStringSet(AllMyConstants.SEAT2_PACK3, seat2_pack3);
-            mEditor.putStringSet(AllMyConstants.SEAT3_PACK1, seat3_pack1);
-            mEditor.putStringSet(AllMyConstants.SEAT3_PACK2, seat3_pack2);
-            mEditor.putStringSet(AllMyConstants.SEAT3_PACK3, seat3_pack3);
-            mEditor.putStringSet(AllMyConstants.SEAT4_PACK1, seat4_pack1);
-            mEditor.putStringSet(AllMyConstants.SEAT4_PACK2, seat4_pack2);
-            mEditor.putStringSet(AllMyConstants.SEAT4_PACK3, seat4_pack3);
-            mEditor.putStringSet(AllMyConstants.SEAT5_PACK1, seat5_pack1);
-            mEditor.putStringSet(AllMyConstants.SEAT5_PACK2, seat5_pack2);
-            mEditor.putStringSet(AllMyConstants.SEAT5_PACK3, seat5_pack3);
-            mEditor.putStringSet(AllMyConstants.SEAT6_PACK1, seat6_pack1);
-            mEditor.putStringSet(AllMyConstants.SEAT6_PACK2, seat6_pack2);
-            mEditor.putStringSet(AllMyConstants.SEAT6_PACK3, seat6_pack3);
-            mEditor.putStringSet(AllMyConstants.SEAT7_PACK1, seat7_pack1);
-            mEditor.putStringSet(AllMyConstants.SEAT7_PACK2, seat7_pack2);
-            mEditor.putStringSet(AllMyConstants.SEAT7_PACK3, seat7_pack3);
-            mEditor.putStringSet(AllMyConstants.SEAT8_PACK1, seat8_pack1);
-            mEditor.putStringSet(AllMyConstants.SEAT8_PACK2, seat8_pack2);
-            mEditor.putStringSet(AllMyConstants.SEAT8_PACK3, seat8_pack3);
 
 
 

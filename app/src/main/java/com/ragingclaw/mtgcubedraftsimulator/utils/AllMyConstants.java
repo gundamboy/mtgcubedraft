@@ -25,8 +25,10 @@ public class AllMyConstants {
     public static final String THE_CHOSEN_CARDS = "THE_CHOSEN_CARDS";
     public static final String IS_SINGLE = "IS_SINGLE";
     public static final String IS_SAVED = "IS_SAVED";
+    public static final String SHOW_SAVED_TOAST = "SHOW_SAVED_TOAST";
     public static final String START_DRAFT = "START_DRAFT";
     public static final String CARDS_LEFT = "CARDS_LEFT";
+    public static final String RECYCLER_STATE = "RECYCLER_STATE";
 
     public static final String SEAT1_PACK1 = "SEAT1_PACK1";
     public static final String SEAT1_PACK2 = "SEAT1_PACK2";

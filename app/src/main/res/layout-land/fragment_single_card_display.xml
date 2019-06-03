@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?android:attr/actionBarSize"
+    android:orientation="horizontal"
+    tools:context=".fragments.SingleCardDisplayFragment">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        android:layout_weight="0.7"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/mtg_card"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:transitionName="@string/mtg_card_scale_transition_name"
+            app:srcCompat="@drawable/nissa_temp_card" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="1.3"
+        android:gravity="center">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/draft_me_button"
+            android:layout_width="160dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/draft_me_text" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/draft_me_button_go_back"
+            android:layout_width="160dp"
+            android:layout_height="100dp"
+            android:layout_alignTop="@+id/draft_me_button"
+            android:layout_alignBottom="@+id/draft_me_button"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_toEndOf="@+id/draft_me_button"
+            android:text="@string/dont_draft_me_text" />
+    </RelativeLayout>
+
+</LinearLayout>
+

@@ -66,6 +66,10 @@ public class ApplicationRepository {
         return mCubesDoa.getAllCubes();
     }
 
+    public List<Cube> getAllCubesStatic() {
+        return mCubesDoa.getAllCubesStatic();
+    }
+
     public LiveData<List<Cube>> getUserCubes(String userId) {
         return mCubesDoa.getUserCubes(userId);
     }
