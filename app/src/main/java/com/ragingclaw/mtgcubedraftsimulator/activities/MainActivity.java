@@ -17,6 +17,7 @@ import com.ragingclaw.mtgcubedraftsimulator.BuildConfig;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.DraftingHappyFunTimeFragment;
+import com.ragingclaw.mtgcubedraftsimulator.fragments.EndGameFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.MainActivityFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.MyCubesFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeBuilderFragment;
@@ -40,7 +41,8 @@ public class MainActivity extends AppCompatActivity implements
         MyCubesFragment.OnMyCubesFragmentInteraction,
         NewDraftBuilderFragment.OnBuildDraftFragmentInteractionListener,
         DraftingHappyFunTimeFragment.OnDraftingHappyFunTimeInteraction,
-        SingleCardDisplayFragment.OnSingleCardFragmentInteractionListener {
+        SingleCardDisplayFragment.OnSingleCardFragmentInteractionListener,
+        EndGameFragment.OnEndGameFragmentInteractionListener {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     ActionBar actionBar;
@@ -153,9 +155,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void OnBuildDraftFragmentInteractionListener(Uri uri) {
-
-    }
+    public void OnBuildDraftFragmentInteractionListener(Uri uri) { }
 
     @Override
     public void onDraftingHappyFunTimeInteraction(String title) {
@@ -163,7 +163,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onSingleCardFragmentInteraction(Uri uri) {
-        
-    }
+    public void onSingleCardFragmentInteraction(Uri uri) { }
+
+    @Override
+    public void onEndGameFragmentInteraction(String string) { }
 }

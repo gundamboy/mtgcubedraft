@@ -25,6 +25,10 @@ public class CubeViewModel extends AndroidViewModel {
         mApplicationRepository.insertCube(cube);
     }
 
+    public Long insertCubeWithReturn(Cube cube) {
+        return mApplicationRepository.insertCubesWithReturn(cube);
+    }
+
     public void updateCube(Cube cube) {
         mApplicationRepository.updateCube(cube);
     }
@@ -41,8 +45,13 @@ public class CubeViewModel extends AndroidViewModel {
         return mAllCubes;
     }
 
+    public List<Cube> getAllCubesStatic() {
+        return mApplicationRepository.getAllCubesStatic();
+    }
+
+
     public LiveData<List<Cube>> getmAllUsersCubes(String s) {
-       return  mApplicationRepository.getUserCubes(s);
+        return  mApplicationRepository.getUserCubes(s);
     }
 
     public Cube getmUserCube(String s, Integer i) {

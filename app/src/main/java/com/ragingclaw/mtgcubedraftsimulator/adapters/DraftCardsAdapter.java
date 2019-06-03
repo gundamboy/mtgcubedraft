@@ -19,7 +19,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class DraftCardsAdapter extends RecyclerView.Adapter<DraftCardsAdapter.CardHolder> {
     private List<MagicCard> cards = new ArrayList<>();

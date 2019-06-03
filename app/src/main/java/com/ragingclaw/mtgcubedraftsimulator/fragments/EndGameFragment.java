@@ -1,90 +1,162 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.NavUtils;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.FragmentNavigator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.ragingclaw.mtgcubedraftsimulator.R;
+import com.ragingclaw.mtgcubedraftsimulator.activities.MainActivity;
+import com.ragingclaw.mtgcubedraftsimulator.adapters.DraftCardsAdapter;
+import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
+import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
+import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link EndGameFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link EndGameFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+
 public class EndGameFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
+    @BindView(R.id.draft_cards_recyclerview) RecyclerView draftCardsRecyclerView;
+    @BindView(R.id.draft_done_button) com.google.android.material.button.MaterialButton draftDoneButton;
+    private Unbinder unbinder;
+    private SharedPreferences mPreferences;
+    private SharedPreferences.Editor mEditor;
+    private MagicCardViewModel magicCardViewModel;
+    private GridLayoutManager gridLayoutManager;
+    private DraftCardsAdapter draftCardsAdapter;
+    private static Bundle mBundleRecyclerViewState;
+    private Parcelable mListState = null;
+    private OnEndGameFragmentInteractionListener mListener;
+    private List<MagicCard> currentCards = new ArrayList<>();
+    private List<Integer> cardIdsFromPrefs = new ArrayList<>();
 
     public EndGameFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EndGameFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EndGameFragment newInstance(String param1, String param2) {
+    public static EndGameFragment newInstance() {
         EndGameFragment fragment = new EndGameFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_end_game, container, false);
+        View view = inflater.inflate(R.layout.fragment_end_game, container, false);
+        unbinder = ButterKnife.bind(this, view);
+
+        magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
+
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Set<String> cardsHash = mPreferences.getStringSet(AllMyConstants.THE_CHOSEN_CARDS, null);
+
+        // convert the string set into an integer list. one line to rule them all.
+        if(cardsHash.size() > 0) {
+            cardIdsFromPrefs = cardsHash.stream().map(Integer::parseInt).collect(Collectors.toList());
+        }
+
+        gridLayoutManager = new GridLayoutManager(getActivity(), 3);
+        draftCardsRecyclerView.setLayoutManager(gridLayoutManager);
+        draftCardsRecyclerView.setHasFixedSize(true);
+        draftCardsAdapter = new DraftCardsAdapter();
+        draftCardsRecyclerView.setAdapter(draftCardsAdapter);
+
+
+        // database stuff
+        magicCardViewModel.getmAllCards().observe(getActivity(), new Observer<List<MagicCard>>() {
+            @Override
+            public void onChanged(List<MagicCard> magicCards) {
+                // get the cards we need to display
+                for (MagicCard card : magicCards) {
+                    if (cardIdsFromPrefs.contains(card.getMultiverseid())) {
+                        currentCards.add(card);
+                    }
+                }
+
+                if (currentCards.size() > 0) {
+                    draftCardsAdapter.setCards(currentCards);
+                    draftCardsAdapter.setOnClickListener(new DraftCardsAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(int position, int cardId, View v, String url) {
+                            Bundle b = new Bundle();
+                            b.putInt(AllMyConstants.CARD_ID, cardId);
+                            b.putString(AllMyConstants.CARD_URL, url);
+                            FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, "mtgCardScale").build();
+                            Navigation.findNavController(view).navigate(R.id.action_draftingHappyFunTimeFragment_to_endGameFragment, b, null, extras);
+                        }
+                    });
+                }
+
+            }
+        });
+
+        draftDoneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentCards.clear();
+                mEditor = mPreferences.edit();
+                mEditor.clear();
+                mEditor.commit();
+
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                getFragmentManager().popBackStack();
+                getActivity().startActivity(intent);
+            }
+        });
+
+        return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+
+    public void sendDataToActivity(String string) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onEndGameFragmentInteraction(string);
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnEndGameFragmentInteractionListener) {
+            mListener = (OnEndGameFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnEndGameFragmentInteractionListener");
         }
     }
 
@@ -94,18 +166,37 @@ public class EndGameFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onPause() {
+        super.onPause();
+        // recycler view position saving
+        mBundleRecyclerViewState = new Bundle();
+        mListState = draftCardsRecyclerView.getLayoutManager().onSaveInstanceState();
+        mBundleRecyclerViewState.putParcelable(AllMyConstants.RECYCLER_RESTORE, mListState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        // restore recycler view scroll position
+        if (mBundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    mListState = mBundleRecyclerViewState.getParcelable(AllMyConstants.RECYCLER_RESTORE);
+                    draftCardsRecyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+
+                }
+            }, 50);
+        }
+
+
+        draftCardsRecyclerView.setLayoutManager(gridLayoutManager);
+    }
+
+    public interface OnEndGameFragmentInteractionListener {
+        void onEndGameFragmentInteraction(String string);
     }
 }

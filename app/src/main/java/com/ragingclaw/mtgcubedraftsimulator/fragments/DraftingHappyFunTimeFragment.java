@@ -1,6 +1,7 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -58,13 +60,9 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     @BindView(R.id.draft_cards_recyclerview) RecyclerView draftCardsRecyclerView;
 
     private Unbinder unbinder;
-    private Thread t;
-    private Handler handler;
-    private Bundle handlerBundle = new Bundle();
     private MagicCardViewModel magicCardViewModel;
     private PackViewModel packViewModel;
     private GridLayoutManager gridLayoutManager;
-    private LinearLayoutManager linearLayoutManager;
     private DraftCardsAdapter draftCardsAdapter;
     private OnDraftingHappyFunTimeInteraction mListener;
     private SharedPreferences mPreferences;
@@ -110,7 +108,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            packs = Parcels.unwrap(getArguments().getParcelable(AllMyConstants.PACKS));
+
         }
     }
 
@@ -162,86 +160,91 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                             cardsHash.add(String.valueOf(cardIdPicked));
                             mEditor.putStringSet(AllMyConstants.THE_CHOSEN_CARDS, cardsHash);
 
+                            // if the cardHash has 45 cards in it the draft is over, show a dialog
+                            // and go to the deck review fragment
+                            if (cardsHash.size() == 45) {
+                                // commit the shared prefs so the hash is complete on the
+                                // next fragment
+                                mEditor.commit();
+                                showDraftDoneDialog(view);
+                            } else {
 
+                                Pack currentPack = null;
+                                List<Integer> currentPackCardIds = new ArrayList<>();
 
-
-                            Pack currentPack = null;
-                            List<Integer> currentPackCardIds = new ArrayList<>();
-
-
-                            // get the current card ids for the active pack
-                            for (Pack p : packs) {
-                                if (p.getSeat_num() == currentSeatNum) {
-                                    if (p.getBooster_num() == currentPackNum) {
-                                        currentPack = p;
-                                        currentPackCardIds = p.getCardIDs();
+                                // get the current card ids for the active pack
+                                for (Pack p : packs) {
+                                    if (p.getSeat_num() == currentSeatNum) {
+                                        if (p.getBooster_num() == currentPackNum) {
+                                            currentPack = p;
+                                            currentPackCardIds = p.getCardIDs();
+                                        }
                                     }
                                 }
-                            }
 
+                                // remove cards from the non active players packs
+                                // do the 'game' processing here
+                                if (currentPackCardIds.size() != 0) {
+                                    for (Pack p : packs) {
+                                        if (p.getPackId() != currentPack.getPackId()) {
+                                            if (p.getBooster_num() == currentPackNum) {
+                                                List<Integer> ids = p.getCardIDs();
+                                                Collections.shuffle(ids);
+                                                ids.remove(0);
+                                                p.setCardIDs(ids);
+                                                if (ids.size() == 0) {
+                                                    packViewModel.deletePack(p);
+                                                } else {
+                                                    packViewModel.updatePack(p);
+                                                }
+                                            }
+                                        }
 
-                            // remove cards from the non active players packs
-                            // do the 'game' processing here
-                            if (currentPackCardIds.size() != 0) {
-                                for (Pack p : packs) {
-                                    if (p.getPackId() != currentPack.getPackId()) {
-                                        if (p.getBooster_num() == currentPackNum) {
-                                            List<Integer> ids = p.getCardIDs();
-                                            Collections.shuffle(ids);
-                                            ids.remove(0);
-                                            p.setCardIDs(ids);
-                                            if (ids.size() == 0) {
+                                        // remove the picked card from the pack
+                                        if (p.getPackId() == currentPack.getPackId()) {
+                                            currentPackCardIds.remove(Integer.valueOf(cardIdPicked));
+                                            p.setCardIDs(currentPackCardIds);
+                                            if (currentPackCardIds.size() == 0) {
                                                 packViewModel.deletePack(p);
+                                                timeToChangePacks = true;
                                             } else {
                                                 packViewModel.updatePack(p);
                                             }
+
+                                            if (currentSeatNum == 8) {
+                                                currentSeatNum = 1;
+                                            } else {
+                                                currentSeatNum += 1;
+                                            }
                                         }
                                     }
-
-                                    // remove the picked card from the pack
-                                    if (p.getPackId() == currentPack.getPackId()) {
-                                        currentPackCardIds.remove(Integer.valueOf(cardIdPicked));
-                                        p.setCardIDs(currentPackCardIds);
-                                        if (currentPackCardIds.size() == 0) {
-                                            packViewModel.deletePack(p);
-                                            timeToChangePacks = true;
-                                        } else {
-                                            packViewModel.updatePack(p);
-                                        }
-
-                                        if (currentSeatNum == 8) {
-                                            currentSeatNum = 1;
-                                        } else {
-                                            currentSeatNum += 1;
-                                        }
+                                } else {
+                                    // pack is empty, time to switch
+                                    if (currentPackNum < 2) {
+                                        currentPackNum += 1;
+                                        currentSeatNum = 1;
+                                        timeToChangePacks = false;
+                                        mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, true);
                                     }
                                 }
-                            } else {
-                                // pack is empty, time to switch
-                                if (currentPackNum < 2) {
-                                    currentPackNum += 1;
-                                    currentSeatNum = 1;
-                                    timeToChangePacks = false;
-                                    mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, true);
+
+                                // do the pack switch
+                                if (timeToChangePacks) {
+                                    if (currentPackNum < 2) {
+                                        currentPackNum += 1;
+                                        currentSeatNum = 1;
+                                        timeToChangePacks = false;
+                                        mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, true);
+                                    }
                                 }
+
+                                mEditor.putInt(AllMyConstants.CURRENT_PACK, currentPackNum);
+                                mEditor.putInt(AllMyConstants.CURRENT_SEAT, currentSeatNum);
+                                mEditor.commit();
+
+                                // flag to prevent multiple runs
+                                flag[0] = 1;
                             }
-
-                            // do the pack switch
-                            if(timeToChangePacks) {
-                                if (currentPackNum < 2) {
-                                    currentPackNum += 1;
-                                    currentSeatNum = 1;
-                                    timeToChangePacks = false;
-                                    mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, true);
-                                }
-                            }
-
-                            mEditor.putInt(AllMyConstants.CURRENT_PACK, currentPackNum);
-                            mEditor.putInt(AllMyConstants.CURRENT_SEAT, currentSeatNum);
-                            mEditor.commit();
-
-                            // flag to prevent multiple runs
-                            flag[0] = 1;
                         }
                     }
                 }
@@ -321,7 +324,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        // recylcer view position saving
+        // recycler view position saving
         mBundleRecyclerViewState = new Bundle();
         mListState = draftCardsRecyclerView.getLayoutManager().onSaveInstanceState();
         mBundleRecyclerViewState.putParcelable(AllMyConstants.RECYCLER_RESTORE, mListState);
@@ -346,6 +349,22 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
 
         draftCardsRecyclerView.setLayoutManager(gridLayoutManager);
+    }
+
+    private void showDraftDoneDialog(View view) {
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setView(inflater.inflate(R.layout.dialog_draft_complete, null))
+                .setPositiveButton(R.string.dialog_draft_complete_confirm, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Navigation.findNavController(view).navigate(R.id.action_draftingHappyFunTimeFragment_to_endGameFragment, null, null, null);
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     public interface OnDraftingHappyFunTimeInteraction {

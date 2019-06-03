@@ -20,9 +20,15 @@ public interface CubeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertCube(Cube cube);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    Long insertCubeWithReturn(Cube cube);
+
     // get every cube in the database
     @Query("SELECT * From cubes")
     LiveData<List<Cube>> getAllCubes();
+
+    @Query("SELECT * From cubes")
+    List<Cube> getAllCubesStatic();
 
     // get only the current users cubes
     @Query("SELECT * From cubes Where cubes.userId = :userId")
