@@ -91,12 +91,15 @@ public class CubeCardsReview extends Fragment {
         setHasOptionsMenu(true);
 
         if (getArguments() != null) {
-            cubeName = getArguments().getString(AllMyConstants.CUBE_NAME);
-            cubeId = getArguments().getInt(AllMyConstants.CUBE_ID);
+            if(savedInstanceState != null) {
+                cubeName = savedInstanceState.getString(AllMyConstants.CUBE_NAME);
+                cubeId = savedInstanceState.getInt(AllMyConstants.CUBE_ID);
+            } else {
+                cubeName = getArguments().getString(AllMyConstants.CUBE_NAME);
+                cubeId = getArguments().getInt(AllMyConstants.CUBE_ID);
+            }
 
             Timber.tag("fart").i("isSingle: %s", isSingle);
-
-            Timber.tag("fart").i("arguments:: cubeName: %s, cubeId: %s ", cubeName, cubeId);
 
             // send the cube name back to the activity so it can be set in the actionbar
             if(mListener != null) {
@@ -112,6 +115,14 @@ public class CubeCardsReview extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cube_card_review, container, false);
         unbinder = ButterKnife.bind(this, view);
+
+        if (savedInstanceState != null) {
+            cubeName = savedInstanceState.getString(AllMyConstants.CUBE_NAME);
+            cubeId = savedInstanceState.getInt(AllMyConstants.CUBE_ID);
+            cubeCards = Parcels.unwrap(savedInstanceState.getParcelable(AllMyConstants.CUBE_CARDS));
+            isSingle = savedInstanceState.getBoolean(AllMyConstants.IS_SINGLE);
+            isSaved = savedInstanceState.getBoolean(AllMyConstants.IS_SAVED);
+        }
 
         // standard stuff. firebase user id, RecyclerView set up.
         mAuth = FirebaseAuth.getInstance();
@@ -188,7 +199,10 @@ public class CubeCardsReview extends Fragment {
             }
         });
 
-        return view;
+
+
+
+            return view;
     }
 
     private void getMyCube(int cubeId) {
@@ -265,6 +279,18 @@ public class CubeCardsReview extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(AllMyConstants.CUBE_NAME, cubeName);
+        outState.putInt(AllMyConstants.CUBE_NAME, cubeId);
+        outState.putParcelable(AllMyConstants.CUBE_CARDS, Parcels.wrap(cubeCards));
+        outState.putBoolean(AllMyConstants.IS_SINGLE, isSingle);
+        outState.putBoolean(AllMyConstants.IS_SAVED, isSaved);
+
+    }
+
 
     public interface OnCubeReviewFragmentInteractionListener {
         void onFragmentCubeReviewInteraction(Bundle bundle);

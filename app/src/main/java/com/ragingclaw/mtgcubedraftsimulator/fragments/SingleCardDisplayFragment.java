@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.FragmentNavigator;
@@ -70,7 +71,14 @@ public class SingleCardDisplayFragment extends Fragment {
             multiVerseId = getArguments().getInt(AllMyConstants.CARD_ID);
             cardUrl = getArguments().getString(AllMyConstants.CARD_URL);
             currentSeat = getArguments().getInt(AllMyConstants.CURRENT_SEAT);
-            packNumber = getArguments().getInt(AllMyConstants.PACKS_NUMBER);
+            packNumber = getArguments().getInt(AllMyConstants.CURRENT_PACK);
+        }
+
+        if (savedInstanceState != null) {
+            multiVerseId = savedInstanceState.getInt(AllMyConstants.CARD_ID);
+            cardUrl = savedInstanceState.getString(AllMyConstants.CARD_URL);
+            currentSeat = savedInstanceState.getInt(AllMyConstants.CURRENT_SEAT);
+            packNumber = savedInstanceState.getInt(AllMyConstants.CURRENT_PACK);
         }
     }
 
@@ -82,9 +90,7 @@ public class SingleCardDisplayFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        //Picasso.get().load(cardUrl).placeholder(R.color.colorAccent).into(mtgCardImage);
-        mtgCardImage.setImageResource(R.drawable.nissa_temp_card);
-
+        Picasso.get().load(cardUrl).placeholder(R.color.colorAccent).into(mtgCardImage);
 
         mtgCardImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,9 +108,12 @@ public class SingleCardDisplayFragment extends Fragment {
                 mEditor = mPreferences.edit();
                 mEditor.putInt(AllMyConstants.CARD_ID, multiVerseId);
                 mEditor.putInt(AllMyConstants.CURRENT_SEAT, currentSeat);
-                mEditor.putInt(AllMyConstants.PACKS_NUMBER, packNumber);
+                mEditor.putInt(AllMyConstants.CURRENT_PACK, packNumber);
                 mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, true);
+                mEditor.putBoolean(AllMyConstants.START_DRAFT, false);
                 mEditor.commit();
+
+                Timber.tag("fart").i("the id of the drafted card: %s", multiVerseId);
 
                 FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(mtgCardImage, "mtgCardScale").build();
                 Navigation.findNavController(view).navigate(R.id.action_singleCardDisplayFragment_to_draftingHappyFunTimeFragment, null, null, extras);
@@ -140,6 +149,15 @@ public class SingleCardDisplayFragment extends Fragment {
     @Override public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(AllMyConstants.CARD_ID, multiVerseId);
+        outState.putString(AllMyConstants.CARD_URL, cardUrl);
+        outState.putInt(AllMyConstants.CURRENT_SEAT, currentSeat);
+        outState.putInt(AllMyConstants.CURRENT_PACK, packNumber);
     }
 
     public interface OnSingleCardFragmentInteractionListener {

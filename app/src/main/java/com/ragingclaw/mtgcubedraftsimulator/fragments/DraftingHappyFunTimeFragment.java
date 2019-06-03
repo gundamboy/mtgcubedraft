@@ -19,6 +19,8 @@ import androidx.navigation.fragment.FragmentNavigator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.common.base.Functions;
+import com.google.common.collect.Lists;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.adapters.DraftCardsAdapter;
 import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
@@ -32,7 +34,6 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -70,15 +71,17 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     private int currentSeatNum = 1;
     private int cardsThatShouldBeShown = 15;
 
-    private List<Pack> packs;
+    private List<Pack> packs = new ArrayList<>();
     private List<MagicCard> currentCards = new ArrayList<>();
+    private Set<String> cardsHash = new HashSet<>();
+    private boolean timeToChangePacks = false;
 
     public DraftingHappyFunTimeFragment() {
         // Required empty public constructor
     }
 
-    public static DraftingHappyFunTimeFragment newInstance() {
-        DraftingHappyFunTimeFragment fragment = new DraftingHappyFunTimeFragment();
+    public static com.ragingclaw.mtgcubedraftsimulator.fragments.DraftingHappyFunTimeFragment newInstance() {
+        com.ragingclaw.mtgcubedraftsimulator.fragments.DraftingHappyFunTimeFragment fragment = new com.ragingclaw.mtgcubedraftsimulator.fragments.DraftingHappyFunTimeFragment();
 
         return fragment;
     }
@@ -88,11 +91,10 @@ public class DraftingHappyFunTimeFragment extends Fragment {
         public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
             if(key.equals(AllMyConstants.CARD_ID) && prefs.getBoolean(AllMyConstants.UPDATE_DRAFT, false)) {
 
-                updateBoard();
             }
 
             if(key.equals(AllMyConstants.CURRENT_SEAT)) { currentSeatNum = prefs.getInt(AllMyConstants.CURRENT_SEAT, 0); }
-            if(key.equals(AllMyConstants.PACKS_NUMBER)) { currentPackNum = prefs.getInt(AllMyConstants.PACKS_NUMBER, 0); }
+            if(key.equals(AllMyConstants.CURRENT_PACK)) { currentPackNum = prefs.getInt(AllMyConstants.CURRENT_PACK, 0); }
             if(key.equals(AllMyConstants.CURRENT_PICK)) { currentPickNum = prefs.getInt(AllMyConstants.CURRENT_PICK, 1); }
             if(key.equals("cards_left")) { cardsThatShouldBeShown = prefs.getInt("cards_left", 15); }
         }
@@ -127,13 +129,132 @@ public class DraftingHappyFunTimeFragment extends Fragment {
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
         packViewModel = ViewModelProviders.of(getActivity()).get(PackViewModel.class);
 
+        final int[] flag = {0};
+
         packViewModel.getAllPacks().observe(this, new Observer<List<Pack>>() {
             @Override
             public void onChanged(List<Pack> packs) {
+                cardsThatShouldBeShown = 15 - cardsHash.size();
                 String title = "PA" + currentPackNum + ", PK" + currentPickNum + ", S" + currentSeatNum + ", Cs:" + cardsThatShouldBeShown;
                 sendDataBackToActivity(title);
+                mEditor = mPreferences.edit();
+
+                if(!mPreferences.getBoolean(AllMyConstants.START_DRAFT, true)) {
+                    if (flag[0] == 0) {
+                        if(mPreferences.getBoolean(AllMyConstants.UPDATE_DRAFT, true)) {
+                            mEditor.putBoolean(AllMyConstants.START_DRAFT, false);
+                            mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, false);
+
+                            int cardIdPicked = mPreferences.getInt(AllMyConstants.CARD_ID, 0);
+                            currentSeatNum = mPreferences.getInt(AllMyConstants.CURRENT_SEAT, 1);
+                            currentPackNum = mPreferences.getInt(AllMyConstants.CURRENT_PACK, 0);
+
+                            if (mPreferences.contains(AllMyConstants.THE_CHOSEN_CARDS)) {
+                                cardsHash = mPreferences.getStringSet(AllMyConstants.THE_CHOSEN_CARDS, null);
+                            }
+
+                            cardsHash.add(String.valueOf(cardIdPicked));
+                            mEditor.putStringSet(AllMyConstants.THE_CHOSEN_CARDS, cardsHash);
+
+
+
+
+                            Pack currentPack = null;
+                            List<Integer> currentPackCardIds = new ArrayList<>();
+
+
+                            for (Pack p : packs) {
+
+                                if (p.getSeat_num() == currentSeatNum) {
+                                    if (p.getBooster_num() == currentPackNum) {
+                                        currentPack = p;
+                                        currentPackCardIds = p.getCardIDs();
+                                        Timber.tag("fart").w("getting currentPAckCardIds. line 168: size: %s", currentPackCardIds.size());
+                                    }
+                                }
+                            }
+
+
+                            if (currentPackCardIds.size() != 0) {
+                                for (Pack p : packs) {
+                                    if (p.getPackId() != currentPack.getPackId()) {
+                                        if (p.getBooster_num() == currentPackNum) {
+                                            List<Integer> ids = p.getCardIDs();
+                                            Collections.shuffle(ids);
+                                            ids.remove(0);
+                                            p.setCardIDs(ids);
+                                            if (ids.size() == 0) {
+                                                packViewModel.deletePack(p);
+                                            } else {
+                                                packViewModel.updatePack(p);
+                                            }
+                                        }
+                                    }
+
+                                    if (p.getPackId() == currentPack.getPackId()) {
+                                        currentPackCardIds.remove(Integer.valueOf(cardIdPicked));
+                                        Timber.tag("fart").v("currentPackIds2: size: %s, ids: %s", currentPackCardIds.size(), currentPackCardIds.toString());
+                                        p.setCardIDs(currentPackCardIds);
+                                        if (currentPackCardIds.size() == 0) {
+                                            Timber.tag("fart").e("currentPackCardIds is 0");
+                                            packViewModel.deletePack(p);
+                                            timeToChangePacks = true;
+                                        } else {
+                                            packViewModel.updatePack(p);
+                                        }
+
+
+                                        if (currentSeatNum == 8) {
+                                            currentSeatNum = 1;
+                                        } else {
+                                            currentSeatNum += 1;
+                                        }
+                                    }
+                                }
+                            } else {
+                                Timber.tag("fart").w("OH SHIT SON! CHANGE PACKS!");
+                                Timber.tag("fart").v("currentPackNum: %s", currentPackNum);
+                                if (currentPackNum < 2) {
+                                    currentPackNum += 1;
+                                    currentSeatNum = 1;
+                                    Timber.tag("fart").i("currentPackNum is now: %s", currentPackNum);
+                                    timeToChangePacks = false;
+                                    mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, true);
+                                }
+                            }
+
+                            if(timeToChangePacks) {
+                                if (currentPackNum < 2) {
+                                    currentPackNum += 1;
+                                    currentSeatNum = 1;
+                                    Timber.tag("fart").i("currentPackNum is now: %s", currentPackNum);
+                                    timeToChangePacks = false;
+                                    mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, true);
+                                }
+                            }
+
+
+                            mEditor.putInt(AllMyConstants.CURRENT_PACK, currentPackNum);
+                            mEditor.putInt(AllMyConstants.CURRENT_SEAT, currentSeatNum);
+
+                            mEditor.commit();
+
+                            flag[0] = 1;
+                        }
+                    }
+                }
+
+
+
+
+
+
                 for(Pack p : packs) {
                     List<Integer> cardIds = p.getCardIDs();
+
+                    if(p.getBooster_num() == currentPackNum) {
+                        Timber.tag("fart").d("             OBSERVER   Seat: %s, PackID: %s, BoosterNum: %s, CardIdsSize: %s, currentSeat: %s", p.getSeat_num(), p.getPackId(), p.getBooster_num(), p.getCardIDs().size(), currentSeatNum);
+                    }
 
                     if (p.getSeat_num() == currentSeatNum && p.getBooster_num() == currentPackNum) {
                         magicCardViewModel.getmAllCards().observe(getActivity(), new Observer<List<MagicCard>>() {
@@ -152,10 +273,11 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                                 draftCardsAdapter.setOnClickListener(new DraftCardsAdapter.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(int position, int cardId, View v, String url) {
+                                        Timber.tag("fart").i("the id of the clicked card: %s", cardId);
                                         Bundle b = new Bundle();
                                         b.putInt(AllMyConstants.CARD_ID, cardId);
                                         b.putInt(AllMyConstants.CURRENT_SEAT, currentSeatNum);
-                                        b.putInt(AllMyConstants.PACKS_NUMBER, currentPackNum);
+                                        b.putInt(AllMyConstants.CURRENT_PACK, currentPackNum);
                                         b.putString(AllMyConstants.CARD_URL, url);
                                         FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, "mtgCardScale").build();
                                         Navigation.findNavController(view).navigate(R.id.action_draftingHappyFunTimeFragment_to_singleCardDisplayFragment, b, null, extras);
@@ -165,10 +287,10 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                         });
                     }
                 }
+
+
             }
         });
-
-        //getPack(packViewModel, magicCardViewModel, currentSeatNum, currentPackNum);
 
         return view;
     }
@@ -184,7 +306,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
             }
         };
 
-        t = new Thread(new UpdateBoard(handler, mPreferences, mEditor, packViewModel, magicCardViewModel));
+        t = new Thread(new com.ragingclaw.mtgcubedraftsimulator.fragments.DraftingHappyFunTimeFragment.UpdateBoard(handler, mPreferences, mEditor, packViewModel, magicCardViewModel));
         t.start();
     }
 
@@ -197,8 +319,8 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnDraftingHappyFunTimeInteraction) {
-            mListener = (OnDraftingHappyFunTimeInteraction) context;
+        if (context instanceof com.ragingclaw.mtgcubedraftsimulator.fragments.DraftingHappyFunTimeFragment.OnDraftingHappyFunTimeInteraction) {
+            mListener = (com.ragingclaw.mtgcubedraftsimulator.fragments.DraftingHappyFunTimeFragment.OnDraftingHappyFunTimeInteraction) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnDraftingHappyFunTimeInteraction");
@@ -249,13 +371,17 @@ public class DraftingHappyFunTimeFragment extends Fragment {
             mEditor = prefs.edit();
             mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, false);
 
-
+            Timber.tag("fart").w("OH SHIT SON! CHANGE PACKS!");
+            if(currentPackNum < 2) {
+                currentPackNum += 1;
+                currentSeatNum = 1;
+            }
 
 
             // the card id that was picked, the current seat, and the current pack number
             int cardIdPicked = prefs.getInt(AllMyConstants.CARD_ID, 0);
             int seat = prefs.getInt(AllMyConstants.CURRENT_SEAT, 1);
-            int currentPackNumber = prefs.getInt(AllMyConstants.PACKS_NUMBER, 0);
+            int currentPackNumber = prefs.getInt(AllMyConstants.CURRENT_PACK, 0);
             int pick = 1;
 
 
@@ -264,7 +390,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
             Timber.tag("fart").w("BEFORE PROCESSING");
             for (Pack p : allPacks) {
                 if(p.getBooster_num() == currentPackNumber) {
-                    Timber.tag("fart").d("      Seat: %s, PackID: %s, BoosterNum: %s, CardIdsSize: %s", p.getSeat_num(), p.getPackId(), p.getBooster_num(), p.getCardIDs().size());
+                    Timber.tag("fart").i("      Seat: %s, PackID: %s, BoosterNum: %s, CardIdsSize: %s", p.getSeat_num(), p.getPackId(), p.getBooster_num(), p.getCardIDs().size());
                 }
             }
 
@@ -304,23 +430,14 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
 
 
-
-
-
-
                 // operations on the pack/database
                 if (currentPackCardIds.size() != 0) {
-                    // remove the card ID that was picked from the current packs id list
-                    currentPackCardIds.remove(Integer.valueOf(cardIdPicked));
-
-                    // update the pack
-                    currentPack.setCardIDs(currentPackCardIds);
 
 
                     // a card from each other pack also needs to be removed.
                     for (Pack p : allPacks) {
                         // only get packs that are using the current pack number and not the current pack
-                        if(p.getPackId() != currentPack.getPackId() && p.getBooster_num() == currentPackNumber) {
+                        if(p != currentPack && p.getBooster_num() == currentPackNumber) {
 
                             // make a list to hold the card ids in this pack
                             List<Integer> ids = p.getCardIDs();
@@ -341,7 +458,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
                             // update this pack in the database
                             try {
-                                Timber.tag("fart").i("the Pack being updated: ID: %s, Seat: %s, PackNumber: %s, cardIds: %s", p.getPackId(), p.getSeat_num(), p.getBooster_num(),  p.getCardIDs().toString());
+                                Timber.tag("fart").i("the pack being updated: ID: %s, Seat: %s, PackNumber: %s, idCount: %s, cardIds: %s", p.getPackId(), p.getSeat_num(), p.getBooster_num(), p.getCardIDs().size(), p.getCardIDs().toString());
                                 packViewModel.updatePack(p);
                             } catch (Exception e) {
                                 Timber.tag("fart").w(" ");
@@ -354,6 +471,34 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                                 Timber.tag("fart").w(" ");
                             }
                         }
+                    }
+
+
+
+
+
+
+
+                    // remove the card ID that was picked from the current packs id list
+                    //currentPackCardIds.remove(Integer.valueOf(cardIdPicked));
+                    currentPackCardIds.remove(0);
+
+                    // update the pack
+                    currentPack.setCardIDs(currentPackCardIds);
+
+                    // update the database
+                    try {
+                        Timber.tag("fart").i("the PACK being updated: ID: %s, Seat: %s, PackNumber: %s, idCount: %s, cardIds: %s", currentPack.getPackId(), currentPack.getSeat_num(), currentPack.getBooster_num(), currentPack.getCardIDs().size(), currentPack.getCardIDs().toString());
+                        packViewModel.updatePack(currentPack);
+                    } catch (Exception e) {
+                        Timber.tag("fart").w(" ");
+                        Timber.tag("fart").e("---------------------------------------");
+                        Timber.tag("fart").e("CRASH AT UPDATING CURRENTPACK IN THE DATABASE");
+                        Timber.tag("fart").e("currentPack IDS size = %s || currentPack id = %s || seat = %s  || pack(booster) number = %s", currentPack.getCardIDs().size(), currentPack.getPackId(), currentPack.getSeat_num(), currentPack.getBooster_num());
+                        e.printStackTrace();
+                        Timber.tag("fart").e("---------------------------------------");
+                        Timber.tag("fart").e("STACKTRACE MESSAGE::: %s", e.getMessage());
+                        Timber.tag("fart").w(" ");
                     }
 
 
@@ -378,32 +523,20 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
 
                 // update the SharedPreferences
-                Timber.tag("fart").i("next seat: %s, next pack: %s, cards on the board: %s", seat, currentPackNumber, currentPackCardIds.size());
+                Timber.tag("fart").i("next seat: %s, next pack: %s, cards on the board should be: %s", seat, currentPackNumber, currentPackCardIds.size());
                 mEditor.putInt(AllMyConstants.CURRENT_SEAT, seat);
-                mEditor.putInt(AllMyConstants.PACKS_NUMBER, currentPackNumber);
+                mEditor.putInt(AllMyConstants.CURRENT_PACK, currentPackNumber);
                 mEditor.putInt(AllMyConstants.CURRENT_PICK, pick);
                 mEditor.putInt("cards_left", currentPackCardIds.size());
 
-                // update the database
-                try {
-                    Timber.tag("fart").i("the CurrentPack being updated: ID: %s, Seat: %s, PackNumber: %s, cardIds: %s", currentPack.getPackId(), currentPack.getSeat_num(), currentPack.getBooster_num(),  currentPack.getCardIDs().toString());
-                    packViewModel.updatePack(currentPack);
-                } catch (Exception e) {
-                    Timber.tag("fart").w(" ");
-                    Timber.tag("fart").e("---------------------------------------");
-                    Timber.tag("fart").e("CRASH AT UPDATING CURRENTPACK IN THE DATABASE");
-                    Timber.tag("fart").e("currentPack IDS size = %s || currentPack id = %s || seat = %s  || pack(booster) number = %s", currentPack.getCardIDs().size(), currentPack.getPackId(), currentPack.getSeat_num(), currentPack.getBooster_num());
-                    e.printStackTrace();
-                    Timber.tag("fart").e("---------------------------------------");
-                    Timber.tag("fart").e("STACKTRACE MESSAGE::: %s", e.getMessage());
-                    Timber.tag("fart").w(" ");
-                }
+
 
                 /******************************************************/
-                Timber.tag("fart").w("AFTER PROCESSING");
-                for (Pack p : allPacks) {
+                Timber.tag("fart").v("AFTER PROCESSING");
+                List<Pack> verifyPacks = packViewModel.getAllPacksStatic();
+                for (Pack p : verifyPacks) {
                     if(p.getBooster_num() == currentPackNumber) {
-                        Timber.tag("fart").d("      Seat: %s, PackID: %s, BoosterNum: %s, CardIdsSize: %s", p.getSeat_num(), p.getPackId(), p.getBooster_num(), p.getCardIDs().size());
+                        Timber.tag("fart").v("   VERIFYPACKS   Seat: %s, PackID: %s, BoosterNum: %s, CardIdsSize: %s", p.getSeat_num(), p.getPackId(), p.getBooster_num(), p.getCardIDs().size());
                     }
                 }
 
@@ -412,46 +545,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
             } // else for :if (cardsHash.size() == 45)
 
             Timber.tag("fart").d("*******");
-            Timber.tag("fart").i(" ");
+
         } // ends Run()
-    }
-
-    public class BuildPack implements Runnable {
-        Handler handler;
-        PackViewModel packViewModel;
-        MagicCardViewModel magicCardViewModel;
-        int seatNumber;
-        int packNumber;
-
-        List<Integer> cardIds = new ArrayList<>();
-        List<MagicCard> packCards = new ArrayList<>();
-
-        public BuildPack(Handler handler, PackViewModel packViewModel, MagicCardViewModel magicCardViewModel, int seatNumber, int packNumber) {
-            this.handler = handler;
-            this.packViewModel = packViewModel;
-            this.magicCardViewModel = magicCardViewModel;
-            this.seatNumber = seatNumber;
-            this.packNumber = packNumber;
-        }
-
-        @Override
-        public void run() {
-            // get the correct pack using the current seat and pack number
-            Pack currentPack = packViewModel.getPlayerPacksByNum(seatNumber, packNumber);
-
-            // get the card ids from the pack
-            cardIds = currentPack.getCardIDs();
-
-            // get the cards using the ids
-            for (int id : cardIds) {
-                packCards.add(magicCardViewModel.getmCard(id));
-            }
-
-            Message m = Message.obtain();
-            Bundle b = new Bundle();
-            b.putParcelable(AllMyConstants.CURRENT_CARDS, Parcels.wrap(packCards));
-            m.setData(b);
-            handler.sendMessage(m);
-        }
     }
 }

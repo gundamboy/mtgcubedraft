@@ -48,8 +48,7 @@ public class DraftCardsAdapter extends RecyclerView.Adapter<DraftCardsAdapter.Ca
         String url = currentCard.getImageUrl();
         holder.cardUrl.setText(url);
 
-        //Picasso.get().load(url).placeholder(R.color.colorAccent).into(holder.mtgCardImage);
-        holder.mtgCardImage.setImageResource(R.drawable.nissa_temp_card);
+        Picasso.get().load(url).placeholder(R.drawable.mtg_card_back).into(holder.mtgCardImage);
 
         holder.cardId.setText(String.valueOf(currentCard.getMultiverseid()));
     }

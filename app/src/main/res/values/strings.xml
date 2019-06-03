@@ -30,7 +30,7 @@
     <string name="my_cubes_no_cubes_instructions">Okay, don\'t panic. You have some options here. Well, you have only 1 option. You need to make a cube… Push the button to do that. It\'s easy. Trust me.</string>
     <string name="my_cubes_monster_text">OH NO!\nYou have no cubes!</string>
     <string name="my_cubes_intro_blurb">Here is a handy dandy list off all you\'re amazing Cubes!</string>
-    <string name="creating_cube">Creating your cube, hang tight.</string>
+    <string name="creating_cube">Creating your cube,\nhang tight.</string>
 
     <!--Drafts-->
     <string name="my_drafts_activity_title">Drafts</string>
@@ -40,7 +40,7 @@
     <string name="no_drafts_button_make_a_cube">Make a cube</string>
     <string name="my_drafts_no_cubes_instructions">Okay, don\'t panic. You have some options here. Well, you have only 1 option. You need to make a cube… Push the button to do that. It\'s easy. Trust me.</string>
     <string name="my_drafts_no_drafts_instructions">Okay, don\'t panic. You have some options here. Well, you have only 1 option. You need to make a draft using a cube… Push the button to do that. It\'s easy. Trust me.</string>
-    <string name="creating_draft">Creating your draft, hang tight.</string>
+    <string name="creating_draft">Creating your draft,\nhang tight.</string>
 
     <!--menus-->
     <string name="menu_settings">Settings</string>
@@ -65,6 +65,8 @@
     <string name="draft_instructions_text">Click a card to make it larger. You can draft it by clicking the \"Draft Me\" button</string>
     <string name="mtg_card_scale_transition_name">mtgCardScale</string>
     <string name="mtg_card_content_description">mtg card</string>
+    <string name="_button_text">New Cube</string>
+    <string name="my_cubes_button_text">My Cubes</string>
 
 
 </resources>
