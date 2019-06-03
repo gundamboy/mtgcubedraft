@@ -137,8 +137,8 @@ public class DraftingHappyFunTimeFragment extends Fragment {
             @Override
             public void onChanged(List<Pack> packs) {
                 cardsThatShouldBeShown = 15 - cardsHash.size();
-                int p = currentPackNum+1;
-                String title = "Pack" + p + ", Pick" + currentPickNum;
+                int pck = currentPackNum+1;
+                String title = "Pack" + pck + ", Pick" + currentPickNum;
                 sendDataBackToActivity(title);
                 mEditor = mPreferences.edit();
 
@@ -280,8 +280,8 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                         magicCardViewModel.getmAllCards().observe(getActivity(), new Observer<List<MagicCard>>() {
                             @Override
                             public void onChanged(List<MagicCard> magicCards) {
-                                int p = currentPackNum+1;
-                                String title = "Pack" + p + ", Pick" + currentPickNum;
+                                int pck = currentPackNum+1;
+                                String title = "Pack" + pck + ", Pick" + currentPickNum;
                                 sendDataBackToActivity(title);
                                 currentCards.clear();
                                 for (MagicCard card : magicCards) {
