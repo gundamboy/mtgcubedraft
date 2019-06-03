@@ -132,6 +132,13 @@
             app:exitAnim="@anim/slide_out_to_left"
             app:popEnterAnim="@anim/slide_in_from_left"
             app:popExitAnim="@anim/slide_out_to_right" />
+        <action
+            android:id="@+id/action_draftingHappyFunTimeFragment_to_endGameFragment2"
+            app:destination="@id/endGameFragment2"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_right"
+            app:popExitAnim="@anim/slide_out_to_left" />
     </fragment>
     <fragment
         android:id="@+id/singleCardDisplayFragment"
@@ -153,4 +160,9 @@
             app:destination="@id/endGameFragment"
             app:popUpTo="@+id/endGameFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/endGameFragment2"
+        android:name="com.ragingclaw.mtgcubedraftsimulator.fragments.EndGameFragment"
+        android:label="fragment_end_game"
+        tools:layout="@layout/fragment_end_game" />
 </navigation>

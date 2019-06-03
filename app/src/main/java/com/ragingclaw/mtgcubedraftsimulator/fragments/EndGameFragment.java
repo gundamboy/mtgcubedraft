@@ -80,6 +80,8 @@ public class EndGameFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_end_game, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        sendDataToActivity("Draft Deck Review");
+
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());

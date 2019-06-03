@@ -166,5 +166,5 @@ public class MainActivity extends AppCompatActivity implements
     public void onSingleCardFragmentInteraction(Uri uri) { }
 
     @Override
-    public void onEndGameFragmentInteraction(String string) { }
+    public void onEndGameFragmentInteraction(String title) { setActionBarTitle(title); }
 }
