@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginTop="8dp"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
+    android:layout_marginTop="@dimen/margins_8"
+    android:layout_marginLeft="@dimen/margins_8"
+    android:layout_marginRight="@dimen/margins_8"
     android:elevation="6dp">
 
     <TextView
@@ -18,16 +18,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="4dp">
+        android:padding="@dimen/padding_4">
 
 
         <TextView
             android:id="@+id/cube_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:textSize="16sp"
+            android:layout_marginStart="@dimen/margins_8"
+            android:layout_marginTop="@dimen/margins_8"
+            android:textSize="@dimen/text16"
             app:layout_constraintBottom_toBottomOf="@+id/imageButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/imageButton"
@@ -37,12 +37,13 @@
             android:id="@+id/imageButton"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="@dimen/margins_8"
+            android:layout_marginEnd="@dimen/margins_8"
+            android:layout_marginBottom="@dimen/margins_8"
             android:focusable="false"
             android:background="@drawable/v_circle"
             android:src="@drawable/v_next_icon"
+            android:contentDescription="@string/list_item_select_icon_description"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

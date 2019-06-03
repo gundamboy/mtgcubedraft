@@ -85,24 +85,17 @@ public class NewDraftBuilderFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.creating_cube_or_draft_layout, container, false);
         unbinder = ButterKnife.bind(this, view);
         cubeViewModel = ViewModelProviders.of(getActivity()).get(CubeViewModel.class);
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
         packViewModel = ViewModelProviders.of(getActivity()).get(PackViewModel.class);
-
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
 
+        // text on this layout is dynamic, change it from building a cube, to building draft
         creatingText.setText(getResources().getString(R.string.creating_draft));
-
-        if (getArguments() != null) {
-            if(mListener != null) {
-
-            }
-        }
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEditor = mPreferences.edit();
@@ -123,6 +116,8 @@ public class NewDraftBuilderFragment extends Fragment {
 
             @Override
             public void handleMessage(Message msg) {
+                // updates the % complete in the layout
+
                 handlerBundle = msg.getData();
                 String percent = handlerBundle.getString("percent") + "%";
                 completePercent.setText(percent);
@@ -196,7 +191,15 @@ public class NewDraftBuilderFragment extends Fragment {
 
         @Override
         public void run() {
+            // only the packs for the draft being played are needed. you dont redraft the same
+            // packs. that would be dumb. it would also take up space in the database. delete
+            // the drafts that already exist
             packViewModel.deleteAllPacks();
+
+
+            // this looks like a lot of stuff, and it is, but its needed to keep track
+            // of all the stuff required to run the draft without it crashing in various
+            // scenarios. ¯\_(ツ)_/¯
 
             // lists to hold each players 3 booster packs
             ArrayList<ArrayList<Integer>> player1Packs = new ArrayList<>(packsPerPlayer);
@@ -227,6 +230,7 @@ public class NewDraftBuilderFragment extends Fragment {
             }
 
 
+            // shared preferences can only store Sets, so lists have to be converted to Sets
             Set<String> seat1_pack1 = new HashSet<>();
             Set<String> seat1_pack2 = new HashSet<>();
             Set<String> seat1_pack3 = new HashSet<>();
@@ -253,10 +257,7 @@ public class NewDraftBuilderFragment extends Fragment {
             Set<String> seat8_pack3 = new HashSet<>();
 
 
-            // generate the packs
-            int maxCardsPerPlayer = 45;
-
-
+            // make the packs
             // for each pack
             for (int pack = 0; pack < 3; pack++) {
 
@@ -353,15 +354,12 @@ public class NewDraftBuilderFragment extends Fragment {
             mEditor.putStringSet(AllMyConstants.SEAT8_PACK1, seat8_pack1);
             mEditor.putStringSet(AllMyConstants.SEAT8_PACK2, seat8_pack2);
             mEditor.putStringSet(AllMyConstants.SEAT8_PACK3, seat8_pack3);
-
-
-
             mEditor.putBoolean(AllMyConstants.START_DRAFT, true);
-
             mEditor.commit();
 
 
-
+            // this process can happen fast. this just shows a % complete to keep it consistent
+            // with the cube builder
             int timeout = 2000;
             for(int t = 0; t < timeout; t++) {
                 // uhg, math.
@@ -375,6 +373,7 @@ public class NewDraftBuilderFragment extends Fragment {
                 handler.sendMessage(m);
             }
 
+            // cubes done, movie along.
             List<Pack> packs = packViewModel.getAllPacksStatic();
             Bundle bundle = new Bundle();
             bundle.putParcelable(AllMyConstants.PACKS, Parcels.wrap(packs));

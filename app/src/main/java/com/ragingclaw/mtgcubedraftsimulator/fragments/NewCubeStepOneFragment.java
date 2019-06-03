@@ -58,8 +58,9 @@ public class NewCubeStepOneFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // standard stuff. validate input and move to the next fragment
+
         View view = inflater.inflate(R.layout.fragment_new_cube_step_one, container, false);
         unbinder = ButterKnife.bind(this, view);
 
@@ -84,7 +85,6 @@ public class NewCubeStepOneFragment extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void sendDataToActivity(String title) {
         if (mListener != null) {
             mListener.onFragmentInteractionStepOne(title);

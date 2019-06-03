@@ -83,9 +83,10 @@ public class SingleCardDisplayFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // just shows the card that was picked and bounces some info back to the last fragment
+        // to prevent crashing
+
         View view =  inflater.inflate(R.layout.fragment_single_card_display, container, false);
         unbinder = ButterKnife.bind(this, view);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());

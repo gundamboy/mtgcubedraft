@@ -42,7 +42,8 @@ public class CreateAccountFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login_create_account_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
-                
+
+        // data security warning stuff
         passwordEncryptionWarningFragment = new PasswordEncryptionWarningFragment();
         passwordEncryptionWarningFragment.show(getFragmentManager(), "passwordEncryptionWarningFragment");
         
@@ -58,6 +59,7 @@ public class CreateAccountFragment extends Fragment {
     }
 
     private void authenticateUser () {
+        // validates the user input
         String email = mEmailText.getText().toString();
         String password = mPasswordText.getText().toString();
 
@@ -76,7 +78,6 @@ public class CreateAccountFragment extends Fragment {
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void createUser(String email, String password) {
         if (mListener != null) {
             mListener.onCreateAccountFragmentInteraction(email, password);

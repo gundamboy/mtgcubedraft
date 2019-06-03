@@ -134,6 +134,9 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    // these are fragment interaction listeners so the activity can
+    // interact with the current fragment
+
     @Override
     public void onMyCubesFragmentInteraction(String title) {
         setActionBarTitle(title);

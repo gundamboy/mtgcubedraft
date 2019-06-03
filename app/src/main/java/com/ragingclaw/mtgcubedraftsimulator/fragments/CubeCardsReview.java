@@ -156,8 +156,6 @@ public class CubeCardsReview extends Fragment {
             @Override
             public void onClick(View v) {
                 // save cube in database,
-                // make a draft from the cubes cards
-
                 if(!isSaved) {
                     new SaveCube(cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener);
                     isSaved = !isSaved;
@@ -165,7 +163,6 @@ public class CubeCardsReview extends Fragment {
 
                 if(isSaved) {
                     // go to create draft. send over the list of cards.
-
                     getArguments().remove(AllMyConstants.CUBE_CARDS);
                     Bundle bundle = new Bundle();
                     bundle.putInt(AllMyConstants.CUBE_ID, cubeId);
@@ -177,7 +174,7 @@ public class CubeCardsReview extends Fragment {
         mGoToMyCubesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Timber.tag("fart").i("isSaved? %s", isSaved);
+                // save the cube
                 if (!isSaved) {
                     new SaveCube(cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener).execute();
                     isSaved = !isSaved;
@@ -192,6 +189,7 @@ public class CubeCardsReview extends Fragment {
         mCubeMultiFunctionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // if the user came from the list of cubes, offer a delete option
                 if (isSingle) {
                     new DeleteCube(cubeId, mAuth, currentUserId, cubeViewModel).execute();
                 }
@@ -202,10 +200,6 @@ public class CubeCardsReview extends Fragment {
 
             }
         });
-
-
-
-
             return view;
     }
 
@@ -227,6 +221,7 @@ public class CubeCardsReview extends Fragment {
     }
 
     private void sendDataToActivity(Bundle bundle) {
+        // sends the listener info back to the activity. I know the method name was confusing...
         if (mListener != null) {
             mListener.onFragmentCubeReviewInteraction(bundle);
         }
@@ -259,6 +254,7 @@ public class CubeCardsReview extends Fragment {
     public void onPause() {
         super.onPause();
 
+        // store the recyclerViews scroll position
         mBundleRecyclerViewState = new Bundle();
         mListState = mCardsRecyclerView.getLayoutManager().onSaveInstanceState();
         mBundleRecyclerViewState.putParcelable(AllMyConstants.RECYCLER_RESTORE, mListState);
@@ -267,6 +263,8 @@ public class CubeCardsReview extends Fragment {
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
+
+        // restore the scroll position of the recyclerView
         if (mBundleRecyclerViewState != null) {
             new Handler().postDelayed(new Runnable() {
 
@@ -342,7 +340,6 @@ public class CubeCardsReview extends Fragment {
         @Override
         public void run() {
             // some database operations and send a message back to the handler to display the list
-
             Cube userCube = cubeViewModel.getmUserCube(userId, cubeId);
             List<Integer> cardIds = userCube.getCard_ids();
             List<MagicCard> cards = new ArrayList<>();

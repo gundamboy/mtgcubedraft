@@ -26,6 +26,8 @@
     <!--Cube Strings-->
     <string name="new_cube_activity_title">New Cube</string>
     <string name="my_cubes_activity_title">My Cubes</string>
+    <string name="new_cube_widget_button_text">New Cube</string>
+    <string name="my_cubes_widget_button_text">My Cubes</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="my_cubes_no_cubes_instructions">Okay, don\'t panic. You have some options here. Well, you have only 1 option. You need to make a cube… Push the button to do that. It\'s easy. Trust me.</string>
     <string name="my_cubes_monster_text">OH NO!\nYou have no cubes!</string>
@@ -65,8 +67,17 @@
     <string name="draft_instructions_text">Click a card to make it larger. You can draft it by clicking the \"Draft Me\" button</string>
     <string name="mtg_card_scale_transition_name">mtgCardScale</string>
     <string name="mtg_card_content_description">mtg card</string>
-    <string name="_button_text">New Cube</string>
+    <string name="new_cube_button_text">New Cube</string>
     <string name="my_cubes_button_text">My Cubes</string>
+    <string name="appwidget_text">MTG Cube Draft</string>
+    <string name="add_widget">Add widget</string>
+    <string name="mana_symbol_description">Mana Symbol</string>
+    <string name="magic_the_gathering_arena_logo_description">Magic The Gathering Arena Logo</string>
+    <string name="make_a_cube_text">Make A Super Awesome Cube</string>
+    <string name="warning_icon_description">warning icon</string>
+    <string name="draft_me_button_text">I WANT THIS CARD OMG! DRAFT IT!</string>
+    <string name="list_item_select_icon_description">list item select icon</string>
+    <string name="make_a_cube_text_2">Make A Super Awesome Cube</string>
 
 
 </resources>

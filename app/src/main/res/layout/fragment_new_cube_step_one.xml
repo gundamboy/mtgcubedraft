@@ -10,10 +10,10 @@
         android:id="@+id/step_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginStart="@dimen/margins_22"
+        android:layout_marginTop="@dimen/margins_72"
         android:text="@string/step_1_title"
-        android:textSize="22sp"
+        android:textSize="@dimen/text22"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,11 +21,11 @@
         android:id="@+id/step_instructions"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="22dp"
+        android:layout_marginStart="@dimen/margins_22"
+        android:layout_marginTop="@dimen/margins_8"
+        android:layout_marginEnd="@dimen/margins_22"
         android:text="@string/new_cube_instructions"
-        android:textSize="20sp"
+        android:textSize="@dimen/text20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,10 +34,10 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="@dimen/margins_8"
+        android:layout_marginTop="@dimen/margins_8"
+        android:layout_marginEnd="@dimen/margins_8"
+        android:layout_marginBottom="@dimen/margins_8"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,27 +49,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp">
+            android:layout_marginStart="@dimen/margins_8"
+            android:layout_marginEnd="@dimen/margins_8">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/cube_name_edit_text"
-                android:layout_width="300dp"
-                android:layout_height="54dp"
+                android:layout_width="@dimen/layout_300"
+                android:layout_height="@dimen/layout_54"
                 android:maxLines="1"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="32dp"
+                android:layout_marginStart="@dimen/margins_8"
+                android:layout_marginEnd="@dimen/margins_8"
+                android:layout_marginBottom="@dimen/margins_32"
                 android:hint="@string/cube_name_hint" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_generate_cube"
             style="@style/GenerateCubeButton"
-            android:layout_width="300dp"
+            android:layout_width="@dimen/layout_300"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/generate_an_awesome_cube_button"
-            android:textSize="28sp" />
+            android:textSize="@dimen/text28" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.constraintlayout.widget.ConstraintLayout>

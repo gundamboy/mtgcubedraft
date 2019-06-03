@@ -48,7 +48,8 @@ public class LoginFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // just some button click listeners
+
         View view = inflater.inflate(R.layout.login_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
 

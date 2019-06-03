@@ -3,10 +3,10 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
+    android:paddingTop="@dimen/padding_8"
+    android:paddingBottom="@dimen/padding_8"
+    android:paddingLeft="@dimen/padding_16"
+    android:paddingRight="@dimen/padding_16"
     android:background="@drawable/custom_toast_background">
 
     <TextView
@@ -14,7 +14,7 @@
         android:id="@+id/createAccountErrorToast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="@dimen/text20"
         android:text="@string/create_account_error_text"
         android:visibility="gone"/>
 
@@ -23,7 +23,7 @@
         android:id="@+id/accountAlreadyExistsErrorToast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="@dimen/text20"
         android:text="@string/account_exists_error"
         android:visibility="gone"/>
 
@@ -32,7 +32,7 @@
         android:id="@+id/emailSignInErrorToast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="@dimen/text20"
         android:text="@string/email_sign_in_error_text"
         android:visibility="gone"/>
 
@@ -41,7 +41,7 @@
         android:id="@+id/googleSignInErrorToast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="@dimen/text20"
         android:visibility="gone"/>
 
 </LinearLayout>

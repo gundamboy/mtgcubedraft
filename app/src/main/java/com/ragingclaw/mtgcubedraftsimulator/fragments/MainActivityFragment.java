@@ -1,6 +1,7 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,10 +10,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
@@ -20,6 +23,7 @@ import com.google.gson.reflect.TypeToken;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
 import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
+import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,15 +44,11 @@ public class MainActivityFragment extends Fragment {
     @BindView(R.id.btn_my_cubes) com.google.android.material.button.MaterialButton myCubesButton;
     @BindView(R.id.insetData) com.google.android.material.button.MaterialButton mInsertData;
     private Unbinder unbinder;
-
     private MagicCardViewModel magicCardViewModel;
     private FirebaseAuth mAuth;
     private String currentUserId;
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
-
-
-
     private OnMainActivityFragmentInteraction mListener;
 
     public MainActivityFragment() {
@@ -73,6 +73,36 @@ public class MainActivityFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main_activity, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        // take care of widget stuff
+        Intent intent = getActivity().getIntent();
+        if(intent.getAction().equals(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE)) {
+            Handler handler = new Handler();
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    newCubeButton.setPressed(true);
+                    newCubeButton.invalidate();
+                    newCubeButton.performClick();
+                    newCubeButton.invalidate();
+                }
+            };
+            handler.postDelayed(r, 0);
+
+        } else  if(intent.getAction().equals(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES)) {
+            Handler handler = new Handler();
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    myCubesButton.setPressed(true);
+                    myCubesButton.invalidate();
+                    myCubesButton.performClick();
+                    myCubesButton.invalidate();
+                }
+            };
+            handler.postDelayed(r, 0);
+        }
+
+        // set up preferences and user stuff
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEditor = mPreferences.edit();
         mEditor.clear();
@@ -81,19 +111,20 @@ public class MainActivityFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
 
+        // view model for database stuff
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
 
         newCubeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(view).navigate(R.id.action_hostFragment_to_newCubeStepOneFragment);
+                goToNewCube(view);
             }
         });
 
         myCubesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(view).navigate(R.id.action_hostFragment_to_myCubesFragment);
+                goToMyCubes(view);
             }
         });
 
@@ -105,6 +136,14 @@ public class MainActivityFragment extends Fragment {
         });
 
         return view;
+    }
+
+    public void goToNewCube(View view) {
+        Navigation.findNavController(view).navigate(R.id.action_hostFragment_to_newCubeStepOneFragment);
+    }
+
+    public void goToMyCubes(View view) {
+        Navigation.findNavController(view).navigate(R.id.action_hostFragment_to_myCubesFragment);
     }
 
     public void sendDataToActivity(Uri uri) {
@@ -141,6 +180,8 @@ public class MainActivityFragment extends Fragment {
     }
 
     public void insertData() {
+        // database card insertion.
+
         new Thread(new Runnable() {
             @Override
             public void run() { String [] list;
@@ -221,7 +262,6 @@ public class MainActivityFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         }).start();
     }

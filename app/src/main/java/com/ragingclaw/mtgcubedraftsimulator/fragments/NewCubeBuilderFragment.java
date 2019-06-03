@@ -69,8 +69,10 @@ public class NewCubeBuilderFragment extends Fragment {
             }
         }
 
+        // database stuff
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
         magicCardViewModel.getmAllCards().observe(this, new Observer<List<MagicCard>>() {
+
             // make a list of the ids to send off for draft building
             List<Integer> ids = new ArrayList<>();
             List<MagicCard> cards = new ArrayList<>();
@@ -82,6 +84,7 @@ public class NewCubeBuilderFragment extends Fragment {
                         String land = c.getType();
                         boolean isLand = false;
 
+                        // filter out land cards. they are not needed
                         if(land.contains("Basic Land")) isLand = true;
                         if(land.contains("Plane")) isLand = true;
                         if(land.contains("Basic Snow Land")) isLand = false;
@@ -110,6 +113,7 @@ public class NewCubeBuilderFragment extends Fragment {
 
             @Override
             public void handleMessage(Message msg) {
+                // updates the % completed in the layout
                 handlerBundle = msg.getData();
                 String percent = handlerBundle.getString("percent") + "%";
                 completePercent.setText(percent);
@@ -118,7 +122,6 @@ public class NewCubeBuilderFragment extends Fragment {
 
         t = new Thread(new BuildCube(handler, cards, view));
         t.start();
-
     }
 
     private int getRandomNum(int max) {
@@ -155,11 +158,12 @@ public class NewCubeBuilderFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListenerStepTwo {
-
         void onFragmentInteractionStepTwo(String string);
     }
 
     public class BuildCube implements Runnable {
+        // builds the cube and ships it off
+
         Handler handler;
         List<MagicCard> cards;
         View view;

@@ -35,7 +35,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,7 +56,6 @@ public class MyCubesFragment extends Fragment {
     private final String KEY_RECYCLER_STATE = "recycler_state";
     private static Bundle mBundleRecyclerViewState;
     private Parcelable mListState = null;
-
     private OnMyCubesFragmentInteraction mListener;
 
     public MyCubesFragment() {
@@ -86,6 +84,7 @@ public class MyCubesFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         String currentUser = mAuth.getCurrentUser().getUid();
 
+        // view model for db stuff
         cubeViewModel = ViewModelProviders.of(this).get(CubeViewModel.class);
 
         createCubeButton.setOnClickListener(new View.OnClickListener() {
@@ -95,6 +94,7 @@ public class MyCubesFragment extends Fragment {
             }
         });
 
+        // livedata observer for displaying data
         cubeViewModel.getmAllUsersCubes(currentUser).observe(this, new Observer<List<Cube>>() {
             @Override
             public void onChanged(List<Cube> cubesEntities) {
@@ -134,7 +134,6 @@ public class MyCubesFragment extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(String string) {
         if (mListener != null) {
             mListener.onMyCubesFragmentInteraction(string);
@@ -198,7 +197,6 @@ public class MyCubesFragment extends Fragment {
 
 
     public interface OnMyCubesFragmentInteraction {
-        // TODO: Update argument type and name
         void onMyCubesFragmentInteraction(String string);
     }
 }

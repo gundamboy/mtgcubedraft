@@ -26,6 +26,8 @@ public class AllMyConstants {
     public static final String IS_SAVED = "IS_SAVED";
     public static final String START_DRAFT = "START_DRAFT";
     public static final String RECYCLER_RESTORE = "RECYCLER_RESTORE";
+    public static final String WIDGET_INTENT_ACTION_NEW_CUBE = "WIDGET_INTENT_ACTION_NEW_CUBE";
+    public static final String WIDGET_INTENT_ACTION_MY_CUBES = "WIDGET_INTENT_ACTION_MY_CUBES";
 
     public static final String SEAT1_PACK1 = "SEAT1_PACK1";
     public static final String SEAT1_PACK2 = "SEAT1_PACK2";

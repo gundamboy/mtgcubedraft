@@ -19,7 +19,7 @@ import com.ragingclaw.mtgcubedraftsimulator.R;
  * A simple {@link Fragment} subclass.
  */
 public class PasswordEncryptionWarningFragment extends DialogFragment {
-
+    // just a dialog. nothing special.
 
     public PasswordEncryptionWarningFragment() {
         // Required empty public constructor
