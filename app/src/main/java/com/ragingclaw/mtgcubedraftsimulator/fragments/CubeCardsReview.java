@@ -96,19 +96,11 @@ public class CubeCardsReview extends Fragment {
     SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-            Timber.tag("fart").i("asd;'lasd;'lasd;'lasd;'lfka;'ldfa;'ldfkal;'dfka;dfl;dlf");
-            Map<String,?> keys = prefs.getAll();
-
-            for(Map.Entry<String,?> entry : keys.entrySet()){
-                Timber.tag("fart").i("key: %s, value: %s", entry.getKey(), entry.getValue());
-            }
-
             if(key.equals(AllMyConstants.CUBE_ID)) {
                 cubeId = prefs.getInt(AllMyConstants.CUBE_ID, 0);
                 if (cubeId!= 0) {
                     mCreateDraftButton.setEnabled(true);
                 }
-                Timber.tag("fart").d("cube id changed. its now: %s", cubeId);
             }
         }
     };
@@ -169,6 +161,10 @@ public class CubeCardsReview extends Fragment {
             cubeCards = Parcels.unwrap(savedInstanceState.getParcelable(AllMyConstants.CUBE_CARDS));
             isSingle = savedInstanceState.getBoolean(AllMyConstants.IS_SINGLE);
             isSaved = savedInstanceState.getBoolean(AllMyConstants.IS_SAVED);
+        }
+
+        if(mPreferences.contains(AllMyConstants.CUBE_ID)) {
+            cubeId = mPreferences.getInt(AllMyConstants.CUBE_ID, 0);
         }
 
         // standard stuff. firebase user id, RecyclerView set up.
@@ -328,18 +324,28 @@ public class CubeCardsReview extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
         firstVisiblePosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
+        Timber.tag("fart").i("first visible position onPause: %s", firstVisiblePosition);
+        mEditor = mPreferences.edit();
+        mEditor.putInt("recycler_position", firstVisiblePosition);
+        mEditor.commit();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         mCardsRecyclerView.getLayoutManager().scrollToPosition(firstVisiblePosition);
+        if(mPreferences.contains("recycler_position")) {
+            firstVisiblePosition = mPreferences.getInt("recycler_position", 0);
+            mCardsRecyclerView.getLayoutManager().scrollToPosition(firstVisiblePosition);
+        }
+        Timber.tag("fart").i("first visible position onResume: %s", firstVisiblePosition);
         firstVisiblePosition = 0;
     }
 
