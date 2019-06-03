@@ -25,6 +25,10 @@ public class CubeViewModel extends AndroidViewModel {
         mApplicationRepository.insertCube(cube);
     }
 
+    public Long insertCubeWithReturn(Cube cube) {
+        return mApplicationRepository.insertCubesWithReturn(cube);
+    }
+
     public void updateCube(Cube cube) {
         mApplicationRepository.updateCube(cube);
     }

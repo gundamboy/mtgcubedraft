@@ -70,6 +70,10 @@ public class ApplicationRepository {
         return mCubesDoa.getAllCubesStatic();
     }
 
+    public Long insertCubesWithReturn(Cube cube) {
+        return mCubesDoa.insertCubeWithReturn(cube);
+    }
+
     public LiveData<List<Cube>> getUserCubes(String userId) {
         return mCubesDoa.getUserCubes(userId);
     }

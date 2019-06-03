@@ -124,7 +124,8 @@
         tools:layout="@layout/fragment_drafting_happy_fun_time" >
         <action
             android:id="@+id/action_draftingHappyFunTimeFragment_to_singleCardDisplayFragment"
-            app:destination="@id/singleCardDisplayFragment" />
+            app:destination="@id/singleCardDisplayFragment"
+            app:popUpTo="@id/myCubesFragment" />
     </fragment>
     <fragment
         android:id="@+id/singleCardDisplayFragment"

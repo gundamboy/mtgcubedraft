@@ -1,10 +1,13 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magicthegathering.javasdk.resource.Card;
+import timber.log.Timber;
 
 public class NewCubeBuilderFragment extends Fragment {
     @BindView(R.id.percentage_built) TextView completePercent;
@@ -42,6 +46,8 @@ public class NewCubeBuilderFragment extends Fragment {
     private MagicCardViewModel magicCardViewModel;
     private OnFragmentInteractionListenerStepTwo mListener;
     private String cubeName;
+    private SharedPreferences mPreferences;
+    private SharedPreferences.Editor mEditor;
 
     public NewCubeBuilderFragment() {
         // Required empty public constructor
@@ -57,17 +63,22 @@ public class NewCubeBuilderFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    @SuppressLint("ApplySharedPref")
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.creating_cube_or_draft_layout, container, false);
         unbinder = ButterKnife.bind(this, view);
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         if (getArguments() != null) {
-            if(mListener != null) {
-                cubeName = getArguments().getString(AllMyConstants.CUBE_NAME);
-                mListener.onFragmentInteractionStepTwo(cubeName);
-            }
+            cubeName = getArguments().getString(AllMyConstants.CUBE_NAME);
+            mListener.onFragmentInteractionStepTwo(cubeName);
         }
+
+        Timber.tag("fart").i("NewCubeBuilder cube name is: %s", cubeName);
+        mEditor = mPreferences.edit();
+        mEditor.putString(AllMyConstants.CUBE_NAME, cubeName);
+        mEditor.commit();
 
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
         magicCardViewModel.getmAllCards().observe(this, new Observer<List<MagicCard>>() {
@@ -116,7 +127,7 @@ public class NewCubeBuilderFragment extends Fragment {
             }
         };
 
-        t = new Thread(new BuildCube(handler, cards, view));
+        t = new Thread(new BuildCube(handler, cubeName, cards, view));
         t.start();
 
     }
@@ -161,17 +172,24 @@ public class NewCubeBuilderFragment extends Fragment {
 
     public class BuildCube implements Runnable {
         Handler handler;
+        String cubeName;
         List<MagicCard> cards;
         View view;
 
-        public BuildCube(Handler handler, List<MagicCard> cards, View view) {
+        public BuildCube(Handler handler, String cubeName, List<MagicCard> cards, View view) {
             this.handler = handler;
+            this.cubeName = cubeName;
             this.cards = cards;
             this.view = view;
         }
 
+
+
         @Override
         public void run() {
+            SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            SharedPreferences.Editor mEditor = mPreferences.edit();
+
             List<MagicCard> allCards = cards;
             List<MagicCard> cubeCards = new ArrayList<>();
 
@@ -207,6 +225,9 @@ public class NewCubeBuilderFragment extends Fragment {
                 bundle.putBoolean(AllMyConstants.NEW_CUBE, true);
                 bundle.putParcelable(AllMyConstants.CUBE_CARDS, Parcels.wrap(cubeCards));
                 bundle.putString(AllMyConstants.CUBE_NAME, cubeName);
+
+                mEditor.putBoolean(AllMyConstants.IS_SAVED, false);
+                mEditor.commit();
 
                 NavOptions.Builder navBuilder = new NavOptions.Builder();
                 NavOptions navOptions = navBuilder.setPopUpTo(R.id.newCubeStepOneFragment, true).build();

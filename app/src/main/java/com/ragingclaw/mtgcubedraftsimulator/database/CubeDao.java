@@ -20,6 +20,9 @@ public interface CubeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertCube(Cube cube);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    Long insertCubeWithReturn(Cube cube);
+
     // get every cube in the database
     @Query("SELECT * From cubes")
     LiveData<List<Cube>> getAllCubes();
