@@ -12,6 +12,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,6 +54,9 @@ public class MyCubesFragment extends Fragment {
     private CubeViewModel cubeViewModel;
     private MyCubesAdapter myCubesAdapter;
     private FirebaseAuth mAuth;
+    private final String KEY_RECYCLER_STATE = "recycler_state";
+    private static Bundle mBundleRecyclerViewState;
+    private Parcelable mListState = null;
 
     private OnMyCubesFragmentInteraction mListener;
 

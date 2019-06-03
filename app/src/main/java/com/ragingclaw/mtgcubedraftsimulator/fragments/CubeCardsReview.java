@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -68,9 +70,11 @@ public class CubeCardsReview extends Fragment {
     private Thread t;
     private Handler handler;
     private Bundle handlerBundle = new Bundle();
-
+    private LinearLayoutManager linearLayoutManager;
     private FirebaseAuth mAuth;
     private String currentUserId;
+    private static Bundle mBundleRecyclerViewState;
+    private Parcelable mListState = null;
 
 
     public CubeCardsReview() {
@@ -127,8 +131,8 @@ public class CubeCardsReview extends Fragment {
         // standard stuff. firebase user id, RecyclerView set up.
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
-
-        mCardsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        mCardsRecyclerView.setLayoutManager(linearLayoutManager);
         mCardsRecyclerView.setHasFixedSize(true);
 
         cubeAdapter = new CubeAdapter();
@@ -249,6 +253,34 @@ public class CubeCardsReview extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        mBundleRecyclerViewState = new Bundle();
+        mListState = mCardsRecyclerView.getLayoutManager().onSaveInstanceState();
+        mBundleRecyclerViewState.putParcelable(AllMyConstants.RECYCLER_RESTORE, mListState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (mBundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    mListState = mBundleRecyclerViewState.getParcelable(AllMyConstants.RECYCLER_RESTORE);
+                    mCardsRecyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+
+                }
+            }, 50);
+        }
+
+
+        mCardsRecyclerView.setLayoutManager(linearLayoutManager);
     }
 
     @Override

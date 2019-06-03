@@ -6,17 +6,20 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.FragmentNavigator;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.base.Functions;
@@ -61,10 +64,13 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     private MagicCardViewModel magicCardViewModel;
     private PackViewModel packViewModel;
     private GridLayoutManager gridLayoutManager;
+    private LinearLayoutManager linearLayoutManager;
     private DraftCardsAdapter draftCardsAdapter;
     private OnDraftingHappyFunTimeInteraction mListener;
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
+    private static Bundle mBundleRecyclerViewState;
+    private Parcelable mListState = null;
 
     private int currentPackNum = 0;
     private int currentPickNum = 1;
@@ -338,6 +344,34 @@ public class DraftingHappyFunTimeFragment extends Fragment {
         unbinder.unbind();
     }
 
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        mBundleRecyclerViewState = new Bundle();
+        mListState = draftCardsRecyclerView.getLayoutManager().onSaveInstanceState();
+        mBundleRecyclerViewState.putParcelable(AllMyConstants.RECYCLER_RESTORE, mListState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (mBundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    mListState = mBundleRecyclerViewState.getParcelable(AllMyConstants.RECYCLER_RESTORE);
+                    draftCardsRecyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+
+                }
+            }, 50);
+        }
+
+
+        draftCardsRecyclerView.setLayoutManager(gridLayoutManager);
+    }
     private int getRandomFromList(List<Integer> idPool) {
         Random r = new Random();
         return idPool.get(r.nextInt(idPool.size()));

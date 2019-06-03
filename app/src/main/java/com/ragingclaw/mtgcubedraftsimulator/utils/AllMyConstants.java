@@ -19,14 +19,13 @@ public class AllMyConstants {
     public static final String UPDATE_DRAFT = "UPDATE_DRAFT";
     public static final String PACKS = "PACKS";
     public static final String CURRENT_PACK = "CURRENT_PACK";
-    public static final String SHARED_PREFS = "SHARED_PREFS";
     public static final String CURRENT_PICK = "CURRENT_PICK";
     public static final String CURRENT_CARDS = "CURRENT_CARDS";
     public static final String THE_CHOSEN_CARDS = "THE_CHOSEN_CARDS";
     public static final String IS_SINGLE = "IS_SINGLE";
     public static final String IS_SAVED = "IS_SAVED";
     public static final String START_DRAFT = "START_DRAFT";
-    public static final String CARDS_LEFT = "CARDS_LEFT";
+    public static final String RECYCLER_RESTORE = "RECYCLER_RESTORE";
 
     public static final String SEAT1_PACK1 = "SEAT1_PACK1";
     public static final String SEAT1_PACK2 = "SEAT1_PACK2";
