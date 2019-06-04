@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -37,6 +38,7 @@ import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.NotLoggingTree;
 
 
+import java.util.Arrays;
 import java.util.List;
 
 import timber.log.Timber;
@@ -48,8 +50,12 @@ public class LoginActivity extends AppCompatActivity implements
         EmailPasswordFragment.OnFragmentInteractionListener,
         CreateAccountFragment.OnFragmentInteractionListener {
 
+    public static final String ANONYMOUS = "anonymous";
+    public static final int RC_SIGN_IN = 1;
+    private String mUsername;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
 
     @Override
@@ -58,6 +64,7 @@ public class LoginActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_login);
         // Initialize FireBase Auth
         mAuth = FirebaseAuth.getInstance();
+        mUsername = ANONYMOUS;
 
         // set up Timber because it makes logging better
 
@@ -67,38 +74,66 @@ public class LoginActivity extends AppCompatActivity implements
             fragmentTransaction.add(R.id.loginOptionsView, loginFragment);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
-
         }
+
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser theUser = firebaseAuth.getCurrentUser();
+                if(theUser != null){
+                    //user is signed in
+                    //Toast.makeText(MainActivity.this, "You're now signed in. Welcome to FriendlyChat!", Toast.LENGTH_LONG).show();
+                    onSignedInInitialize(theUser.getDisplayName());
+                } else {
+                    //User is signed out
+                    onSignedOutCleanup();
+
+                    List<AuthUI.IdpConfig> providers = Arrays.asList(
+                            new AuthUI.IdpConfig.EmailBuilder().build(),
+                            new AuthUI.IdpConfig.GoogleBuilder().build()
+                    );
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setIsSmartLockEnabled(false)
+                                    .setAvailableProviders(providers)
+                                    .build(),
+                            RC_SIGN_IN);
+                }
+            }
+        };
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        // Check if user is signed in (non-null)
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-
-        if (currentUser != null || account != null) {
-            // Already signed in, go to the MainActivity
-            loggedIn();
-        }
+    private void onSignedInInitialize(String username){
+        mUsername = username;
     }
+
+    private void onSignedOutCleanup(){
+        mUsername = ANONYMOUS;
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account);
-            } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                Toast.makeText(this, "Something went wrong with Google. Try using the create account option.", Toast.LENGTH_SHORT).show();
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "It worked.", Toast.LENGTH_SHORT).show();
+                loggedIn();
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "Sign in canceled.", Toast.LENGTH_SHORT).show();
+                finish();
             }
+//            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+//
+//            try {
+//                // Google Sign In was successful, authenticate with Firebase
+//                GoogleSignInAccount account = task.getResult(ApiException.class);
+//                firebaseAuthWithGoogle(account);
+//            } catch (ApiException e) {
+//                // Google Sign In failed, update UI appropriately
+//                Toast.makeText(this, "Something went wrong with Google. Try using the create account option.", Toast.LENGTH_SHORT).show();
+//            }
         }
     }
 
@@ -223,6 +258,15 @@ public class LoginActivity extends AppCompatActivity implements
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //detach authStateListener
+        if(mAuthStateListener != null) {
+            mAuth.removeAuthStateListener(mAuthStateListener);
+        }
     }
 
 }
