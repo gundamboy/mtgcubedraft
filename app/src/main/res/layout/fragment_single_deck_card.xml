@@ -22,18 +22,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/nissa_temp_card" />
 
+
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/draft_me_button"
+        android:id="@+id/go_back_button"
         android:layout_width="@dimen/layout_300"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margins_8"
         android:layout_marginBottom="@dimen/margins_8"
-        android:text="@string/draft_me_button_text"
+        android:text="@string/go_back_button_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mtg_card" />
-
+        app:layout_constraintTop_toBottomOf="@+id/mtg_card"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

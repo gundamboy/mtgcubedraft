@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -167,4 +168,10 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onEndGameFragmentInteraction(String title) { setActionBarTitle(title); }
+
+    @Override
+    public void onBackPressed() {
+        
+        super.onBackPressed();
+    }
 }

@@ -11,10 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NavUtils;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.FragmentNavigator;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,6 +44,7 @@ import java.util.stream.Collectors;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import timber.log.Timber;
 
 
 public class EndGameFragment extends Fragment {
@@ -80,6 +83,15 @@ public class EndGameFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_end_game, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        Timber.tag("fart").i("fm test size: %s", fm.getBackStackEntryCount());
+
+        for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+            fm.popBackStack();
+            Navigation.findNavController(view).popBackStack();
+            Timber.tag("fart").i("clearing backstack");
+        }
+
         sendDataToActivity("Draft Deck Review");
 
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
@@ -104,6 +116,7 @@ public class EndGameFragment extends Fragment {
             @Override
             public void onChanged(List<MagicCard> magicCards) {
                 // get the cards we need to display
+                currentCards.clear();
                 for (MagicCard card : magicCards) {
                     if (cardIdsFromPrefs.contains(card.getMultiverseid())) {
                         currentCards.add(card);
@@ -118,12 +131,12 @@ public class EndGameFragment extends Fragment {
                             Bundle b = new Bundle();
                             b.putInt(AllMyConstants.CARD_ID, cardId);
                             b.putString(AllMyConstants.CARD_URL, url);
+                            b.putBoolean(AllMyConstants.GO_BACK_TO_DECK, true);
                             FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, "mtgCardScale").build();
-                            Navigation.findNavController(view).navigate(R.id.action_draftingHappyFunTimeFragment_to_endGameFragment, b, null, extras);
+                            Navigation.findNavController(view).navigate(R.id.action_endGameFragment2_to_singleCardDisplayFragment3, b, null, extras);
                         }
                     });
                 }
-
             }
         });
 
@@ -135,9 +148,10 @@ public class EndGameFragment extends Fragment {
                 mEditor.clear();
                 mEditor.commit();
 
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                getFragmentManager().popBackStack();
-                getActivity().startActivity(intent);
+                Navigation.findNavController(view).popBackStack();
+
+                //action_endGameFragment2_to_hostFragment
+                Navigation.findNavController(view).navigate(R.id.action_endGameFragment2_to_hostFragment, null, null, null);
             }
         });
 

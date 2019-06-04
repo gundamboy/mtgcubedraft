@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -78,6 +80,9 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     private List<MagicCard> currentCards = new ArrayList<>();
     private Set<String> cardsHash = new HashSet<>();
     private boolean timeToChangePacks = false;
+
+    private static Bundle mBundleRecyclerViewState;
+    private Parcelable mListState = null;
 
     public DraftingHappyFunTimeFragment() {
         // Required empty public constructor
@@ -163,6 +168,20 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
                             Pack currentPack = null;
                             List<Integer> currentPackCardIds = new ArrayList<>();
+
+                            if(cardsHash.size() == 2) {
+                                mEditor.commit();
+                                draftCardsRecyclerView.setVisibility(View.GONE);
+                                draftCompleteLayout.setVisibility(View.VISIBLE);
+                                sendDataBackToActivity("WOOT!");
+
+                                draftDoneButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Navigation.findNavController(view).navigate(R.id.action_draftingHappyFunTimeFragment_to_endGameFragment2, null, null, null);
+                                    }
+                                });
+                            }
 
 
                             for (Pack p : packs) {
@@ -317,6 +336,34 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     @Override public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        mBundleRecyclerViewState = new Bundle();
+        mListState = draftCardsRecyclerView.getLayoutManager().onSaveInstanceState();
+        mBundleRecyclerViewState.putParcelable(AllMyConstants.RECYCLER_RESTORE, mListState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (mBundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    mListState = mBundleRecyclerViewState.getParcelable(AllMyConstants.RECYCLER_RESTORE);
+                    draftCardsRecyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+
+                }
+            }, 50);
+        }
+
+
+        draftCardsRecyclerView.setLayoutManager(gridLayoutManager);
     }
 
     public interface OnDraftingHappyFunTimeInteraction {

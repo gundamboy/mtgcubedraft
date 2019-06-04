@@ -82,6 +82,7 @@
     <string name="draft_done_info">Well, you did it. You drafted. Review your deck and then push the done button to do it all over again.</string>
     <string name="all_done_button_text">All Done</string>
     <string name="draft_complete_dialog_text">Congratulations! You did it! You completed this draft, click continue to see your brand new shiny draft deck.</string>
+    <string name="go_back_button_text">Go back to deck</string>
 
 
 </resources>
