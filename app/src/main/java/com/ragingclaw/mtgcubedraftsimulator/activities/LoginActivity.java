@@ -109,7 +109,6 @@ public class LoginActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "It worked.", Toast.LENGTH_SHORT).show();
                 loggedIn();
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Sign in canceled.", Toast.LENGTH_SHORT).show();
