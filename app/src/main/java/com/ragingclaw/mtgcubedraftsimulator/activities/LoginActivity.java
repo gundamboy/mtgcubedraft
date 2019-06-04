@@ -71,8 +71,6 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
-
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -99,12 +97,13 @@ public class LoginActivity extends AppCompatActivity implements
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
-
+                Toast.makeText(this, "Something went wrong with Google. Try using the create account option.", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Timber.tag("fart").i("firebaseAuthWithGoogle: %s", acct.getId());
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -205,6 +204,7 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     private void googleSignIn() {
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -219,6 +219,7 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     private void loggedIn() {
+        Timber.tag("fart").i("logged in?");
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
