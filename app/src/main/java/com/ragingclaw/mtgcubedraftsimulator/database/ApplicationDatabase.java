@@ -18,7 +18,7 @@ public abstract class ApplicationDatabase extends RoomDatabase {
 
     public static ApplicationDatabase getDatabase(Context context) {
         if (INSTANCE == null) {
-            // this copies the prepopulated database over. if not, id need
+            // this copies the pre-populated database over. if not, id need
             // 300mb of json and it takes a literal 3.5 minutes to load.
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                     ApplicationDatabase.class,
