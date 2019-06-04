@@ -59,6 +59,7 @@ public class MyCubesFragment extends Fragment {
     private static Bundle mBundleRecyclerViewState;
     private Parcelable mListState = null;
     private OnMyCubesFragmentInteraction mListener;
+    private boolean savePosition = false;
 
     public MyCubesFragment() {
         // Required empty public constructor
@@ -102,6 +103,7 @@ public class MyCubesFragment extends Fragment {
             public void onChanged(List<Cube> cubesEntities) {
                 // update stuff
                 if(cubesEntities.size() > 0) {
+                    savePosition = true;
                     my_cubes_layout.setVisibility(View.VISIBLE);
                     no_cubes_found_layout.setVisibility(View.GONE);
                     linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -200,29 +202,32 @@ public class MyCubesFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-
-        mBundleRecyclerViewState = new Bundle();
-        mListState = cubes_recyclerView.getLayoutManager().onSaveInstanceState();
-        mBundleRecyclerViewState.putParcelable(AllMyConstants.RECYCLER_RESTORE, mListState);
+        if(savePosition) {
+            mBundleRecyclerViewState = new Bundle();
+            mListState = cubes_recyclerView.getLayoutManager().onSaveInstanceState();
+            mBundleRecyclerViewState.putParcelable(AllMyConstants.RECYCLER_RESTORE, mListState);
+        }
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if (mBundleRecyclerViewState != null) {
-            new Handler().postDelayed(new Runnable() {
+        if(savePosition) {
+            if (mBundleRecyclerViewState != null) {
+                new Handler().postDelayed(new Runnable() {
 
-                @Override
-                public void run() {
-                    mListState = mBundleRecyclerViewState.getParcelable(AllMyConstants.RECYCLER_RESTORE);
-                    cubes_recyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+                    @Override
+                    public void run() {
+                        mListState = mBundleRecyclerViewState.getParcelable(AllMyConstants.RECYCLER_RESTORE);
+                        cubes_recyclerView.getLayoutManager().onRestoreInstanceState(mListState);
 
-                }
-            }, 50);
+                    }
+                }, 50);
+            }
+
+
+            cubes_recyclerView.setLayoutManager(linearLayoutManager);
         }
-
-
-        cubes_recyclerView.setLayoutManager(linearLayoutManager);
     }
 
 

@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -63,8 +64,46 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         getFragmentManager().popBackStack();
-        NavController navController;
 
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host);
+        NavController navController = navHostFragment.getNavController();
+
+        Timber.tag("fart").i("THE FUCK MAN!");
+
+        // take care of widget stuff
+        Intent intent = getIntent();
+        if(intent == null) {
+            Timber.tag("fart").i("intent was null");
+        }
+        if(intent.getAction().equals(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE)) {
+            Timber.tag("fart").i("NEW CUBE PUSHED");
+            Handler handler = new Handler();
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+//                    newCubeButton.setPressed(true);
+//                    newCubeButton.invalidate();
+//                    newCubeButton.performClick();
+//                    newCubeButton.invalidate();
+                    //navController.navigate(R.id.action_hostFragment_to_newCubeStepOneFragment);
+                }
+            };
+            handler.postDelayed(r, 0);
+
+        } else if(intent.getAction().equals(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES)) {
+//            Handler handler = new Handler();
+//            Runnable r = new Runnable() {
+//                @Override
+//                public void run() {
+////                    myCubesButton.setPressed(true);
+////                    myCubesButton.invalidate();
+////                    myCubesButton.performClick();
+////                    myCubesButton.invalidate();
+//                    goToMyCubes(view);
+//                }
+//            };
+//            handler.postDelayed(r, 0);
+        }
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());

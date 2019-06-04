@@ -86,7 +86,36 @@ public class MainActivityFragment extends Fragment {
         // view model for database stuff
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
 
-
+//        // take care of widget stuff
+//        Intent intent = getActivity().getIntent();
+//        if(intent.getAction().equals(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE)) {
+//            Handler handler = new Handler();
+//            Runnable r = new Runnable() {
+//                @Override
+//                public void run() {
+////                    newCubeButton.setPressed(true);
+////                    newCubeButton.invalidate();
+////                    newCubeButton.performClick();
+////                    newCubeButton.invalidate();
+//                    goToNewCube(view);
+//                }
+//            };
+//            handler.postDelayed(r, 0);
+//
+//        } else  if(intent.getAction().equals(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES)) {
+//            Handler handler = new Handler();
+//            Runnable r = new Runnable() {
+//                @Override
+//                public void run() {
+////                    myCubesButton.setPressed(true);
+////                    myCubesButton.invalidate();
+////                    myCubesButton.performClick();
+////                    myCubesButton.invalidate();
+//                    goToMyCubes(view);
+//                }
+//            };
+//            handler.postDelayed(r, 0);
+//        }
 
         newCubeButton.setOnClickListener(new View.OnClickListener() {
             @Override
