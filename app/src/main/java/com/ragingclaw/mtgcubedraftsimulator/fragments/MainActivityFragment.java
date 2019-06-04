@@ -73,7 +73,6 @@ public class MainActivityFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
 
-
         // set up preferences and user stuff
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEditor = mPreferences.edit();
