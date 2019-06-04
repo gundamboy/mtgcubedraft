@@ -68,6 +68,29 @@ public class MainActivity extends AppCompatActivity implements
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host);
         NavController navController = navHostFragment.getNavController();
 
+        // take care of widget stuff
+        Intent intent = getIntent();
+        if(intent != null) {
+            Timber.tag("fart").i("intent is not null");
+            if (intent.getAction().equals(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE)) {
+
+                Handler handler = new Handler();
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+//                    newCubeButton.setPressed(true);
+//                    newCubeButton.invalidate();
+//                    newCubeButton.performClick();
+//                    newCubeButton.invalidate();
+                        //goToNewCube(view);
+                    }
+                };
+                handler.postDelayed(r, 0);
+            }
+        } else {
+            Timber.tag("fart").i("intent IS null");
+        }
+
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());

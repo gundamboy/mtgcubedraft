@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "491503160435-7el73rqv4aaj8k90se3smc7esfibg3kg.apps.googleusercontent.com",
+          "client_id": "491503160435-er8igspaltu4afa0ohufq6q7lc7s0b9p.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ragingclaw.mtgcubedraftsimulator",
-            "certificate_hash": "117e56eae0c2c9781467460907b7c7e58a5b19b4"
+            "certificate_hash": "b70443a25a7d220460310b49d53efd1f2b9fd810"
           }
         },
         {
@@ -52,7 +52,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "491503160435-cv26sunodnsqvpfl819mgbb6qojs9htu.apps.googleusercontent.com",
+          "client_id": "491503160435-3fn5agjhm2cvvtme824lr1ovju3n1u7m.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ragingclaw.mtgcubedraftsimulator.activities",

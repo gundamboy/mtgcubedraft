@@ -1,6 +1,7 @@
 package com.ragingclaw.mtgcubedraftsimulator.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -37,6 +39,7 @@ import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.NotLoggingTree;
 
 
+import java.util.Arrays;
 import java.util.List;
 
 import timber.log.Timber;
@@ -48,84 +51,71 @@ public class LoginActivity extends AppCompatActivity implements
         EmailPasswordFragment.OnFragmentInteractionListener,
         CreateAccountFragment.OnFragmentInteractionListener {
 
+    public static final String ANONYMOUS = "anonymous";
+    public static final int RC_SIGN_IN = 1;
+    private String mUsername;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         // Initialize FireBase Auth
         mAuth = FirebaseAuth.getInstance();
+        mUsername = ANONYMOUS;
 
-        // set up Timber because it makes logging better
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser theUser = firebaseAuth.getCurrentUser();
+                if(theUser != null){
+                    //user is signed in
+                    onSignedInInitialize(theUser.getDisplayName());
+                } else {
+                    //User is signed out
+                    onSignedOutCleanup();
 
-        if (savedInstanceState == null) {
-            LoginFragment loginFragment = new LoginFragment();
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.loginOptionsView, loginFragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
-
-        }
+                    List<AuthUI.IdpConfig> providers = Arrays.asList(
+                            new AuthUI.IdpConfig.EmailBuilder().build(),
+                            new AuthUI.IdpConfig.GoogleBuilder().build()
+                    );
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setIsSmartLockEnabled(false)
+                                    .setAvailableProviders(providers)
+                                    .build(),
+                            RC_SIGN_IN);
+                }
+            }
+        };
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        // Check if user is signed in (non-null)
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-
-        if (currentUser != null || account != null) {
-            // Already signed in, go to the MainActivity
-            loggedIn();
-        }
+    private void onSignedInInitialize(String username){
+        mUsername = username;
     }
 
+    private void onSignedOutCleanup(){
+        mUsername = ANONYMOUS;
+    }
+
+
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account);
-            } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                Toast.makeText(this, "There was error with google, try making an account", Toast.LENGTH_SHORT).show();
-
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "It worked.", Toast.LENGTH_SHORT).show();
+                loggedIn();
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "Sign in canceled.", Toast.LENGTH_SHORT).show();
+                finish();
             }
         }
-    }
-
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            user = mAuth.getCurrentUser();
-                            loggedIn();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            View toastView = getLayoutInflater().inflate(R.layout.custom_toast_view, null);
-                            TextView googleSignInErrorToast = toastView.findViewById(R.id.googleSignInErrorToast);
-                            googleSignInErrorToast.setVisibility(View.VISIBLE);
-                            Toast toast = new Toast(getApplicationContext());
-                            toast.setView(toastView);
-                            toast.setDuration(Toast.LENGTH_LONG);
-                            toast.setGravity(Gravity.BOTTOM, 0, 500);
-                            toast.show();
-                        }
-
-                    }
-                });
     }
 
     private void swapFragment(Fragment fragment) {
@@ -203,6 +193,7 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     private void googleSignIn() {
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -221,5 +212,22 @@ public class LoginActivity extends AppCompatActivity implements
         startActivity(intent);
         finish();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //attach authStateListener
+        mAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //detach authStateListener
+        if(mAuthStateListener != null) {
+            mAuth.removeAuthStateListener(mAuthStateListener);
+        }
+    }
+
 
 }
