@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         getFragmentManager().popBackStack();
-        NavController navController =
+        NavController navController;
 
 
         if (BuildConfig.DEBUG) {
