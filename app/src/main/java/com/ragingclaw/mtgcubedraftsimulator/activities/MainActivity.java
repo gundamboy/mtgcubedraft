@@ -1,5 +1,6 @@
 package com.ragingclaw.mtgcubedraftsimulator.activities;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDeepLinkBuilder;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements
         EndGameFragment.OnEndGameFragmentInteractionListener {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.mainLayout) androidx.core.widget.NestedScrollView mainLayout;
     ActionBar actionBar;
 
     private FirebaseAuth mAuth;
@@ -64,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         getFragmentManager().popBackStack();
+
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host);
         NavController navController = navHostFragment.getNavController();
@@ -107,13 +113,11 @@ public class MainActivity extends AppCompatActivity implements
         assert actionBar != null;
         actionBar.setHomeButtonEnabled(true);
 
-        mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
-
         if (currentUser == null) {
             goToLogin();
+        } else {
+            mainLayout.setVisibility(View.VISIBLE);
         }
-
     }
     public void goToNewCube(View view) {
 
@@ -134,9 +138,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void goToHome() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        PendingIntent pendingIntent = new NavDeepLinkBuilder(this)
+                .setGraph(R.navigation.nav_graph)
+                .setDestination(R.id.hostFragment)
+                .createPendingIntent();
+
     }
 
     @Override
@@ -152,9 +158,7 @@ public class MainActivity extends AppCompatActivity implements
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.goHome:
-                goToHome();
-                return true;
+
             case R.id.logout:
                 mAuth.signOut();
                 goToLogin();

@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
@@ -33,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,6 +46,7 @@ public class MainActivityFragment extends Fragment {
     @BindView(R.id.btn_new_cube) com.google.android.material.button.MaterialButton newCubeButton;
     @BindView(R.id.btn_my_cubes) com.google.android.material.button.MaterialButton myCubesButton;
     @BindView(R.id.insetData) com.google.android.material.button.MaterialButton mInsertData;
+    @BindView(R.id.mainLayout) LinearLayout mainLayout;
     private Unbinder unbinder;
     private MagicCardViewModel magicCardViewModel;
     private FirebaseAuth mAuth;
@@ -50,6 +54,7 @@ public class MainActivityFragment extends Fragment {
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
     private OnMainActivityFragmentInteraction mListener;
+    public boolean isDataLoaded = false;
 
     public MainActivityFragment() {
         // Required empty public constructor
@@ -72,7 +77,6 @@ public class MainActivityFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main_activity, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-
         // set up preferences and user stuff
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEditor = mPreferences.edit();
@@ -84,6 +88,32 @@ public class MainActivityFragment extends Fragment {
 
         // view model for database stuff
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
+
+
+
+        magicCardViewModel.getmAllCards().observe(this, new Observer<List<MagicCard>>() {
+            @Override
+            public void onChanged(List<MagicCard> magicCards) {
+                if(!isDataLoaded) {
+                    if (magicCards.size() > 0) {
+                        isDataLoaded = true;
+
+                        mEditor.putBoolean(AllMyConstants.IS_DATA_LOADED, true);
+                        mEditor.apply();
+
+                        if (isDataLoaded) {
+                            newCubeButton.setEnabled(true);
+                            myCubesButton.setEnabled(true);
+                        } else {
+                            newCubeButton.setEnabled(false);
+                            myCubesButton.setEnabled(false);
+                        }
+                    }
+                }
+            }
+        });
+
+
 
         /*
         // take care of widget stuff

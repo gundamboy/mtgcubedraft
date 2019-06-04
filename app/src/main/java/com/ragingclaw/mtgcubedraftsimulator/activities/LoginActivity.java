@@ -2,7 +2,9 @@ package com.ragingclaw.mtgcubedraftsimulator.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
@@ -10,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
@@ -42,6 +45,8 @@ import com.ragingclaw.mtgcubedraftsimulator.utils.NotLoggingTree;
 import java.util.Arrays;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import timber.log.Timber;
 
 import static com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants.RC_SIGN_IN;
@@ -51,6 +56,9 @@ public class LoginActivity extends AppCompatActivity implements
         EmailPasswordFragment.OnFragmentInteractionListener,
         CreateAccountFragment.OnFragmentInteractionListener {
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    ActionBar actionBar;
     public static final String ANONYMOUS = "anonymous";
     public static final int RC_SIGN_IN = 1;
     private String mUsername;
@@ -63,6 +71,13 @@ public class LoginActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
+
+        toolbar.setTitle(getString(R.string.main_activity_title));
+        setSupportActionBar(toolbar);
+        actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setTitle(Html.fromHtml("<font color=\"#555555\">" + getString(R.string.app_name) + "</font>"));
 
         // Initialize FireBase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -97,6 +112,9 @@ public class LoginActivity extends AppCompatActivity implements
 
     private void onSignedInInitialize(String username){
         mUsername = username;
+//        Intent intent = new Intent(this, MainActivity.class);
+//        startActivity(intent);
+//        finish();
     }
 
     private void onSignedOutCleanup(){

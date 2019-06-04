@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">MTG Cube Draft Simulator</string>
     <string name="logo_description">logo</string>
+    <string name="dbase_name">mtgCubeSimDB</string>
 
     <!--Login Activity Strings-->
     <string name="login_title_text">MTG Cube Draft Simulator Login</string>
@@ -83,6 +84,7 @@
     <string name="all_done_button_text">All Done</string>
     <string name="draft_complete_dialog_text">Congratulations! You did it! You completed this draft, click continue to see your brand new shiny draft deck.</string>
     <string name="go_back_button_text">Go back to deck</string>
+    <string name="go_home_menu_text">Go Home</string>
 
 
 </resources>

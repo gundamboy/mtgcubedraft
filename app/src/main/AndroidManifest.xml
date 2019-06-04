@@ -26,7 +26,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/cube_draft_widget_info" />
         </receiver>
-
         <activity
             android:name=".activities.MainActivity"
             android:configChanges="orientation|screenSize"

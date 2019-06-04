@@ -1,5 +1,6 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavDeepLinkBuilder;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -344,6 +346,12 @@ public class CubeCardsReview extends Fragment {
                     new SaveCube(cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener, mPreferences).execute();
                     isSaved = !isSaved;
                 }
+                return true;
+            case R.id.goHome:
+                PendingIntent pendingIntent = new NavDeepLinkBuilder(getActivity())
+                        .setGraph(R.navigation.nav_graph)
+                        .setDestination(R.id.hostFragment)
+                        .createPendingIntent();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

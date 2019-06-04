@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/goHome"
-        android:title="Go Home"/>
+        android:title="@string/go_home_menu_text"/>
 
     <item
         android:id="@+id/logout"

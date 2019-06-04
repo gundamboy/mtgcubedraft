@@ -58,7 +58,8 @@
                 android:layout_marginBottom="@dimen/margins_8"
                 android:text="Add Cards"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                android:visibility="gone"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_new_cube"
