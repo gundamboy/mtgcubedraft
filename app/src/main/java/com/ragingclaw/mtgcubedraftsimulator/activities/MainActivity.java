@@ -3,14 +3,18 @@ package com.ragingclaw.mtgcubedraftsimulator.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -59,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         getFragmentManager().popBackStack();
+        NavController navController =
+
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
@@ -78,6 +84,14 @@ public class MainActivity extends AppCompatActivity implements
         if (currentUser == null) {
             goToLogin();
         }
+
+    }
+    public void goToNewCube(View view) {
+
+    }
+
+    public void goToMyCubes(View view) {
+        Navigation.findNavController(view).navigate(R.id.action_hostFragment_to_myCubesFragment);
     }
 
     public void setActionBarTitle(String title) {

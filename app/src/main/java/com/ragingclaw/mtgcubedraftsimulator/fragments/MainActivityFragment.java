@@ -63,8 +63,7 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
+
     }
 
     @Override
@@ -73,34 +72,7 @@ public class MainActivityFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main_activity, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        // take care of widget stuff
-        Intent intent = getActivity().getIntent();
-        if(intent.getAction().equals(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE)) {
-            Handler handler = new Handler();
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    newCubeButton.setPressed(true);
-                    newCubeButton.invalidate();
-                    newCubeButton.performClick();
-                    newCubeButton.invalidate();
-                }
-            };
-            handler.postDelayed(r, 0);
 
-        } else  if(intent.getAction().equals(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES)) {
-            Handler handler = new Handler();
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    myCubesButton.setPressed(true);
-                    myCubesButton.invalidate();
-                    myCubesButton.performClick();
-                    myCubesButton.invalidate();
-                }
-            };
-            handler.postDelayed(r, 0);
-        }
 
         // set up preferences and user stuff
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -113,6 +85,8 @@ public class MainActivityFragment extends Fragment {
 
         // view model for database stuff
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
+
+
 
         newCubeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,6 +117,11 @@ public class MainActivityFragment extends Fragment {
     }
 
     public void goToMyCubes(View view) {
+        Navigation.findNavController(view).navigate(R.id.action_hostFragment_to_myCubesFragment);
+    }
+
+    public void goToHost(View view, String destination) {
+
         Navigation.findNavController(view).navigate(R.id.action_hostFragment_to_myCubesFragment);
     }
 
