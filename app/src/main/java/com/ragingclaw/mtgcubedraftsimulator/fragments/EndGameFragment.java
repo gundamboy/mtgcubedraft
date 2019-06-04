@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.ragingclaw.mtgcubedraftsimulator.R;
+import com.ragingclaw.mtgcubedraftsimulator.activities.LoginActivity;
 import com.ragingclaw.mtgcubedraftsimulator.activities.MainActivity;
 import com.ragingclaw.mtgcubedraftsimulator.adapters.DraftCardsAdapter;
 import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
@@ -133,7 +134,7 @@ public class EndGameFragment extends Fragment {
                             b.putString(AllMyConstants.CARD_URL, url);
                             b.putBoolean(AllMyConstants.GO_BACK_TO_DECK, true);
                             FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, "mtgCardScale").build();
-                            Navigation.findNavController(view).navigate(R.id.action_endGameFragment2_to_singleCardDisplayFragment3, b, null, extras);
+                            Navigation.findNavController(view).navigate(R.id.action_endGameFragment_to_singleDeckCardFragment, b, null, extras);
                         }
                     });
                 }
@@ -148,10 +149,9 @@ public class EndGameFragment extends Fragment {
                 mEditor.clear();
                 mEditor.commit();
 
-                Navigation.findNavController(view).popBackStack();
-
-                //action_endGameFragment2_to_hostFragment
-                Navigation.findNavController(view).navigate(R.id.action_endGameFragment2_to_hostFragment, null, null, null);
+                Navigation.findNavController(view).navigate(R.id.action_endGameFragment_to_hostFragment, null, null, null);
+//                Intent intent = new Intent(getActivity(), MainActivity.class);
+//                getActivity().startActivity(intent);
             }
         });
 

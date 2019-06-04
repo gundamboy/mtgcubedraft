@@ -149,27 +149,30 @@
         android:label="fragment_end_game"
         tools:layout="@layout/fragment_end_game" >
         <action
-            android:id="@+id/action_endGameFragment2_to_hostFragment"
+            android:id="@+id/action_endGameFragment_to_hostFragment"
             app:destination="@id/hostFragment"
-            app:enterAnim="@anim/slide_in_from_bottom"
-            app:exitAnim="@anim/slide_out_from_top"
-            app:popEnterAnim="@anim/slide_in_from_bottom"
-            app:popExitAnim="@anim/slide_out_from_top" />
+            app:popUpTo="@+id/nav_graph"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_right"
+            app:popEnterAnim="@anim/slide_in_from_right"
+            app:popExitAnim="@anim/slide_out_to_left"
+            app:launchSingleTop="true" />
         <action
-            android:id="@+id/action_endGameFragment2_to_singleCardDisplayFragment3"
+            android:id="@+id/action_endGameFragment_to_singleDeckCardFragment"
             app:destination="@id/singleDeckCardFragment"
             app:enterAnim="@anim/slide_in_from_right"
-            app:exitAnim="@anim/slide_out_to_left"
+            app:exitAnim="@anim/slide_out_to_right"
             app:popEnterAnim="@anim/slide_in_from_right"
             app:popExitAnim="@anim/slide_out_to_left" />
     </fragment>
     <fragment
         android:id="@+id/singleDeckCardFragment"
-        android:name="com.ragingclaw.mtgcubedraftsimulator.fragments.SingleCardDisplayFragment"
+        android:name="com.ragingclaw.mtgcubedraftsimulator.fragments.SingleDeckCardFragment"
         android:label="fragment_single_deck_card"
         tools:layout="@layout/fragment_single_deck_card" >
         <action
-            android:id="@+id/action_singleCardDisplayFragment3_to_endGameFragment2"
+            android:id="@+id/action_singleDeckCardFragment_to_endGameFragment"
             app:destination="@id/endGameFragment"
             app:enterAnim="@anim/slide_in_from_left"
             app:exitAnim="@anim/slide_out_to_right"

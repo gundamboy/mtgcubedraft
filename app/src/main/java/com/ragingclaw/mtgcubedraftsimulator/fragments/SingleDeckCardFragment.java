@@ -99,7 +99,7 @@ public class SingleDeckCardFragment extends Fragment {
         goBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(view).navigate(R.id.action_singleCardDisplayFragment3_to_endGameFragment2, null, null, null);
+                Navigation.findNavController(view).navigate(R.id.action_singleDeckCardFragment_to_endGameFragment, null, null, null);
             }
         });
 
