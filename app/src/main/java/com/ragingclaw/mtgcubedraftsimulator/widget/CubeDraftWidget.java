@@ -41,6 +41,8 @@ public class CubeDraftWidget extends AppWidgetProvider {
                 Timber.tag("fart").i("new cube clicked");
                 Intent intent1 = new Intent(context, MainActivity.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK).setAction(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE);
+                intent1.putExtra(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE, "action");
+                intent.setAction(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE);
                 PendingIntent pendingIntent1 = PendingIntent.getActivity(context, 1, intent1, 0);
                 views.setOnClickPendingIntent(R.id.new_cube_widget_button, pendingIntent1);
                 context.startActivity(intent1);

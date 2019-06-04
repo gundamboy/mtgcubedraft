@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "491503160435-m51q36i26u8jri73vqn1701bjsa624du.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ragingclaw.mtgcubedraftsimulator",
+            "certificate_hash": "117e56eae0c2c9781467460907b7c7e58a5b19b4"
+          }
+        },
+        {
           "client_id": "491503160435-er8igspaltu4afa0ohufq6q7lc7s0b9p.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
