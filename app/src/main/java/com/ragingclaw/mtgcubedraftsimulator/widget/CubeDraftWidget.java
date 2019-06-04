@@ -41,9 +41,9 @@ public class CubeDraftWidget extends AppWidgetProvider {
                 Timber.tag("fart").i("new cube clicked");
                 Intent intent1 = new Intent(context, MainActivity.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK).setAction(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE);
-                intent1.putExtra(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE, "action");
+                intent1.putExtra(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE, "new_cube");
                 intent.setAction(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE);
-                PendingIntent pendingIntent1 = PendingIntent.getActivity(context, 1, intent1, 0);
+                PendingIntent pendingIntent1 = PendingIntent.getActivity(context, 1, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
                 views.setOnClickPendingIntent(R.id.new_cube_widget_button, pendingIntent1);
                 context.startActivity(intent1);
             }
@@ -51,8 +51,10 @@ public class CubeDraftWidget extends AppWidgetProvider {
             if (AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES.equals(intent.getAction())) {
                 Timber.tag("fart").i("my cubes clicked");
                 Intent intent2 = new Intent(context, MainActivity.class);
+                intent2.putExtra(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES, "my_cubes");
+                intent2.setAction(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES);
                 intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK).setAction(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES);
-                PendingIntent pendingIntent2 = PendingIntent.getActivity(context, 0, intent2, 0);
+                PendingIntent pendingIntent2 = PendingIntent.getActivity(context, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
                 views.setOnClickPendingIntent(R.id.my_cubes_widget_button, pendingIntent2);
                 context.startActivity(intent2);
             }

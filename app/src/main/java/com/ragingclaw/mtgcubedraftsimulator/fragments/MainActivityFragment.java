@@ -83,13 +83,12 @@ public class MainActivityFragment extends Fragment {
         mEditor.clear();
         mEditor.commit();
 
+
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
 
         // view model for database stuff
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
-
-
 
         magicCardViewModel.getmAllCards().observe(this, new Observer<List<MagicCard>>() {
             @Override

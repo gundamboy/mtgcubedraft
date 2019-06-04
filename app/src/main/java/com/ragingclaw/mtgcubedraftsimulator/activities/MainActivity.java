@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -70,36 +71,6 @@ public class MainActivity extends AppCompatActivity implements
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host);
-        NavController navController = navHostFragment.getNavController();
-
-        // take care of widget stuff
-        Intent intent = getIntent();
-        if(intent != null) {
-            Timber.tag("fart").i("intent is not null");
-            if (intent.hasExtra(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE)) {
-                if(intent.getAction().equals(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE)) {
-                    Timber.tag("fart").i("intent had the extra and the action");
-
-                    Handler handler = new Handler();
-                    Runnable r = new Runnable() {
-                        @Override
-                        public void run() {
-//                    newCubeButton.setPressed(true);
-//                    newCubeButton.invalidate();
-//                    newCubeButton.performClick();
-//                    newCubeButton.invalidate();
-                            //goToNewCube(view);
-                        }
-                    };
-                    handler.postDelayed(r, 0);
-                }
-            }
-        } else {
-            Timber.tag("fart").i("intent IS null");
-        }
-
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
@@ -215,6 +186,54 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onEndGameFragmentInteraction(String title) { setActionBarTitle(title); }
+
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            for (String key : bundle.keySet()) {
+                Object value = bundle.get(key);
+                Timber.tag("fart").i("key: %s, value: %s", key, value.toString());
+            }
+        }
+
+        Timber.tag("fart").i("onResume");
+        // take care of widget stuff
+
+        if(intent != null) {
+            Timber.tag("fart").i("intent is not null");
+
+            if (intent.hasExtra(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE)) {
+                if(intent.getAction().equals(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE)) {
+                    Timber.tag("fart").i("intent had the extra and the action BEFORE RUNNABLE");
+                    Handler handler = new Handler();
+                    Runnable r = new Runnable() {
+                        @Override
+                        public void run() {
+                            Timber.tag("fart").i("intent had the extra and the action");
+                            Toast.makeText(MainActivity.this, "new cube on resume", Toast.LENGTH_SHORT).show();
+                        }
+                    };
+                    handler.postDelayed(r, 0);
+                }
+            }
+        } else if(intent.hasExtra(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES)) {
+            if(intent.getAction().equals(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES)) {
+                Handler handler = new Handler();
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "my cubes on resume", Toast.LENGTH_SHORT).show();
+                    }
+                };
+                handler.postDelayed(r, 0);
+            }
+        }
+    }
 
     @Override
     public void onBackPressed() {
