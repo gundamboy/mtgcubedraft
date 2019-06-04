@@ -52,7 +52,7 @@
 
 
     <!--Cube Review Strings-->
-    <string name="cube_review_info_text">You can review the cards in your cube here. When you\'re ready, you can make a draft.</string>
+    <string name="cube_review_info_text">You can review the cards in your cube here. When you\'re ready, click the save icon then make a draft.</string>
     <string name="start_over_button_text">Start Over</string>
     <string name="create_draft_button_text">Create Draft</string>
     <string name="delete_cube_button_text">Delete Cube</string>

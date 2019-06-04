@@ -2,6 +2,7 @@ package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -60,6 +62,14 @@ public class MyCubesFragment extends Fragment {
     private Parcelable mListState = null;
     private OnMyCubesFragmentInteraction mListener;
     private boolean savePosition = false;
+    private int cubeId;
+    private String cubeName;
+    private String toastMessage;
+    private Boolean isSaved;
+    private Boolean isSingle;
+
+    private SharedPreferences mPreferences;
+    private SharedPreferences.Editor mEditor;
 
     public MyCubesFragment() {
         // Required empty public constructor
@@ -84,8 +94,16 @@ public class MyCubesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_my_cubes, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
         mAuth = FirebaseAuth.getInstance();
         String currentUser = mAuth.getCurrentUser().getUid();
+
+        cubeId = mPreferences.getInt(AllMyConstants.CUBE_ID, 0);
+        cubeName = mPreferences.getString(AllMyConstants.CUBE_NAME, null);
+        toastMessage = mPreferences.getString(AllMyConstants.TOAST_MESSAGE, null);
+        isSaved = mPreferences.getBoolean(AllMyConstants.IS_SAVED, false);
+        isSingle = mPreferences.getBoolean(AllMyConstants.IS_SINGLE, false);
 
         // view model for db stuff
         cubeViewModel = ViewModelProviders.of(this).get(CubeViewModel.class);
@@ -115,12 +133,25 @@ public class MyCubesFragment extends Fragment {
 
                     myCubesAdapter.setOnClickListener(new MyCubesAdapter.OnItemClickListener() {
                         @Override
-                        public void onItemClick(int position, int cubeId, String cubeName) {
+                        public void onItemClick(int position, int theCubeId, String theCubeName) {
+                            cubeName = theCubeName;
+                            cubeId = theCubeId;
+                            isSaved = false;
+                            isSingle = true;
+
                             Bundle bundle = new Bundle();
                             bundle.putBoolean(AllMyConstants.NEW_CUBE, false);
                             bundle.putBoolean(AllMyConstants.CUBE_CARDS, false);
                             bundle.putString(AllMyConstants.CUBE_NAME, cubeName);
                             bundle.putInt(AllMyConstants.CUBE_ID, cubeId);
+
+                            mEditor = mPreferences.edit();
+                            mEditor.putInt(AllMyConstants.CUBE_ID, cubeId);
+                            mEditor.putString(AllMyConstants.CUBE_NAME, cubeName);
+                            mEditor.putString(AllMyConstants.TOAST_MESSAGE, null);
+                            mEditor.putBoolean(AllMyConstants.IS_SAVED, isSaved);
+                            mEditor.putBoolean(AllMyConstants.IS_SINGLE, isSingle);
+                            mEditor.commit();
 
                             Navigation.findNavController(view).navigate(R.id.action_myCubesFragment_to_cubeCardsReview, bundle, null);
                         }
@@ -226,7 +257,7 @@ public class MyCubesFragment extends Fragment {
             }
 
 
-            cubes_recyclerView.setLayoutManager(linearLayoutManager);
+            //cubes_recyclerView.setLayoutManager(linearLayoutManager);
         }
     }
 

@@ -36,6 +36,7 @@ import timber.log.Timber;
 public class SingleCardDisplayFragment extends Fragment {
     @BindView(R.id.mtg_card) ImageView mtgCardImage;
     @BindView(R.id.draft_me_button) com.google.android.material.button.MaterialButton draftMeButton;
+    @BindView(R.id.go_back_button) com.google.android.material.button.MaterialButton goBackButton;
     private Unbinder unbinder;
     private int multiVerseId;
     private int currentSeat;
@@ -100,6 +101,14 @@ public class SingleCardDisplayFragment extends Fragment {
 
                 FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(mtgCardImage, "mtgCardScale").build();
                 Navigation.findNavController(view).navigate(R.id.action_singleCardDisplayFragment_to_draftingHappyFunTimeFragment, null, null, extras);
+            }
+        });
+
+        goBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(view).navigateUp();
+                //getActivity().onBackPressed();
             }
         });
 

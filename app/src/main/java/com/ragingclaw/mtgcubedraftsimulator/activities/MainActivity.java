@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements
             Timber.tag("fart").i("intent is not null");
             if (intent.hasExtra(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE)) {
                 if(intent.getAction().equals(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE)) {
+                    Timber.tag("fart").i("intent had the extra and the action");
 
                     Handler handler = new Handler();
                     Runnable r = new Runnable() {
