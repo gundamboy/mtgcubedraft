@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -12,6 +13,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -53,10 +55,11 @@ public class MyCubesFragment extends Fragment {
     private CubeViewModel cubeViewModel;
     private MyCubesAdapter myCubesAdapter;
     private FirebaseAuth mAuth;
-    private final String KEY_RECYCLER_STATE = "recycler_state";
+    private LinearLayoutManager linearLayoutManager;
     private static Bundle mBundleRecyclerViewState;
     private Parcelable mListState = null;
     private OnMyCubesFragmentInteraction mListener;
+    private boolean savePosition = false;
 
     public MyCubesFragment() {
         // Required empty public constructor
@@ -100,10 +103,11 @@ public class MyCubesFragment extends Fragment {
             public void onChanged(List<Cube> cubesEntities) {
                 // update stuff
                 if(cubesEntities.size() > 0) {
+                    savePosition = true;
                     my_cubes_layout.setVisibility(View.VISIBLE);
                     no_cubes_found_layout.setVisibility(View.GONE);
-
-                    cubes_recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    linearLayoutManager = new LinearLayoutManager(getActivity());
+                    cubes_recyclerView.setLayoutManager(linearLayoutManager);
                     cubes_recyclerView.setHasFixedSize(true);
                     myCubesAdapter = new MyCubesAdapter();
                     cubes_recyclerView.setAdapter(myCubesAdapter);
@@ -193,6 +197,37 @@ public class MyCubesFragment extends Fragment {
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         startActivity(intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(savePosition) {
+            mBundleRecyclerViewState = new Bundle();
+            mListState = cubes_recyclerView.getLayoutManager().onSaveInstanceState();
+            mBundleRecyclerViewState.putParcelable(AllMyConstants.RECYCLER_RESTORE, mListState);
+        }
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savePosition) {
+            if (mBundleRecyclerViewState != null) {
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        mListState = mBundleRecyclerViewState.getParcelable(AllMyConstants.RECYCLER_RESTORE);
+                        cubes_recyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+
+                    }
+                }, 50);
+            }
+
+
+            cubes_recyclerView.setLayoutManager(linearLayoutManager);
+        }
     }
 
 

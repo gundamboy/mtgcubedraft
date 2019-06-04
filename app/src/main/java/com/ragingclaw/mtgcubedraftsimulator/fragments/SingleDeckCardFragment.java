@@ -1,5 +1,6 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -23,36 +24,43 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SingleCardDisplayFragment.OnSingleCardFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SingleCardDisplayFragment#newInstance} factory method to
+ * Use the {@link SingleDeckCardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SingleCardDisplayFragment extends Fragment {
-    @BindView(R.id.mtg_card) ImageView mtgCardImage;
-    @BindView(R.id.draft_me_button) com.google.android.material.button.MaterialButton draftMeButton;
+public class SingleDeckCardFragment extends Fragment {
+    @BindView(R.id.mtg_card)
+    ImageView mtgCardImage;
+    @BindView(R.id.go_back_button) com.google.android.material.button.MaterialButton goBackButton;
     private Unbinder unbinder;
     private int multiVerseId;
     private int currentSeat;
     private int packNumber;
     private String cardUrl;
-    private OnSingleCardFragmentInteractionListener mListener;
+    private SingleCardDisplayFragment.OnSingleCardFragmentInteractionListener mListener;
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
     private boolean goBackToDeck = false;
 
-    public SingleCardDisplayFragment() {
+
+
+    public SingleDeckCardFragment() {
         // Required empty public constructor
     }
 
-    public static SingleCardDisplayFragment newInstance(String param1, String param2) {
-        SingleCardDisplayFragment fragment = new SingleCardDisplayFragment();
-
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment SingleDeckCardFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static SingleDeckCardFragment newInstance(String param1, String param2) {
+        SingleDeckCardFragment fragment = new SingleDeckCardFragment();
         return fragment;
     }
 
@@ -72,6 +80,7 @@ public class SingleCardDisplayFragment extends Fragment {
             cardUrl = savedInstanceState.getString(AllMyConstants.CARD_URL);
             currentSeat = savedInstanceState.getInt(AllMyConstants.CURRENT_SEAT);
             packNumber = savedInstanceState.getInt(AllMyConstants.CURRENT_PACK);
+            goBackToDeck = savedInstanceState.getBoolean(AllMyConstants.GO_BACK_TO_DECK);
         }
     }
 
@@ -80,28 +89,20 @@ public class SingleCardDisplayFragment extends Fragment {
         // just shows the card that was picked and bounces some info back to the last fragment
         // to prevent crashing
 
-        View view =  inflater.inflate(R.layout.fragment_single_card_display, container, false);
+        View view =  inflater.inflate(R.layout.fragment_single_deck_card, container, false);
         unbinder = ButterKnife.bind(this, view);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         Picasso.get().load(cardUrl).placeholder(R.drawable.mtg_card_back).into(mtgCardImage);
 
-        draftMeButton.setOnClickListener(new View.OnClickListener() {
+
+        goBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                mEditor = mPreferences.edit();
-                mEditor.putInt(AllMyConstants.CARD_ID, multiVerseId);
-                mEditor.putInt(AllMyConstants.CURRENT_SEAT, currentSeat);
-                mEditor.putInt(AllMyConstants.CURRENT_PACK, packNumber);
-                mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, true);
-                mEditor.putBoolean(AllMyConstants.START_DRAFT, false);
-                mEditor.commit();
-
-                FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(mtgCardImage, "mtgCardScale").build();
-                Navigation.findNavController(view).navigate(R.id.action_singleCardDisplayFragment_to_draftingHappyFunTimeFragment, null, null, extras);
+                Navigation.findNavController(view).navigate(R.id.action_singleDeckCardFragment_to_endGameFragment, null, null, null);
             }
         });
+
 
         return view;
     }
@@ -115,8 +116,8 @@ public class SingleCardDisplayFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnSingleCardFragmentInteractionListener) {
-            mListener = (OnSingleCardFragmentInteractionListener) context;
+        if (context instanceof SingleCardDisplayFragment.OnSingleCardFragmentInteractionListener) {
+            mListener = (SingleCardDisplayFragment.OnSingleCardFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnSingleCardFragmentInteractionListener");
@@ -143,8 +144,4 @@ public class SingleCardDisplayFragment extends Fragment {
         outState.putInt(AllMyConstants.CURRENT_PACK, packNumber);
     }
 
-    public interface OnSingleCardFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onSingleCardFragmentInteraction(Uri uri);
-    }
 }

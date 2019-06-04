@@ -20,4 +20,13 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
+    <FrameLayout
+        android:id="@+id/draft_complete_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <include layout="@layout/dialog_draft_complete" />
+    </FrameLayout>
+
 </LinearLayout>

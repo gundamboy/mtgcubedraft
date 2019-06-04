@@ -6,23 +6,31 @@
 
     <TextView
         android:id="@+id/appwidget_text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/text22"
+        android:gravity="center"
         android:layout_marginBottom="@dimen/margins_8"
         android:text="@string/appwidget_text"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/appwidget_text"
+        android:orientation="horizontal">
     <Button
         android:id="@+id/new_cube_widget_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/appwidget_text"
         android:text="@string/new_cube_widget_button_text"/>
 
     <Button
         android:id="@+id/my_cubes_widget_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/new_cube_widget_button"
+        android:layout_marginStart="@dimen/margins_8"
         android:text="@string/my_cubes_widget_button_text" />
+    </LinearLayout>
 
 </RelativeLayout>

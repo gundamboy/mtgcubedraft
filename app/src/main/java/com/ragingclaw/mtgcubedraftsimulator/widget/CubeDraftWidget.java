@@ -41,7 +41,7 @@ public class CubeDraftWidget extends AppWidgetProvider {
                 Timber.tag("fart").i("new cube clicked");
                 Intent intent1 = new Intent(context, MainActivity.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK).setAction(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE);
-                PendingIntent pendingIntent1 = PendingIntent.getActivity(context, 0, intent1, 0);
+                PendingIntent pendingIntent1 = PendingIntent.getActivity(context, 1, intent1, 0);
                 views.setOnClickPendingIntent(R.id.new_cube_widget_button, pendingIntent1);
                 context.startActivity(intent1);
             }
@@ -50,7 +50,7 @@ public class CubeDraftWidget extends AppWidgetProvider {
                 Timber.tag("fart").i("my cubes clicked");
                 Intent intent2 = new Intent(context, MainActivity.class);
                 intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK).setAction(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES);
-                PendingIntent pendingIntent2 = PendingIntent.getActivity(context, 1, intent2, 0);
+                PendingIntent pendingIntent2 = PendingIntent.getActivity(context, 0, intent2, 0);
                 views.setOnClickPendingIntent(R.id.my_cubes_widget_button, pendingIntent2);
                 context.startActivity(intent2);
             }
@@ -65,13 +65,11 @@ public class CubeDraftWidget extends AppWidgetProvider {
         // this widget wont actually update. its two buttons...
 
         for (int appWidgetId : appWidgetIds) {
-            Timber.tag("fart").i("widget updated");
-
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.cube_draft_widget);
 
             Intent newCubeIntent = new Intent(context, CubeDraftWidget.class);
             newCubeIntent.setAction(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE);
-            PendingIntent pendingNewCubeIntent = PendingIntent.getBroadcast(context, 0, newCubeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingNewCubeIntent = PendingIntent.getBroadcast(context, 1, newCubeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setOnClickPendingIntent(R.id.new_cube_widget_button, getNewCubeIntent(context, AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE));
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.new_cube_widget_button);
 
@@ -98,7 +96,7 @@ public class CubeDraftWidget extends AppWidgetProvider {
     protected PendingIntent getNewCubeIntent(Context context, String action) {
         Intent intent = new Intent(context, CubeDraftWidget.class);
         intent.setAction(action);
-        return PendingIntent.getBroadcast(context, 0, intent, 0);
+        return PendingIntent.getBroadcast(context, 1, intent, 0);
     }
 
     @Override

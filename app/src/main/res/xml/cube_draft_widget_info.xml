@@ -3,7 +3,7 @@
     android:initialKeyguardLayout="@layout/cube_draft_widget"
     android:initialLayout="@layout/cube_draft_widget"
     android:minWidth="180dp"
-    android:minHeight="110dp"
+    android:minHeight="40dp"
     android:previewImage="@drawable/mtg_arena_logo"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="86400000"

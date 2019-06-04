@@ -51,7 +51,6 @@ public class LoginActivity extends AppCompatActivity implements
     private FirebaseAuth mAuth;
     private FirebaseUser user;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,8 +69,6 @@ public class LoginActivity extends AppCompatActivity implements
 
         }
     }
-
-
 
     @Override
     protected void onStart() {
@@ -99,6 +96,7 @@ public class LoginActivity extends AppCompatActivity implements
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
+                Toast.makeText(this, "There was error with google, try making an account", Toast.LENGTH_SHORT).show();
 
             }
         }
