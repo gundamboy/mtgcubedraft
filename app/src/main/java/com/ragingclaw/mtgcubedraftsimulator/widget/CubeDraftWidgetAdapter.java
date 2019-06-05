@@ -25,7 +25,7 @@ public class CubeDraftWidgetAdapter implements RemoteViewsService.RemoteViewsFac
     private Context mContext;
     private int appWidgetId;
     private String userId;
-    private ArrayList<String> mCubeNames = new ArrayList<>();
+    private ArrayList<String> mCubeNames;
 
     public CubeDraftWidgetAdapter(Context mContext, Intent mIntent) {
         this.mContext = mContext;
@@ -51,9 +51,10 @@ public class CubeDraftWidgetAdapter implements RemoteViewsService.RemoteViewsFac
             }
 
             Set<String> names = mPreferences.getStringSet(AllMyConstants.CUBE_NAMES, null);
+            Timber.tag("fart").i("names is what?: %s | %s", names.size(), names.toString());
             if(!names.isEmpty()) {
                 Timber.tag("fart").i("names is what?: %s | %s", names.size(), names.toString());
-                mCubeNames.clear();
+                mCubeNames = new ArrayList<>();
                 mCubeNames.addAll(names);
             }
         }
