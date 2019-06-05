@@ -1,15 +1,10 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.NavOptions;
-import androidx.navigation.Navigation;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -18,22 +13,24 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
+
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.ragingclaw.mtgcubedraftsimulator.R;
-import com.ragingclaw.mtgcubedraftsimulator.adapters.CubeAdapter;
 import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
 import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
 import com.ragingclaw.mtgcubedraftsimulator.models.CubeViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
-
-
-import org.parceler.Parcels;
+import com.ragingclaw.mtgcubedraftsimulator.widget.CubeDraftWidgetProvider;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,6 +42,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import timber.log.Timber;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -71,17 +70,6 @@ public class NewCubeStepOneFragment extends Fragment {
     private SharedPreferences.Editor mEditor;
 
     private OnFragmentInteractionListenerStepOne mListener;
-
-    SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-            if(key.equals(AllMyConstants.CUBE_ID)) {
-                if (prefs.getInt(AllMyConstants.CUBE_ID, 0)!= 0) {
-
-                }
-            }
-        }
-    };
 
     public NewCubeStepOneFragment() {
         // Required empty public constructor
@@ -125,6 +113,13 @@ public class NewCubeStepOneFragment extends Fragment {
 
                 if(!TextUtils.isEmpty(cubeName.getText().toString())) {
 
+                    // try and hide the keyboard when the button is pressed
+                    try  {
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                     stepOneLayout.setVisibility(View.GONE);
                     building_cube_frame.setVisibility(View.VISIBLE);
@@ -163,6 +158,18 @@ public class NewCubeStepOneFragment extends Fragment {
                     }
                 }
 
+                if(handlerBundle.containsKey(AllMyConstants.CUBE_NAMES)) {
+                    if(handlerBundle.getStringArrayList(AllMyConstants.CUBE_NAMES).size() > 0) {
+                        // update widget
+                        Timber.tag("fart").i("attempt to update widget");
+
+                        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getActivity());
+                        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
+                                new ComponentName(getActivity(), CubeDraftWidgetProvider.class));
+                        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.cubes_widget_list);
+                    }
+                }
+
                 if(handlerBundle.containsKey(AllMyConstants.MOVE_ALONG)) {
                     if(handlerBundle.getBoolean(AllMyConstants.MOVE_ALONG)) {
                         Bundle bundle = new Bundle();
@@ -172,7 +179,6 @@ public class NewCubeStepOneFragment extends Fragment {
                         Navigation.findNavController(view).navigate(R.id.action_newCubeStepOneFragment_to_cubeCardsReview, bundle);
                     }
                 }
-
                 completePercent.setText(percent);
             }
         };
@@ -207,8 +213,9 @@ public class NewCubeStepOneFragment extends Fragment {
             MagicCardViewModel magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
             List<MagicCard> allCards = magicCardViewModel.getAllCardsStatic();
             List<MagicCard> cubeCards = new ArrayList<>();
-            List<Integer> cardIds = new ArrayList<>();
+            ArrayList<Integer> cardIds = new ArrayList<>();
             Set<String> names = new HashSet<>();
+            Set<String> ids = new HashSet<>();
 
             // a cube is 360 cards.
             int cubeSize = 360;
@@ -217,6 +224,7 @@ public class NewCubeStepOneFragment extends Fragment {
                 int r = getRandomNum(allCards.size());
                 cubeCards.add(allCards.get(r));
                 cardIds.add(allCards.get(r).getMultiverseid());
+                ids.add(String.valueOf(allCards.get(r).getMultiverseid()));
                 allCards.remove(r);
 
                 // uhg, math.
@@ -240,6 +248,7 @@ public class NewCubeStepOneFragment extends Fragment {
 
 
                 List<Cube> cubes = cubeViewModel.getUserCubesStatic(currentUserId);
+                ArrayList<String> allCubeNames = new ArrayList<>();
 
                 boolean doSwapText = true;
 
@@ -247,6 +256,7 @@ public class NewCubeStepOneFragment extends Fragment {
                 int count = 0;
                 for (Cube c : cubes) {
                     names.add(c.getCube_name());
+                    allCubeNames.add(c.getCube_name());
                     count++;
 
                     // uhg, math.
@@ -276,6 +286,7 @@ public class NewCubeStepOneFragment extends Fragment {
                 mEditor.putInt(AllMyConstants.CUBE_ID, theId);
                 mEditor.remove(AllMyConstants.CUBE_NAMES);
                 mEditor.putStringSet(AllMyConstants.CUBE_NAMES, names);
+                mEditor.putStringSet(AllMyConstants.THE_CHOSEN_CARDS, ids);
                 mEditor.commit();
 
                 Message m = Message.obtain();
@@ -283,7 +294,8 @@ public class NewCubeStepOneFragment extends Fragment {
 
                 b.putString(AllMyConstants.PERCENT_DONE, "100");
                 b.putBoolean(AllMyConstants.MOVE_ALONG, true);
-                b.putParcelable(AllMyConstants.CUBE_CARDS, Parcels.wrap(cubeCards));
+                //b.putParcelable(AllMyConstants.CUBE_CARDS, Parcels.wrap(cubeCards));
+                b.putStringArrayList(AllMyConstants.CUBE_NAMES, allCubeNames);
                 b.putString(AllMyConstants.CUBE_NAME, cubeName);
                 b.putInt(AllMyConstants.CUBE_ID, theId);
                 m.setData(b);

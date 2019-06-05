@@ -19,26 +19,28 @@
 
                         <TextView
                             android:id="@+id/creating_cube_static_text"
-                            android:layout_width="wrap_content"
+                            android:layout_width="220dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/margins_16"
                             android:layout_marginTop="@dimen/margins_8"
+                            android:layout_marginEnd="8dp"
                             android:layout_marginBottom="@dimen/margins_8"
                             android:text="@string/creating_cube"
-                            android:textSize="@dimen/text42"
+                            android:textSize="@dimen/text28"
                             app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/mtg_symbol_g"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
                             android:id="@+id/creating_draft_static_text"
-                            android:layout_width="wrap_content"
+                            android:layout_width="220dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/margins_16"
                             android:layout_marginTop="@dimen/margins_8"
                             android:layout_marginBottom="@dimen/margins_8"
                             android:text="@string/creating_draft"
-                            android:textSize="@dimen/text42"
+                            android:textSize="@dimen/text28"
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"

@@ -77,6 +77,8 @@ public class MainActivityFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main_activity, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        sendDataToActivity(getActivity().getResources().getString(R.string.main_activity_title));
+
         // set up preferences and user stuff
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEditor = mPreferences.edit();
@@ -147,9 +149,9 @@ public class MainActivityFragment extends Fragment {
         Navigation.findNavController(view).navigate(R.id.action_hostFragment_to_myCubesFragment);
     }
 
-    public void sendDataToActivity(Uri uri) {
+    public void sendDataToActivity(String string) {
         if (mListener != null) {
-            mListener.onMainActivityFragmentInteraction(uri);
+            mListener.onMainActivityFragmentInteraction(string);
         }
     }
 
@@ -176,8 +178,7 @@ public class MainActivityFragment extends Fragment {
     }
 
     public interface OnMainActivityFragmentInteraction {
-        // TODO: Update argument type and name
-        void onMainActivityFragmentInteraction(Uri uri);
+        void onMainActivityFragmentInteraction(String string);
     }
 
     public void insertData() {

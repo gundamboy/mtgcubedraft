@@ -2,6 +2,8 @@ package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -11,16 +13,13 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -37,22 +36,18 @@ import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
 import com.ragingclaw.mtgcubedraftsimulator.models.CubeViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
+import com.ragingclaw.mtgcubedraftsimulator.widget.CubeDraftWidgetProvider;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import timber.log.Timber;
-
-import static android.view.ViewTreeObserver.*;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -97,6 +92,13 @@ public class CubeCardsReview extends Fragment {
                 if (cubeId!= 0) {
                     mCreateDraftButton.setEnabled(true);
                 }
+            }
+
+            if(key.equals(AllMyConstants.CUBE_NAMES)) {
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getActivity());
+                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
+                        new ComponentName(getActivity(), CubeDraftWidgetProvider.class));
+                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.cubes_widget_list);
             }
         }
     };
@@ -190,7 +192,6 @@ public class CubeCardsReview extends Fragment {
         mCreateDraftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 getArguments().remove(AllMyConstants.CUBE_CARDS);
                 Bundle bundle = new Bundle();
                 bundle.putInt(AllMyConstants.CUBE_ID, cubeId);
@@ -211,13 +212,11 @@ public class CubeCardsReview extends Fragment {
             @Override
             public void onClick(View v) {
                 // if the user came from the list of cubes, offer a delete option
-                new DeleteCube(cubeId, mAuth, currentUserId, cubeViewModel, mPreferences, mEditor).execute();
-
+                new DeleteCube(getActivity(), cubeId, mAuth, currentUserId, cubeViewModel, mPreferences, mEditor).execute();
 
                 // good bye cruel world, I quit.
                 getArguments().remove(AllMyConstants.CUBE_CARDS);
                 Navigation.findNavController(view).navigate(R.id.action_cubeCardsReview_to_hostFragment);
-
             }
         });
 
@@ -240,14 +239,13 @@ public class CubeCardsReview extends Fragment {
                 List<MagicCard> cards = Parcels.unwrap(handlerBundle.getParcelable(AllMyConstants.CUBE_CARDS));
                 cubeAdapter.setCards(cards);
 
+                // blocks the user from seeing the recyclerView loading. the amount of data its taking in makes it slow.
                 killBlocker();
             }
         };
 
         t = new Thread(new com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.GetUserCubeCardsRunnable(handler, cubeId, currentUserId));
         t.start();
-
-
     }
 
     private void sendDataToActivity(Bundle bundle) {
@@ -380,6 +378,8 @@ public class CubeCardsReview extends Fragment {
 
     public static class DeleteCube extends AsyncTask<Void, Void, Void> {
         // save the cube info in the database
+        @SuppressLint("StaticFieldLeak")
+        Context context;
         int cubeId;
         CubeViewModel cubeViewModel;
         FirebaseAuth mAuth;
@@ -387,7 +387,8 @@ public class CubeCardsReview extends Fragment {
         SharedPreferences mPreferences;
         SharedPreferences.Editor mEditor;
 
-        public DeleteCube(int cubeId, FirebaseAuth mAuth, String currentUserId, CubeViewModel cubeViewModel, SharedPreferences mPreferences, SharedPreferences.Editor mEditor) {
+        public DeleteCube(Context context, int cubeId, FirebaseAuth mAuth, String currentUserId, CubeViewModel cubeViewModel, SharedPreferences mPreferences, SharedPreferences.Editor mEditor) {
+            this.context = context;
             this.cubeId = cubeId;
             this.cubeViewModel = cubeViewModel;
             this.mAuth = mAuth;
@@ -399,19 +400,23 @@ public class CubeCardsReview extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
             // get all cards from adapter/recyclerView
-            Set<String> names = new HashSet<>();
-            mEditor = mPreferences.edit();
-            mEditor.remove(AllMyConstants.CUBE_NAMES);
-            List<Cube> cubes = cubeViewModel.getUserCubesStatic(currentUserId);
-            for (Cube c : cubes) {
-                names.add(c.getCube_name());
-            }
-
-            mEditor.putStringSet(AllMyConstants.CUBE_NAMES, names);
-            mEditor.commit();
 
             Cube userCube = cubeViewModel.getmUserCube(currentUserId, cubeId);
             cubeViewModel.deleteCube(userCube);
+
+            Set<String> names = new HashSet<>();
+
+            List<Cube> cubes = cubeViewModel.getUserCubesStatic(currentUserId);
+            for (Cube c : cubes) {
+                if (c.getCubeId() != userCube.getCubeId()) {
+                    names.add(c.getCube_name());
+                }
+            }
+
+            mEditor = mPreferences.edit();
+            mEditor.remove(AllMyConstants.CUBE_NAMES);
+            mEditor.putStringSet(AllMyConstants.CUBE_NAMES, names);
+            mEditor.commit();
 
             return null;
         }

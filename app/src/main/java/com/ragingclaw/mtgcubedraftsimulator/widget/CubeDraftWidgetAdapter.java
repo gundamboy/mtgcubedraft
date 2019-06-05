@@ -23,7 +23,7 @@ public class CubeDraftWidgetAdapter implements RemoteViewsService.RemoteViewsFac
     private Context mContext;
     private int appWidgetId;
     private String userId;
-    private List<String> mCubeNames = new ArrayList<>();
+    private ArrayList<String> mCubeNames = new ArrayList<>();
 
     public CubeDraftWidgetAdapter(Context mContext, Intent mIntent) {
         this.mContext = mContext;
@@ -40,19 +40,17 @@ public class CubeDraftWidgetAdapter implements RemoteViewsService.RemoteViewsFac
 
     private void initData() {
         SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-
-//        if(mPreferences.contains(AllMyConstants.CUBE_NAMES)) {
-//            Set<String> names = mPreferences.getStringSet(AllMyConstants.CUBE_NAMES, null);
-//            if(names == null) {
-//                mCubeNames.add("");
-//            } else {
-//                if(mCubeNames.size() > 0) {
-//                    mCubeNames.clear();
-//                    mCubeNames.addAll(names);
-//                }
-//            }
-//        }
-
+        if(mPreferences.contains(AllMyConstants.CUBE_NAMES)) {
+            Set<String> names = mPreferences.getStringSet(AllMyConstants.CUBE_NAMES, null);
+            if(names == null) {
+                mCubeNames.add("");
+            } else {
+                if(mCubeNames.size() > 0) {
+                    mCubeNames.clear();
+                    mCubeNames.addAll(names);
+                }
+            }
+        }
     }
 
     @Override

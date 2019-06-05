@@ -1,11 +1,8 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -27,7 +24,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.activities.LoginActivity;
 import com.ragingclaw.mtgcubedraftsimulator.activities.MainActivity;
@@ -35,7 +31,6 @@ import com.ragingclaw.mtgcubedraftsimulator.adapters.MyCubesAdapter;
 import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
 import com.ragingclaw.mtgcubedraftsimulator.models.CubeViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
-import com.ragingclaw.mtgcubedraftsimulator.widget.CubeDraftWidget;
 
 import java.util.ArrayList;
 import java.util.List;

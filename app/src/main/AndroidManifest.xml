@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <receiver android:name=".widget.CubeDraftWidget">
+        <receiver android:name=".widget.CubeDraftWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="WIDGET_INTENT_ACTION_NEW_CUBE" />

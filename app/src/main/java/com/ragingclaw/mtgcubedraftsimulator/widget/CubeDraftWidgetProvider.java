@@ -19,10 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import timber.log.Timber;
+
 /**
  * Implementation of App Widget functionality.
  */
-public class CubeDraftWidget extends AppWidgetProvider {
+public class CubeDraftWidgetProvider extends AppWidgetProvider {
     private FirebaseAuth mAuth;
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
@@ -42,11 +44,16 @@ public class CubeDraftWidget extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         if(intent != null) {
+            Timber.tag("fart").i("onRecieve");
             if(intent.hasExtra(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES)) {
+                if(intent.hasExtra(AllMyConstants.CUBE_NAMES)) {
+                    Timber.tag("fart").i("onRecieve has widget action and cube names");
+                }
+
                 mAuth = FirebaseAuth.getInstance();
 
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, CubeDraftWidget.class));
+                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, CubeDraftWidgetProvider.class));
 
                 RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_provider_layout);
             }
@@ -60,6 +67,7 @@ public class CubeDraftWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) { RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_provider_layout);
+            Timber.tag("fart").i("widget onUpdate");
             mAuth = FirebaseAuth.getInstance();
             String userId = mAuth.getCurrentUser().getUid();
             mPreferences = PreferenceManager.getDefaultSharedPreferences(context);

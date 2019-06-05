@@ -140,8 +140,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onMainActivityFragmentInteraction(Uri uri) {
-
+    public void onMainActivityFragmentInteraction(String title) {
+        setActionBarTitle(title);
     }
 
     @Override

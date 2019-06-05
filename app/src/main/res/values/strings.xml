@@ -86,7 +86,7 @@
     <string name="go_back_button_text">Go back to deck</string>
     <string name="go_home_menu_text">Go Home</string>
     <string name="you_have_no_cubes_go_make_some_empty_view_text">You have no cubes. Go make some.</string>
-    <string name="one_sec_grabbing_your_cube">One sec, grabbing your cube.</string>
+    <string name="one_sec_grabbing_your_cube">One sec, grabbing your cards.</string>
 
 
 </resources>
