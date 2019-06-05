@@ -267,8 +267,10 @@ public class NewCubeStepOneFragment extends Fragment {
                 }
                 mEditor = mPreferences.edit();
 
-                if(mPreferences.getStringSet(AllMyConstants.CUBE_NAMES, null).size() > 0) {
-                    mEditor.remove(AllMyConstants.CUBE_NAMES);
+                if(mPreferences.contains(AllMyConstants.CUBE_NAMES)) {
+                    if (mPreferences.getStringSet(AllMyConstants.CUBE_NAMES, null).size() > 0) {
+                        mEditor.remove(AllMyConstants.CUBE_NAMES);
+                    }
                 }
 
                 mEditor.putInt(AllMyConstants.CUBE_ID, theId);
