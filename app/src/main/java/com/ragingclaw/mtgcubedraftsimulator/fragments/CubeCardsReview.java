@@ -102,8 +102,8 @@ public class CubeCardsReview extends Fragment {
     }
 
 
-    public static com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview newInstance() {
-        com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview fragment = new com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview();
+    public static CubeCardsReview newInstance() {
+        CubeCardsReview fragment = new com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview();
 
         return fragment;
     }
@@ -221,7 +221,7 @@ public class CubeCardsReview extends Fragment {
                 Timber.tag("fart").i("isSaved? %s", isSaved);
                 if (!isSaved) {
                     new SaveCube(cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener, mPreferences).execute();
-                    isSaved = !isSaved;
+//                    isSaved = true;
                 }
 
                 getArguments().remove(AllMyConstants.CUBE_CARDS);
@@ -342,10 +342,11 @@ public class CubeCardsReview extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.save:
+                Timber.tag("fart").i("isSaved is: %s", isSaved);
                 if (!isSaved) {
                     Timber.tag("fart").i("saving cube");
                     new SaveCube(cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener, mPreferences).execute();
-                    isSaved = !isSaved;
+//                    isSaved = true;
 
                 }
                 return true;
@@ -417,6 +418,7 @@ public class CubeCardsReview extends Fragment {
         CubeViewModel cubeViewModel;
         String cubeName;
         SharedPreferences mPreferences;
+        Set<String> names = new HashSet<>();
 
         public SaveCube(int cubeId, CubeAdapter cubeAdapter, FirebaseAuth mAuth, String currentUserId, CubeViewModel cubeViewModel, String cubeName, com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.OnCubeReviewFragmentInteractionListener onCubeReviewFragmentInteractionListener, SharedPreferences mPreferences) {
             this.cubeId = cubeId;
@@ -431,18 +433,12 @@ public class CubeCardsReview extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Set<String> names = new HashSet<>();
+            Timber.tag("fart").i("do in background");
+            Timber.tag("fart").i("cubeId: %s", cubeId);
             if(cubeId == 0) {
-                SharedPreferences.Editor mEditor = mPreferences.edit();
                 // get all cards from adapter/recyclerView
                 List<MagicCard> cards = cubeAdapter.getItems();
                 List<Integer> cardIds = new ArrayList<>();
-
-                Map<String,?> keys = mPreferences.getAll();
-
-                for(Map.Entry<String,?> entry : keys.entrySet()){
-                    Timber.tag("fart").i("key: %s, value: %s", entry.getKey(), entry.getValue());
-                }
 
                 // for each, create a new cube
                 for (MagicCard c : cards) {
@@ -463,15 +459,9 @@ public class CubeCardsReview extends Fragment {
                 for (Cube c : cubes) {
                     names.add(c.getCube_name());
                 }
-                mEditor.remove(AllMyConstants.CUBE_NAMES);
-                mEditor.putStringSet(AllMyConstants.CUBE_NAMES, names);
-                mEditor.commit();
 
-                Map<String,?> keys2 = mPreferences.getAll();
 
-                for(Map.Entry<String,?> entry : keys2.entrySet()){
-                    Timber.tag("fart").i("key: %s, value: %s", entry.getKey(), entry.getValue());
-                }
+
             }
 
             return null;
@@ -483,6 +473,9 @@ public class CubeCardsReview extends Fragment {
             super.onPostExecute(aVoid);
             SharedPreferences.Editor mEditor = mPreferences.edit();
             mEditor.putInt(AllMyConstants.CUBE_ID, cubeId);
+            mEditor.putBoolean(AllMyConstants.IS_SAVED, true);
+            mEditor.remove(AllMyConstants.CUBE_NAMES);
+            mEditor.putStringSet(AllMyConstants.CUBE_NAMES, names);
             mEditor.commit();
 
             Bundle bundle = new Bundle();
