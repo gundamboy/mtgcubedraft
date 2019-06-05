@@ -32,6 +32,9 @@ public class AllMyConstants {
     public static final String WIDGET_INTENT_ACTION_NEW_CUBE = "WIDGET_INTENT_ACTION_NEW_CUBE";
     public static final String WIDGET_INTENT_ACTION_MY_CUBES = "WIDGET_INTENT_ACTION_MY_CUBES";
     public static final String USER_ID = "USER_ID";
+    public static final String MOVE_ALONG = "MOVE_ALONG";
+    public static final String PERCENT_DONE = "PERCENT_DONE";
+    public static final String SWAP_TEXT = "SWAP_TEXT";
 
     public static final String SEAT1_PACK1 = "SEAT1_PACK1";
     public static final String SEAT1_PACK2 = "SEAT1_PACK2";

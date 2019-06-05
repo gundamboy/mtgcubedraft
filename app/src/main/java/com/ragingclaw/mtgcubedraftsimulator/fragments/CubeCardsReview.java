@@ -18,7 +18,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -50,6 +52,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import timber.log.Timber;
 
+import static android.view.ViewTreeObserver.*;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -60,6 +64,8 @@ import timber.log.Timber;
  */
 public class CubeCardsReview extends Fragment {
     @BindView(R.id.cube_cards_recyclerview) RecyclerView mCardsRecyclerView;
+    @BindView(R.id.mainLayout) androidx.constraintlayout.widget.ConstraintLayout mainLayout;
+    @BindView(R.id.blocker) androidx.constraintlayout.widget.ConstraintLayout blockerLayout;
     @BindView(R.id.create_draft_button) com.google.android.material.button.MaterialButton mCreateDraftButton;
     @BindView(R.id.cube_go_to_my_cubes_button) com.google.android.material.button.MaterialButton mGoToMyCubesButton;
     @BindView(R.id.cube_multi_function_button) com.google.android.material.button.MaterialButton mCubeMultiFunctionButton;
@@ -68,8 +74,6 @@ public class CubeCardsReview extends Fragment {
     private com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.OnCubeReviewFragmentInteractionListener mListener;
     private List<MagicCard> cubeCards;
     private CubeViewModel cubeViewModel;
-    private boolean isSaved = false;
-    private boolean isSingle = false;
     private CubeAdapter cubeAdapter;
     private String cubeName = "";
     private int cubeId = 0;
@@ -117,17 +121,9 @@ public class CubeCardsReview extends Fragment {
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mPreferences.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
 
-        Map<String,?> keys = mPreferences.getAll();
-
-        for(Map.Entry<String,?> entry : keys.entrySet()){
-            Timber.tag("fart").i("key: %s, value: %s", entry.getKey(), entry.getValue());
-        }
-
         cubeId = mPreferences.getInt(AllMyConstants.CUBE_ID, 0);
         cubeName = mPreferences.getString(AllMyConstants.CUBE_NAME, null);
         toastMessage = mPreferences.getString(AllMyConstants.TOAST_MESSAGE, null);
-        isSaved = mPreferences.getBoolean(AllMyConstants.IS_SAVED, false);
-        isSingle = mPreferences.getBoolean(AllMyConstants.IS_SINGLE, false);
 
         if (getArguments() != null) {
             if(savedInstanceState != null) {
@@ -137,8 +133,6 @@ public class CubeCardsReview extends Fragment {
                 cubeName = getArguments().getString(AllMyConstants.CUBE_NAME);
                 cubeId = getArguments().getInt(AllMyConstants.CUBE_ID);
             }
-
-            Timber.tag("fart").i("isSingle: %s", isSingle);
 
             // send the cube name back to the activity so it can be set in the actionbar
             if(mListener != null) {
@@ -155,14 +149,15 @@ public class CubeCardsReview extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cube_card_review, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        mainLayout.setVisibility(View.GONE);
+        blockerLayout.setVisibility(View.VISIBLE);
+
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         if (savedInstanceState != null) {
             cubeName = savedInstanceState.getString(AllMyConstants.CUBE_NAME);
             cubeId = savedInstanceState.getInt(AllMyConstants.CUBE_ID);
             cubeCards = Parcels.unwrap(savedInstanceState.getParcelable(AllMyConstants.CUBE_CARDS));
-            isSingle = savedInstanceState.getBoolean(AllMyConstants.IS_SINGLE);
-            isSaved = savedInstanceState.getBoolean(AllMyConstants.IS_SAVED);
         }
 
         if(mPreferences.contains(AllMyConstants.CUBE_ID)) {
@@ -184,20 +179,8 @@ public class CubeCardsReview extends Fragment {
         cubeViewModel = ViewModelProviders.of(getActivity()).get(CubeViewModel.class);
 
         // magic stuff. both conditions set the adapter, but in different ways.
-        if (getArguments().getBoolean(AllMyConstants.NEW_CUBE)) {
-            cubeCards = Parcels.unwrap(getArguments().getParcelable(AllMyConstants.CUBE_CARDS));
-            cubeAdapter.setCards(cubeCards);
-        } else {
-            isSingle = true;
-            mCubeMultiFunctionButton.setText(getString(R.string.delete_cube_button_text));
-            getMyCube(cubeId);
-        }
-
-        if(isSingle) {
-            mCreateDraftButton.setEnabled(true);
-        } else {
-            mCreateDraftButton.setEnabled(false);
-        }
+        mCubeMultiFunctionButton.setText(getString(R.string.delete_cube_button_text));
+        getMyCube(cubeId);
 
         if(mPreferences.contains(AllMyConstants.CUBE_ID)) {
             cubeId = mPreferences.getInt(AllMyConstants.CUBE_ID, 0);
@@ -218,12 +201,6 @@ public class CubeCardsReview extends Fragment {
         mGoToMyCubesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Timber.tag("fart").i("isSaved? %s", isSaved);
-                if (!isSaved) {
-                    new SaveCube(cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener, mPreferences).execute();
-//                    isSaved = true;
-                }
-
                 getArguments().remove(AllMyConstants.CUBE_CARDS);
                 Navigation.findNavController(view).navigate(R.id.action_cubeCardsReview_to_myCubesFragment);
             }
@@ -234,9 +211,8 @@ public class CubeCardsReview extends Fragment {
             @Override
             public void onClick(View v) {
                 // if the user came from the list of cubes, offer a delete option
-                if (isSingle) {
-                    new com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.DeleteCube(cubeId, mAuth, currentUserId, cubeViewModel, mPreferences, mEditor).execute();
-                }
+                new DeleteCube(cubeId, mAuth, currentUserId, cubeViewModel, mPreferences, mEditor).execute();
+
 
                 // good bye cruel world, I quit.
                 getArguments().remove(AllMyConstants.CUBE_CARDS);
@@ -244,7 +220,13 @@ public class CubeCardsReview extends Fragment {
 
             }
         });
+
         return view;
+    }
+
+    public void killBlocker() {
+        mainLayout.setVisibility(View.VISIBLE);
+        blockerLayout.setVisibility(View.GONE);
     }
 
     private void getMyCube(int cubeId) {
@@ -257,11 +239,15 @@ public class CubeCardsReview extends Fragment {
 
                 List<MagicCard> cards = Parcels.unwrap(handlerBundle.getParcelable(AllMyConstants.CUBE_CARDS));
                 cubeAdapter.setCards(cards);
+
+                killBlocker();
             }
         };
 
         t = new Thread(new com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.GetUserCubeCardsRunnable(handler, cubeId, currentUserId));
         t.start();
+
+
     }
 
     private void sendDataToActivity(Bundle bundle) {
@@ -330,26 +316,12 @@ public class CubeCardsReview extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
         inflater.inflate(R.menu.cube_menu, menu);
-
-        if (!isSingle) {
-            MenuItem saveButton = menu.findItem(R.id.save);
-            saveButton.setVisible(true);
-        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.save:
-                Timber.tag("fart").i("isSaved is: %s", isSaved);
-                if (!isSaved) {
-                    Timber.tag("fart").i("saving cube");
-                    new SaveCube(cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener, mPreferences).execute();
-//                    isSaved = true;
-
-                }
-                return true;
             case R.id.goHome:
                 PendingIntent pendingIntent = new NavDeepLinkBuilder(getActivity())
                         .setGraph(R.navigation.nav_graph)
@@ -367,8 +339,6 @@ public class CubeCardsReview extends Fragment {
         outState.putString(AllMyConstants.CUBE_NAME, cubeName);
         outState.putInt(AllMyConstants.CUBE_NAME, cubeId);
         outState.putParcelable(AllMyConstants.CUBE_CARDS, Parcels.wrap(cubeCards));
-        outState.putBoolean(AllMyConstants.IS_SINGLE, isSingle);
-        outState.putBoolean(AllMyConstants.IS_SAVED, isSaved);
     }
 
     public interface OnCubeReviewFragmentInteractionListener {
@@ -405,84 +375,6 @@ public class CubeCardsReview extends Fragment {
                 m.setData(b);;
                 handler.sendMessage(m);
             }
-        }
-    }
-
-    public static class SaveCube extends AsyncTask<Void, Void, Void> {
-        // save the cube info in the database
-        int cubeId;
-        OnCubeReviewFragmentInteractionListener onCubeReviewFragmentInteractionListener;
-        CubeAdapter cubeAdapter;
-        FirebaseAuth mAuth;
-        String currentUserId;
-        CubeViewModel cubeViewModel;
-        String cubeName;
-        SharedPreferences mPreferences;
-        Set<String> names = new HashSet<>();
-
-        public SaveCube(int cubeId, CubeAdapter cubeAdapter, FirebaseAuth mAuth, String currentUserId, CubeViewModel cubeViewModel, String cubeName, com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.OnCubeReviewFragmentInteractionListener onCubeReviewFragmentInteractionListener, SharedPreferences mPreferences) {
-            this.cubeId = cubeId;
-            this.cubeAdapter = cubeAdapter;
-            this.mAuth = mAuth;
-            this.currentUserId = currentUserId;
-            this.cubeViewModel = cubeViewModel;
-            this.cubeName = cubeName;
-            this.onCubeReviewFragmentInteractionListener = onCubeReviewFragmentInteractionListener;
-            this.mPreferences = mPreferences;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Timber.tag("fart").i("do in background");
-            Timber.tag("fart").i("cubeId: %s", cubeId);
-            if(cubeId == 0) {
-                // get all cards from adapter/recyclerView
-                List<MagicCard> cards = cubeAdapter.getItems();
-                List<Integer> cardIds = new ArrayList<>();
-
-                // for each, create a new cube
-                for (MagicCard c : cards) {
-                    cardIds.add(c.getMultiverseid());
-                }
-
-                if (cardIds.size() == cards.size()) {
-                    for (int i = 0; i < 1; i++) {
-                        Timber.tag("fart").i("should be inserting cube now");
-                        Cube cube = new Cube(0, currentUserId, cubeName, cards.size(), cardIds);
-                        long insert = cubeViewModel.insertCubeWithReturn(cube);
-
-                        cubeId = (int) insert;
-                    }
-                }
-
-                List<Cube> cubes = cubeViewModel.getUserCubesStatic(currentUserId);
-                for (Cube c : cubes) {
-                    names.add(c.getCube_name());
-                }
-
-
-
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            // sends a message back to the UI thread so I can show a toast.
-            super.onPostExecute(aVoid);
-            SharedPreferences.Editor mEditor = mPreferences.edit();
-            mEditor.putInt(AllMyConstants.CUBE_ID, cubeId);
-            mEditor.putBoolean(AllMyConstants.IS_SAVED, true);
-            mEditor.remove(AllMyConstants.CUBE_NAMES);
-            mEditor.putStringSet(AllMyConstants.CUBE_NAMES, names);
-            mEditor.commit();
-
-            Bundle bundle = new Bundle();
-            bundle.putString(AllMyConstants.CUBE_NAME, null);
-            bundle.putInt(AllMyConstants.CUBE_ID, cubeId);
-            bundle.putString(AllMyConstants.TOAST_MESSAGE, "Your Cube has been saved. Why not make a draft next?");
-            onCubeReviewFragmentInteractionListener.onFragmentCubeReviewInteraction(bundle);
         }
     }
 

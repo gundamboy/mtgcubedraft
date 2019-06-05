@@ -64,6 +64,7 @@
         <action
             android:id="@+id/action_newCubeStepOneFragment_to_cubeCardsReview"
             app:destination="@id/cubeCardsReview"
+            app:popUpTo="@+id/nav_graph"
             app:enterAnim="@anim/slide_in_from_right"
             app:exitAnim="@anim/slide_out_to_left"
             app:popEnterAnim="@anim/slide_in_from_right"

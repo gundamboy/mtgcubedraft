@@ -30,11 +30,11 @@
     <string name="my_cubes_activity_title">My Cubes</string>
     <string name="new_cube_widget_button_text">New Cube</string>
     <string name="my_cubes_widget_button_text">My Cubes</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="my_cubes_no_cubes_instructions">Okay, don\'t panic. You have some options here. Well, you have only 1 option. You need to make a cube… Push the button to do that. It\'s easy. Trust me.</string>
     <string name="my_cubes_monster_text">OH NO!\nYou have no cubes!</string>
-    <string name="my_cubes_intro_blurb">Here is a handy dandy list off all you\'re amazing Cubes!</string>
-    <string name="creating_cube">Creating your cube,\nhang tight.</string>
+    <string name="my_cubes_intro_blurb">Here is a handy dandy list off all you\'re amazing Cubes! Click an arrow to see the cards and draft!</string>
+    <string name="building_cube">We\'re gathering the cards, just a moment please.</string>
+    <string name="creating_cube">Creating your cube, hang tight.</string>
 
     <!--Drafts-->
     <string name="my_drafts_activity_title">Drafts</string>
@@ -86,6 +86,7 @@
     <string name="go_back_button_text">Go back to deck</string>
     <string name="go_home_menu_text">Go Home</string>
     <string name="you_have_no_cubes_go_make_some_empty_view_text">You have no cubes. Go make some.</string>
+    <string name="one_sec_grabbing_your_cube">One sec, grabbing your cube.</string>
 
 
 </resources>

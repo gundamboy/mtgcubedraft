@@ -1,76 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/step_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margins_22"
-        android:layout_marginTop="@dimen/margins_72"
-        android:text="@string/step_1_title"
-        android:textSize="@dimen/text22"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/step_instructions"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margins_22"
-        android:layout_marginTop="@dimen/margins_8"
-        android:layout_marginEnd="@dimen/margins_22"
-        android:text="@string/new_cube_instructions"
-        android:textSize="@dimen/text20"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/step_title" />
-
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/step1"
+        android:layout_marginTop="@dimen/margins_60"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margins_8"
-        android:layout_marginTop="@dimen/margins_8"
-        android:layout_marginEnd="@dimen/margins_8"
-        android:layout_marginBottom="@dimen/margins_8"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/step_instructions">
+        android:layout_height="match_parent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/step_instructions"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="@dimen/margins_22"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/margins_22"
+            android:text="@string/new_cube_instructions"
+            android:textSize="@dimen/text20"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margins_8"
-            android:layout_marginEnd="@dimen/margins_8">
+            android:layout_marginTop="@dimen/margins_32"
+            android:layout_marginEnd="@dimen/margins_8"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/step_instructions">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/cube_name_edit_text"
-                android:layout_width="@dimen/layout_300"
-                android:layout_height="@dimen/layout_54"
-                android:maxLines="1"
-                android:inputType="text"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginStart="@dimen/margins_8"
-                android:layout_marginEnd="@dimen/margins_8"
-                android:layout_marginBottom="@dimen/margins_32"
-                android:hint="@string/cube_name_hint" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginEnd="@dimen/margins_8">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_generate_cube"
-            style="@style/GenerateCubeButton"
-            android:layout_width="@dimen/layout_300"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/generate_an_awesome_cube_button"
-            android:textSize="@dimen/text28" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/cube_name_edit_text"
+                    android:layout_width="@dimen/layout_300"
+                    android:layout_height="@dimen/layout_54"
+                    android:layout_marginStart="@dimen/margins_8"
+                    android:layout_marginEnd="@dimen/margins_8"
+                    android:layout_marginBottom="@dimen/margins_32"
+                    android:hint="@string/cube_name_hint"
+                    android:inputType="text"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_generate_cube"
+                style="@style/GenerateCubeButton"
+                android:layout_width="@dimen/layout_300"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/generate_an_awesome_cube_button"
+                android:textSize="@dimen/text28" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/building_cube_frame"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?android:attr/actionBarSize"
+        android:layout_gravity="center_vertical"
+        android:visibility="gone">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/building_cube_layout"
+                android:layout_gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/creating_cube_static_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margins_8"
+                    android:layout_marginEnd="@dimen/margins_8"
+                    android:layout_marginBottom="@dimen/margins_24"
+                    android:text="@string/building_cube"
+                    android:textSize="@dimen/text24"
+                    app:layout_constraintBottom_toTopOf="@+id/mtg_symbol_w"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/percentage_built"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margins_8"
+                    android:layout_marginTop="@dimen/margins_8"
+                    android:layout_marginEnd="@dimen/margins_8"
+                    android:layout_marginBottom="@dimen/margins_32"
+                    android:textSize="@dimen/text32"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="@string/cube_built_base_percent" />
+
+                <ImageView
+                    android:id="@+id/mtg_symbol_w"
+                    android:layout_width="@dimen/mtg_symbol_image_size"
+                    android:layout_height="@dimen/mtg_symbol_image_size"
+                    android:layout_marginStart="@dimen/margins_8"
+                    android:layout_marginEnd="@dimen/margins_8"
+                    android:layout_marginBottom="@dimen/margins_32"
+                    android:src="@drawable/w_mana_symbol"
+                    android:contentDescription="@string/mana_symbol_description"
+                    app:layout_constraintBottom_toTopOf="@+id/percentage_built"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageView
+                    android:id="@+id/mtg_symbol_u"
+                    android:layout_width="@dimen/mtg_symbol_image_size"
+                    android:layout_height="@dimen/mtg_symbol_image_size"
+                    android:layout_marginStart="@dimen/margins_8"
+                    android:layout_marginTop="@dimen/margins_60"
+                    android:layout_marginEnd="@dimen/margins_8"
+                    android:src="@drawable/u_mana_symbol"
+                    android:contentDescription="@string/mana_symbol_description"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/mtg_symbol_w"
+                    app:layout_constraintTop_toTopOf="@+id/mtg_symbol_w" />
+
+                <ImageView
+                    android:id="@+id/mtg_symbol_b"
+                    android:layout_width="@dimen/mtg_symbol_image_size"
+                    android:layout_height="@dimen/mtg_symbol_image_size"
+                    android:layout_marginEnd="@dimen/margins_8"
+                    android:layout_marginTop="@dimen/margins_32"
+                    android:src="@drawable/b_mana_symbol"
+                    android:contentDescription="@string/mana_symbol_description"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/mtg_symbol_r"
+                    app:layout_constraintTop_toBottomOf="@+id/percentage_built" />
+
+                <ImageView
+                    android:id="@+id/mtg_symbol_r"
+                    android:layout_width="@dimen/mtg_symbol_image_size"
+                    android:layout_height="@dimen/mtg_symbol_image_size"
+                    android:layout_marginStart="@dimen/margins_8"
+                    android:layout_marginTop="@dimen/margins_32"
+                    android:src="@drawable/r_mana_symbol"
+                    android:contentDescription="@string/mana_symbol_description"
+                    app:layout_constraintEnd_toStartOf="@+id/mtg_symbol_b"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/percentage_built" />
+
+                <ImageView
+                    android:id="@+id/mtg_symbol_g"
+                    android:layout_width="@dimen/mtg_symbol_image_size"
+                    android:layout_height="@dimen/mtg_symbol_image_size"
+                    android:layout_marginStart="@dimen/margins_8"
+                    android:layout_marginTop="@dimen/margins_60"
+                    android:layout_marginEnd="@dimen/margins_8"
+                    android:src="@drawable/g_mana_symbol"
+                    android:contentDescription="@string/mana_symbol_description"
+                    app:layout_constraintEnd_toStartOf="@+id/mtg_symbol_w"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/mtg_symbol_w" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</LinearLayout>

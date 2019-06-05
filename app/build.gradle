@@ -57,6 +57,7 @@ dependencies {
     implementation 'org.parceler:parceler-api:1.1.12'
     annotationProcessor 'org.parceler:parceler:1.1.12'
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
+    implementation 'com.github.tajchert:WaitingDots:0.4.0'
 
     // this is where the... Magic.... happens... get it! MAGIC! Because Magic The Gathering!
     implementation 'io.magicthegathering:javasdk:0.0.14'

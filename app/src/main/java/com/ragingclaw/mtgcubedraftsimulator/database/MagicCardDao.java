@@ -24,6 +24,9 @@ public interface MagicCardDao {
     @Query("SELECT * FROM cards")
     LiveData<List<MagicCard>> getAllCards();
 
+    @Query("SELECT * FROM cards")
+    List<MagicCard> getAllCardsStatic();
+
     @Query("SELECT * FROM cards WHERE cards.multiverseid = :id")
     MagicCard getSingleCard(int id);
 

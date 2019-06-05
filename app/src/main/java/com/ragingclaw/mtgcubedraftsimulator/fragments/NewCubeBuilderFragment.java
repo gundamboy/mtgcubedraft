@@ -1,6 +1,5 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -30,12 +29,10 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.magicthegathering.javasdk.resource.Card;
 
 public class NewCubeBuilderFragment extends Fragment {
     @BindView(R.id.percentage_built) TextView completePercent;

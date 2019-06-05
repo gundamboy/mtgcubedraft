@@ -8,27 +8,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
-import android.util.ArraySet;
 import android.widget.RemoteViews;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.ragingclaw.mtgcubedraftsimulator.R;
-import com.ragingclaw.mtgcubedraftsimulator.database.ApplicationDatabase;
-import com.ragingclaw.mtgcubedraftsimulator.database.ApplicationDatabase_Impl;
-import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
-import com.ragingclaw.mtgcubedraftsimulator.database.CubeDao;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-
-import timber.log.Timber;
 
 /**
  * Implementation of App Widget functionality.

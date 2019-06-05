@@ -2,12 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/save"
-        android:icon="@drawable/v_save"
-        app:showAsAction="always"
-        android:title="@string/menu_save_cube"/>
-
-    <item
         android:id="@+id/goHome"
         android:title="@string/go_home_menu_text"/>
 

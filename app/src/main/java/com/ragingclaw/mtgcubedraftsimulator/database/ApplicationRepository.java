@@ -40,6 +40,10 @@ public class ApplicationRepository {
         return mMagicCardDao.getAllCards();
     }
 
+    public List<MagicCard> getAllCardsStatic() {
+        return mMagicCardDao.getAllCardsStatic();
+    }
+
     public MagicCard mGetSingleCard(int id) {
         return mMagicCardDao.getSingleCard(id);
     }
