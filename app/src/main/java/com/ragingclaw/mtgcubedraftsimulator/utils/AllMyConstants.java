@@ -10,6 +10,7 @@ public class AllMyConstants {
     public static final String MTG_API_URL = "https://api.magicthegathering.io/v1/";
     public static final String CUBE_CARDS = "CUBE_CARDS";
     public static final String CUBE_NAME = "CUBE_NAME";
+    public static final String CUBE_NAMES = "CUBE_NAMES";
     public static final String TOAST_MESSAGE = "TOAST_MESSAGE";
     public static final String NEW_CUBE = "NEW_CUBE";
     public static final String CUBE_ID = "CUBE_ID";
@@ -30,6 +31,7 @@ public class AllMyConstants {
     public static final String RECYCLER_RESTORE = "RECYCLER_RESTORE";
     public static final String WIDGET_INTENT_ACTION_NEW_CUBE = "WIDGET_INTENT_ACTION_NEW_CUBE";
     public static final String WIDGET_INTENT_ACTION_MY_CUBES = "WIDGET_INTENT_ACTION_MY_CUBES";
+    public static final String USER_ID = "USER_ID";
 
     public static final String SEAT1_PACK1 = "SEAT1_PACK1";
     public static final String SEAT1_PACK2 = "SEAT1_PACK2";

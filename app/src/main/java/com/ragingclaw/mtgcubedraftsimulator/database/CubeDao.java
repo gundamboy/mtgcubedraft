@@ -34,6 +34,10 @@ public interface CubeDao {
     @Query("SELECT * From cubes Where cubes.userId = :userId")
     LiveData<List<Cube>> getUserCubes(String userId);
 
+    // get a static list of the users cubes
+    @Query("SELECT * From cubes Where cubes.userId = :userId")
+    List<Cube> getUserCubesStatic(String userId);
+
     // get only a single users cube
     @Query("SELECT * From cubes Where cubes.userId = :userId AND cubes.cubeId = :cubeId")
     Cube getUserCube(String userId, Integer cubeId);

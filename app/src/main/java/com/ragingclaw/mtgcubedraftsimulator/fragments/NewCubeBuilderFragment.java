@@ -1,10 +1,13 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +30,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +46,8 @@ public class NewCubeBuilderFragment extends Fragment {
     private MagicCardViewModel magicCardViewModel;
     private OnFragmentInteractionListenerStepTwo mListener;
     private String cubeName;
+    private SharedPreferences mPreferences;
+    private SharedPreferences.Editor mEditor;
 
     public NewCubeBuilderFragment() {
         // Required empty public constructor
@@ -61,6 +67,7 @@ public class NewCubeBuilderFragment extends Fragment {
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.creating_cube_or_draft_layout, container, false);
         unbinder = ButterKnife.bind(this, view);
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         if (getArguments() != null) {
             if(mListener != null) {
@@ -120,7 +127,7 @@ public class NewCubeBuilderFragment extends Fragment {
             }
         };
 
-        t = new Thread(new BuildCube(handler, cards, view));
+        t = new Thread(new BuildCube(handler, cards, view, mPreferences, mEditor));
         t.start();
     }
 
@@ -167,11 +174,15 @@ public class NewCubeBuilderFragment extends Fragment {
         Handler handler;
         List<MagicCard> cards;
         View view;
+        SharedPreferences mPreferences;
+        SharedPreferences.Editor mEditor;
 
-        public BuildCube(Handler handler, List<MagicCard> cards, View view) {
+        public BuildCube(Handler handler, List<MagicCard> cards, View view, SharedPreferences mPreferences, SharedPreferences.Editor mEditor) {
             this.handler = handler;
             this.cards = cards;
             this.view = view;
+            this.mPreferences = mPreferences;
+            this.mEditor = mEditor;
         }
 
         @Override

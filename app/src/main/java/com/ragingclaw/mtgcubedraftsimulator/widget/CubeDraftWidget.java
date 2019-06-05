@@ -1,17 +1,32 @@
 package com.ragingclaw.mtgcubedraftsimulator.widget;
 
-import android.app.PendingIntent;
+import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
+import android.util.ArraySet;
 import android.widget.RemoteViews;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.ragingclaw.mtgcubedraftsimulator.R;
-import com.ragingclaw.mtgcubedraftsimulator.activities.MainActivity;
+import com.ragingclaw.mtgcubedraftsimulator.database.ApplicationDatabase;
+import com.ragingclaw.mtgcubedraftsimulator.database.ApplicationDatabase_Impl;
+import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
+import com.ragingclaw.mtgcubedraftsimulator.database.CubeDao;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 import timber.log.Timber;
 
@@ -19,13 +34,16 @@ import timber.log.Timber;
  * Implementation of App Widget functionality.
  */
 public class CubeDraftWidget extends AppWidgetProvider {
+    private FirebaseAuth mAuth;
+    private SharedPreferences mPreferences;
+    private SharedPreferences.Editor mEditor;
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+                                int appWidgetId, List<String> names) {
 
         CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.cube_draft_widget);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_provider_layout);
         views.setTextViewText(R.id.appwidget_text, widgetText);
 
         // Instruct the widget manager to update the widget
@@ -34,73 +52,55 @@ public class CubeDraftWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.cube_draft_widget);
+        if(intent != null) {
+            if(intent.hasExtra(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES)) {
+                mAuth = FirebaseAuth.getInstance();
 
-        if(intent.getAction() != null) {
-            if (AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE.equals(intent.getAction())) {
-                Timber.tag("fart").i("new cube clicked");
-                Intent intent1 = new Intent(context, MainActivity.class);
-                intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK).setAction(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE);
-                intent1.putExtra(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE, "new_cube");
-                intent.setAction(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE);
-                PendingIntent pendingIntent1 = PendingIntent.getActivity(context, 1, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-                views.setOnClickPendingIntent(R.id.new_cube_widget_button, pendingIntent1);
-                context.startActivity(intent1);
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, CubeDraftWidget.class));
+
+                RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_provider_layout);
             }
 
-            if (AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES.equals(intent.getAction())) {
-                Timber.tag("fart").i("my cubes clicked");
-                Intent intent2 = new Intent(context, MainActivity.class);
-                intent2.putExtra(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES, "my_cubes");
-                intent2.setAction(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES);
-                intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK).setAction(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES);
-                PendingIntent pendingIntent2 = PendingIntent.getActivity(context, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
-                views.setOnClickPendingIntent(R.id.my_cubes_widget_button, pendingIntent2);
-                context.startActivity(intent2);
-            }
         }
 
         super.onReceive(context, intent);
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
-        // this widget wont actually update. its two buttons...
+        for (int appWidgetId : appWidgetIds) { RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_provider_layout);
+            mAuth = FirebaseAuth.getInstance();
+            String userId = mAuth.getCurrentUser().getUid();
+            mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            Set<String> names;
+            ArrayList<String> cubeNames = new ArrayList<>();
 
-        for (int appWidgetId : appWidgetIds) {
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.cube_draft_widget);
+            if(mPreferences.contains(AllMyConstants.CUBE_NAMES)) {
+                names = mPreferences.getStringSet(AllMyConstants.CUBE_NAMES, null);
 
-            Intent newCubeIntent = new Intent(context, CubeDraftWidget.class);
-            newCubeIntent.setAction(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE);
-            PendingIntent pendingNewCubeIntent = PendingIntent.getBroadcast(context, 1, newCubeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setOnClickPendingIntent(R.id.new_cube_widget_button, getNewCubeIntent(context, AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE));
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.new_cube_widget_button);
+                if(names.size() > 0) {
+                    cubeNames.addAll(names);
+                } else {
+                    cubeNames = null;
+                }
+            }
 
-
-            Intent myCubesIntent = new Intent(context, CubeDraftWidget.class);
-            myCubesIntent.setAction(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES);
-            PendingIntent pendingMyCubesIntent = PendingIntent.getBroadcast(context, 0, myCubesIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setOnClickPendingIntent(R.id.my_cubes_widget_button, getMyCubesIntent(context, AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES));
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.my_cubes_widget_button);
+            // Service intent
+            Intent serviceIntent = new Intent(context, CubeDraftWidgetService.class);
+            serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            serviceIntent.putStringArrayListExtra(AllMyConstants.CUBE_NAMES, cubeNames);
+            serviceIntent.putExtra(AllMyConstants.USER_ID, userId);
+            serviceIntent.setData(Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)));
+            views.setRemoteAdapter(R.id.cubes_widget_list, serviceIntent);
+            views.setEmptyView(R.id.cubes_widget_list, R.id.empty_view);
 
             appWidgetManager.updateAppWidget(appWidgetId, views);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.cubes_widget_list);
+
         }
-
-
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-    }
-
-    protected PendingIntent getMyCubesIntent(Context context, String action) {
-        Intent intent = new Intent(context, CubeDraftWidget.class);
-        intent.setAction(action);
-        return PendingIntent.getBroadcast(context, 0, intent, 0);
-    }
-
-    protected PendingIntent getNewCubeIntent(Context context, String action) {
-        Intent intent = new Intent(context, CubeDraftWidget.class);
-        intent.setAction(action);
-        return PendingIntent.getBroadcast(context, 1, intent, 0);
     }
 
     @Override

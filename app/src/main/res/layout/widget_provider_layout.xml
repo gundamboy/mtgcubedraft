@@ -1,0 +1,56 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/windowBackground"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/widget_text_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_300">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/mtg_arena_logo"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/magic_the_gathering_arena_logo_description"
+            android:layout_marginStart="@dimen/margins_8" />
+
+        <TextView
+            android:id="@+id/appwidget_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text22"
+            android:textColor="@color/textColorPrimary"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/margins_8"
+            android:layout_marginBottom="@dimen/margins_8"
+            android:text="@string/appwidget_text"/>
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/cubes_widget_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margins_16"
+            android:textAlignment="center"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/you_have_no_cubes_go_make_some_empty_view_text"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="@dimen/text20"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

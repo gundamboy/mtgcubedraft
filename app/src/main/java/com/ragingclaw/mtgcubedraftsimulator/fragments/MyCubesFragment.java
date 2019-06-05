@@ -1,5 +1,7 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,7 +35,9 @@ import com.ragingclaw.mtgcubedraftsimulator.adapters.MyCubesAdapter;
 import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
 import com.ragingclaw.mtgcubedraftsimulator.models.CubeViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
+import com.ragingclaw.mtgcubedraftsimulator.widget.CubeDraftWidget;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -119,8 +123,13 @@ public class MyCubesFragment extends Fragment {
         cubeViewModel.getmAllUsersCubes(currentUser).observe(this, new Observer<List<Cube>>() {
             @Override
             public void onChanged(List<Cube> cubesEntities) {
+                ArrayList<String> cubeNamesForWidget = new ArrayList<>();
                 // update stuff
                 if(cubesEntities.size() > 0) {
+                    for (Cube c : cubesEntities) {
+                        cubeNamesForWidget.add(c.getCube_name());
+                    }
+
                     savePosition = true;
                     my_cubes_layout.setVisibility(View.VISIBLE);
                     no_cubes_found_layout.setVisibility(View.GONE);

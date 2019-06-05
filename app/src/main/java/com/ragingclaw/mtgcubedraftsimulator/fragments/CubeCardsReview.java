@@ -1,11 +1,23 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Parcelable;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -15,22 +27,8 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.os.Parcelable;
-import android.preference.PreferenceManager;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.ragingclaw.mtgcubedraftsimulator.R;
-import com.ragingclaw.mtgcubedraftsimulator.activities.LoginActivity;
-import com.ragingclaw.mtgcubedraftsimulator.activities.MainActivity;
 import com.ragingclaw.mtgcubedraftsimulator.adapters.CubeAdapter;
 import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
 import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
@@ -41,8 +39,11 @@ import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,9 +53,9 @@ import timber.log.Timber;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link CubeCardsReview.OnCubeReviewFragmentInteractionListener} interface
+ * {@link com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.OnCubeReviewFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link CubeCardsReview#newInstance} factory method to
+ * Use the {@link com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class CubeCardsReview extends Fragment {
@@ -64,7 +65,7 @@ public class CubeCardsReview extends Fragment {
     @BindView(R.id.cube_multi_function_button) com.google.android.material.button.MaterialButton mCubeMultiFunctionButton;
     private Unbinder unbinder;
     private MagicCardViewModel magicCardViewModel;
-    private OnCubeReviewFragmentInteractionListener mListener;
+    private com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.OnCubeReviewFragmentInteractionListener mListener;
     private List<MagicCard> cubeCards;
     private CubeViewModel cubeViewModel;
     private boolean isSaved = false;
@@ -101,8 +102,8 @@ public class CubeCardsReview extends Fragment {
     }
 
 
-    public static CubeCardsReview newInstance() {
-        CubeCardsReview fragment = new CubeCardsReview();
+    public static com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview newInstance() {
+        com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview fragment = new com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview();
 
         return fragment;
     }
@@ -219,7 +220,7 @@ public class CubeCardsReview extends Fragment {
             public void onClick(View v) {
                 Timber.tag("fart").i("isSaved? %s", isSaved);
                 if (!isSaved) {
-                    new SaveCube(cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener, mPreferences).execute();
+                    new com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.SaveCube(getActivity(), cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener, mPreferences).execute();
                     isSaved = !isSaved;
                 }
 
@@ -234,7 +235,7 @@ public class CubeCardsReview extends Fragment {
             public void onClick(View v) {
                 // if the user came from the list of cubes, offer a delete option
                 if (isSingle) {
-                    new DeleteCube(cubeId, mAuth, currentUserId, cubeViewModel).execute();
+                    new com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.DeleteCube(cubeId, mAuth, currentUserId, cubeViewModel, mPreferences, mEditor).execute();
                 }
 
                 // good bye cruel world, I quit.
@@ -243,7 +244,7 @@ public class CubeCardsReview extends Fragment {
 
             }
         });
-            return view;
+        return view;
     }
 
     private void getMyCube(int cubeId) {
@@ -259,7 +260,7 @@ public class CubeCardsReview extends Fragment {
             }
         };
 
-        t = new Thread(new GetUserCubeCardsRunnable(handler, cubeId, currentUserId));
+        t = new Thread(new com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.GetUserCubeCardsRunnable(handler, cubeId, currentUserId));
         t.start();
     }
 
@@ -273,8 +274,8 @@ public class CubeCardsReview extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnCubeReviewFragmentInteractionListener) {
-            mListener = (OnCubeReviewFragmentInteractionListener) context;
+        if (context instanceof com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.OnCubeReviewFragmentInteractionListener) {
+            mListener = (com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.OnCubeReviewFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnCubeReviewFragmentInteractionListener");
@@ -343,7 +344,7 @@ public class CubeCardsReview extends Fragment {
             case R.id.save:
                 if (!isSaved) {
                     Timber.tag("fart").i("saving cube");
-                    new SaveCube(cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener, mPreferences).execute();
+                    new com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.SaveCube(getActivity(),cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener, mPreferences).execute();
                     isSaved = !isSaved;
                 }
                 return true;
@@ -366,9 +367,7 @@ public class CubeCardsReview extends Fragment {
         outState.putParcelable(AllMyConstants.CUBE_CARDS, Parcels.wrap(cubeCards));
         outState.putBoolean(AllMyConstants.IS_SINGLE, isSingle);
         outState.putBoolean(AllMyConstants.IS_SAVED, isSaved);
-
     }
-
 
     public interface OnCubeReviewFragmentInteractionListener {
         void onFragmentCubeReviewInteraction(Bundle bundle);
@@ -409,8 +408,10 @@ public class CubeCardsReview extends Fragment {
 
     public static class SaveCube extends AsyncTask<Void, Void, Void> {
         // save the cube info in the database
+        @SuppressLint("StaticFieldLeak")
+        Context context;
         int cubeId;
-        OnCubeReviewFragmentInteractionListener onCubeReviewFragmentInteractionListener;
+        com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.OnCubeReviewFragmentInteractionListener onCubeReviewFragmentInteractionListener;
         CubeAdapter cubeAdapter;
         FirebaseAuth mAuth;
         String currentUserId;
@@ -418,7 +419,8 @@ public class CubeCardsReview extends Fragment {
         String cubeName;
         SharedPreferences mPreferences;
 
-        public SaveCube(int cubeId, CubeAdapter cubeAdapter, FirebaseAuth mAuth, String currentUserId, CubeViewModel cubeViewModel, String cubeName, OnCubeReviewFragmentInteractionListener onCubeReviewFragmentInteractionListener, SharedPreferences mPreferences) {
+        public SaveCube(Context context, int cubeId, CubeAdapter cubeAdapter, FirebaseAuth mAuth, String currentUserId, CubeViewModel cubeViewModel, String cubeName, com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.OnCubeReviewFragmentInteractionListener onCubeReviewFragmentInteractionListener, SharedPreferences mPreferences) {
+            this.context = context;
             this.cubeId = cubeId;
             this.cubeAdapter = cubeAdapter;
             this.mAuth = mAuth;
@@ -431,22 +433,17 @@ public class CubeCardsReview extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Timber.tag("fart").i("inside doInBackground of SaveCube");
-            Timber.tag("fart").i("cubeId is: %s", cubeId);
-
-            SharedPreferences.Editor mEditor = mPreferences.edit();
+            Set<String> names = new HashSet<>();
             if(cubeId == 0) {
+                SharedPreferences.Editor mEditor = mPreferences.edit();
                 // get all cards from adapter/recyclerView
                 List<MagicCard> cards = cubeAdapter.getItems();
                 List<Integer> cardIds = new ArrayList<>();
 
-                Timber.tag("fart").i("cards from adapter size: %s", cards.size());
                 // for each, create a new cube
                 for (MagicCard c : cards) {
                     cardIds.add(c.getMultiverseid());
                 }
-
-                Timber.tag("fart").i("cardIds size: %s", cardIds.size());
 
                 if (cardIds.size() == cards.size()) {
                     for (int i = 0; i < 1; i++) {
@@ -457,6 +454,14 @@ public class CubeCardsReview extends Fragment {
                         cubeId = (int) insert;
                     }
                 }
+
+                List<Cube> cubes = cubeViewModel.getUserCubesStatic(currentUserId);
+                for (Cube c : cubes) {
+                    names.add(c.getCube_name());
+                }
+                mEditor.remove(AllMyConstants.CUBE_NAMES);
+                mEditor.putStringSet(AllMyConstants.CUBE_NAMES, names);
+                mEditor.commit();
             }
 
             return null;
@@ -480,22 +485,35 @@ public class CubeCardsReview extends Fragment {
 
     public static class DeleteCube extends AsyncTask<Void, Void, Void> {
         // save the cube info in the database
-
         int cubeId;
         CubeViewModel cubeViewModel;
         FirebaseAuth mAuth;
         String currentUserId;
+        SharedPreferences mPreferences;
+        SharedPreferences.Editor mEditor;
 
-        public DeleteCube(int cubeId, FirebaseAuth mAuth, String currentUserId, CubeViewModel cubeViewModel) {
+        public DeleteCube(int cubeId, FirebaseAuth mAuth, String currentUserId, CubeViewModel cubeViewModel, SharedPreferences mPreferences, SharedPreferences.Editor mEditor) {
             this.cubeId = cubeId;
             this.cubeViewModel = cubeViewModel;
             this.mAuth = mAuth;
             this.currentUserId = currentUserId;
+            this.mPreferences = mPreferences;
+            this.mEditor = mEditor;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
             // get all cards from adapter/recyclerView
+            Set<String> names = new HashSet<>();
+            mEditor = mPreferences.edit();
+            mEditor.remove(AllMyConstants.CUBE_NAMES);
+            List<Cube> cubes = cubeViewModel.getUserCubesStatic(currentUserId);
+            for (Cube c : cubes) {
+                names.add(c.getCube_name());
+            }
+
+            mEditor.putStringSet(AllMyConstants.CUBE_NAMES, names);
+            mEditor.commit();
 
             Cube userCube = cubeViewModel.getmUserCube(currentUserId, cubeId);
             cubeViewModel.deleteCube(userCube);

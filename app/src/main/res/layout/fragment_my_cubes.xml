@@ -11,7 +11,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/no_cubes_found"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:visibility="gone">
 
         <TextView
             android:id="@+id/no_cubes_monster_text"
@@ -66,6 +67,7 @@
         android:id="@+id/my_cubes_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        tools:visibility="visible"
         android:visibility="gone">
 
         <TextView

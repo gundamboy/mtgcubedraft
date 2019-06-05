@@ -78,6 +78,10 @@ public class ApplicationRepository {
         return mCubesDoa.getUserCubes(userId);
     }
 
+    public List<Cube> getUserCubesStatic(String userId) {
+        return mCubesDoa.getUserCubesStatic(userId);
+    }
+
     public Cube getUserCube(String userId, Integer cubeId) {
         return mCubesDoa.getUserCube(userId, cubeId);
     }

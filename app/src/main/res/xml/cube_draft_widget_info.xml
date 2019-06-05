@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:initialKeyguardLayout="@layout/cube_draft_widget"
-    android:initialLayout="@layout/cube_draft_widget"
-    android:minWidth="180dp"
+    android:initialKeyguardLayout="@layout/widget_provider_layout"
+    android:initialLayout="@layout/widget_provider_layout"
+    android:minWidth="320dp"
     android:minHeight="40dp"
+    android:minResizeHeight="40dp"
+    android:minResizeWidth="320dp"
     android:previewImage="@drawable/mtg_arena_logo"
     android:resizeMode="horizontal|vertical"
-    android:updatePeriodMillis="86400000"
+    android:updatePeriodMillis="1800000"
     android:widgetCategory="home_screen">
 
 </appwidget-provider>

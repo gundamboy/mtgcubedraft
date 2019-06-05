@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.util.ArraySet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -146,12 +148,19 @@ public class EndGameFragment extends Fragment {
             public void onClick(View v) {
                 currentCards.clear();
                 mEditor = mPreferences.edit();
+
+                Set<String> names = new ArraySet<>();
+                if(mPreferences.contains(AllMyConstants.CUBE_NAMES)) {
+                    names = mPreferences.getStringSet(AllMyConstants.CUBE_NAME, null);
+                } else {
+                    names = null;
+                }
                 mEditor.clear();
+                mEditor.putStringSet(AllMyConstants.CUBE_NAMES, names);
+
                 mEditor.commit();
 
                 Navigation.findNavController(view).navigate(R.id.action_endGameFragment_to_hostFragment, null, null, null);
-//                Intent intent = new Intent(getActivity(), MainActivity.class);
-//                getActivity().startActivity(intent);
             }
         });
 
