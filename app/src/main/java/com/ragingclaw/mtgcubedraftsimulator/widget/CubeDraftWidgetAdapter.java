@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -15,6 +16,7 @@ import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import timber.log.Timber;
@@ -41,14 +43,18 @@ public class CubeDraftWidgetAdapter implements RemoteViewsService.RemoteViewsFac
     private void initData() {
         SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         if(mPreferences.contains(AllMyConstants.CUBE_NAMES)) {
+
+            Map<String,?> keys = mPreferences.getAll();
+
+            for(Map.Entry<String,?> entry : keys.entrySet()){
+                Timber.tag("fart").i("key: %s, value: %s", entry.getKey(), entry.getValue());
+            }
+
             Set<String> names = mPreferences.getStringSet(AllMyConstants.CUBE_NAMES, null);
-            if(names == null) {
-                mCubeNames.add("");
-            } else {
-                if(mCubeNames.size() > 0) {
-                    mCubeNames.clear();
-                    mCubeNames.addAll(names);
-                }
+            if(!names.isEmpty()) {
+                Timber.tag("fart").i("names is what?: %s | %s", names.size(), names.toString());
+                mCubeNames.clear();
+                mCubeNames.addAll(names);
             }
         }
     }
