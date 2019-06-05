@@ -220,7 +220,7 @@ public class CubeCardsReview extends Fragment {
             public void onClick(View v) {
                 Timber.tag("fart").i("isSaved? %s", isSaved);
                 if (!isSaved) {
-                    new com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.SaveCube(getActivity(), cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener, mPreferences).execute();
+                    new SaveCube(cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener, mPreferences).execute();
                     isSaved = !isSaved;
                 }
 
@@ -344,8 +344,9 @@ public class CubeCardsReview extends Fragment {
             case R.id.save:
                 if (!isSaved) {
                     Timber.tag("fart").i("saving cube");
-                    new com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.SaveCube(getActivity(),cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener, mPreferences).execute();
+                    new SaveCube(cubeId, cubeAdapter, mAuth, currentUserId, cubeViewModel, cubeName, mListener, mPreferences).execute();
                     isSaved = !isSaved;
+
                 }
                 return true;
             case R.id.goHome:
@@ -408,10 +409,8 @@ public class CubeCardsReview extends Fragment {
 
     public static class SaveCube extends AsyncTask<Void, Void, Void> {
         // save the cube info in the database
-        @SuppressLint("StaticFieldLeak")
-        Context context;
         int cubeId;
-        com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.OnCubeReviewFragmentInteractionListener onCubeReviewFragmentInteractionListener;
+        OnCubeReviewFragmentInteractionListener onCubeReviewFragmentInteractionListener;
         CubeAdapter cubeAdapter;
         FirebaseAuth mAuth;
         String currentUserId;
@@ -419,8 +418,7 @@ public class CubeCardsReview extends Fragment {
         String cubeName;
         SharedPreferences mPreferences;
 
-        public SaveCube(Context context, int cubeId, CubeAdapter cubeAdapter, FirebaseAuth mAuth, String currentUserId, CubeViewModel cubeViewModel, String cubeName, com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.OnCubeReviewFragmentInteractionListener onCubeReviewFragmentInteractionListener, SharedPreferences mPreferences) {
-            this.context = context;
+        public SaveCube(int cubeId, CubeAdapter cubeAdapter, FirebaseAuth mAuth, String currentUserId, CubeViewModel cubeViewModel, String cubeName, com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview.OnCubeReviewFragmentInteractionListener onCubeReviewFragmentInteractionListener, SharedPreferences mPreferences) {
             this.cubeId = cubeId;
             this.cubeAdapter = cubeAdapter;
             this.mAuth = mAuth;
@@ -439,6 +437,12 @@ public class CubeCardsReview extends Fragment {
                 // get all cards from adapter/recyclerView
                 List<MagicCard> cards = cubeAdapter.getItems();
                 List<Integer> cardIds = new ArrayList<>();
+
+                Map<String,?> keys = mPreferences.getAll();
+
+                for(Map.Entry<String,?> entry : keys.entrySet()){
+                    Timber.tag("fart").i("key: %s, value: %s", entry.getKey(), entry.getValue());
+                }
 
                 // for each, create a new cube
                 for (MagicCard c : cards) {
@@ -462,6 +466,12 @@ public class CubeCardsReview extends Fragment {
                 mEditor.remove(AllMyConstants.CUBE_NAMES);
                 mEditor.putStringSet(AllMyConstants.CUBE_NAMES, names);
                 mEditor.commit();
+
+                Map<String,?> keys2 = mPreferences.getAll();
+
+                for(Map.Entry<String,?> entry : keys2.entrySet()){
+                    Timber.tag("fart").i("key: %s, value: %s", entry.getKey(), entry.getValue());
+                }
             }
 
             return null;

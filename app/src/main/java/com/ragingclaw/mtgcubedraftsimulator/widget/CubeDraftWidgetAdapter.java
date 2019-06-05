@@ -44,7 +44,11 @@ public class CubeDraftWidgetAdapter implements RemoteViewsService.RemoteViewsFac
         if(mPreferences.contains(AllMyConstants.CUBE_NAMES)) {
             mCubeNames.clear();
             Set<String> names = mPreferences.getStringSet(AllMyConstants.CUBE_NAMES, null);
-            mCubeNames.addAll(names);
+            if(names == null) {
+                mCubeNames.add("");
+            } else {
+                mCubeNames.addAll(names);
+            }
         }
 
     }
