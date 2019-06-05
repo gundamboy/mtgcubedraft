@@ -1,11 +1,9 @@
 package com.ragingclaw.mtgcubedraftsimulator.activities;
 
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,11 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.NavDeepLinkBuilder;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,7 +23,6 @@ import com.ragingclaw.mtgcubedraftsimulator.fragments.DraftingHappyFunTimeFragme
 import com.ragingclaw.mtgcubedraftsimulator.fragments.EndGameFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.MainActivityFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.MyCubesFragment;
-import com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeBuilderFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeStepOneFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.NewDraftBuilderFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.SingleCardDisplayFragment;
@@ -45,7 +38,6 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity implements
         MainActivityFragment.OnMainActivityFragmentInteraction,
         NewCubeStepOneFragment.OnFragmentInteractionListenerStepOne,
-        NewCubeBuilderFragment.OnFragmentInteractionListenerStepTwo,
         CubeCardsReview.OnCubeReviewFragmentInteractionListener,
         MyCubesFragment.OnMyCubesFragmentInteraction,
         NewDraftBuilderFragment.OnBuildDraftFragmentInteractionListener,
@@ -90,13 +82,6 @@ public class MainActivity extends AppCompatActivity implements
             mainLayout.setVisibility(View.VISIBLE);
         }
     }
-    public void goToNewCube(View view) {
-
-    }
-
-    public void goToMyCubes(View view) {
-        Navigation.findNavController(view).navigate(R.id.action_hostFragment_to_myCubesFragment);
-    }
 
     public void setActionBarTitle(String title) {
         actionBar.setTitle(title);
@@ -108,18 +93,11 @@ public class MainActivity extends AppCompatActivity implements
         finish();
     }
 
-    private void goToHome() {
-        PendingIntent pendingIntent = new NavDeepLinkBuilder(this)
-                .setGraph(R.navigation.nav_graph)
-                .setDestination(R.id.hostFragment)
-                .createPendingIntent();
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.logout_menu, menu);
+        getMenuInflater().inflate(R.menu.cube_menu, menu);
         return true;
     }
 
@@ -129,11 +107,11 @@ public class MainActivity extends AppCompatActivity implements
             case android.R.id.home:
                 onBackPressed();
                 return true;
-
             case R.id.logout:
                 mAuth.signOut();
                 goToLogin();
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -165,11 +143,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onFragmentInteractionStepOne(String title) {
-        setActionBarTitle(title);
-    }
-
-    @Override
-    public void onFragmentInteractionStepTwo(String title) {
         setActionBarTitle(title);
     }
 

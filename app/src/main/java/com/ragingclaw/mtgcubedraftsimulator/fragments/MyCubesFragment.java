@@ -1,5 +1,6 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavDeepLinkBuilder;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,6 +40,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,6 +69,7 @@ public class MyCubesFragment extends Fragment {
     private String toastMessage;
     private Boolean isSaved;
     private Boolean isSingle;
+    private  View view;
 
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
@@ -89,8 +93,10 @@ public class MyCubesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Timber.tag("fart").i("hello");
+        Timber.tag("fart").i("hello");
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_my_cubes, container, false);
+        view = inflater.inflate(R.layout.fragment_my_cubes, container, false);
         unbinder = ButterKnife.bind(this, view);
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -206,19 +212,14 @@ public class MyCubesFragment extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
-        inflater.inflate(R.menu.logout_menu, menu);
+        inflater.inflate(R.menu.cube_menu, menu);
+
 
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                getFragmentManager().popBackStack();
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                startActivity(intent);
-                getActivity().finish();
-                return true;
             case R.id.logout:
                 mAuth.signOut();
                 goToLogin();
@@ -226,6 +227,11 @@ public class MyCubesFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void goToHome() {
+        Navigation.findNavController(view).navigate(R.id.action_myCubesFragment_to_hostFragment);
+
     }
 
     private void goToLogin() {

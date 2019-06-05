@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.ragingclaw.mtgcubedraftsimulator.R;
+import com.ragingclaw.mtgcubedraftsimulator.activities.MainActivity;
 import com.ragingclaw.mtgcubedraftsimulator.adapters.CubeAdapter;
 import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
 import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
@@ -83,6 +85,7 @@ public class CubeCardsReview extends Fragment {
     private String currentUserId;
     private static Bundle mBundleRecyclerViewState;
     private Parcelable mListState = null;
+    private View view;
 
     SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
@@ -148,7 +151,7 @@ public class CubeCardsReview extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_cube_card_review, container, false);
+        view = inflater.inflate(R.layout.fragment_cube_card_review, container, false);
         unbinder = ButterKnife.bind(this, view);
 
         mainLayout.setVisibility(View.GONE);
@@ -306,29 +309,6 @@ public class CubeCardsReview extends Fragment {
 
 
         mCardsRecyclerView.setLayoutManager(linearLayoutManager);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
-        inflater.inflate(R.menu.cube_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.goHome:
-                PendingIntent pendingIntent = new NavDeepLinkBuilder(getActivity())
-                        .setGraph(R.navigation.nav_graph)
-                        .setDestination(R.id.hostFragment)
-                        .createPendingIntent();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override

@@ -43,17 +43,8 @@ public class CubeDraftWidgetAdapter implements RemoteViewsService.RemoteViewsFac
     private void initData() {
         SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         if(mPreferences.contains(AllMyConstants.CUBE_NAMES)) {
-
-            Map<String,?> keys = mPreferences.getAll();
-
-            for(Map.Entry<String,?> entry : keys.entrySet()){
-                Timber.tag("fart").i("key: %s, value: %s", entry.getKey(), entry.getValue());
-            }
-
             Set<String> names = mPreferences.getStringSet(AllMyConstants.CUBE_NAMES, null);
-            Timber.tag("fart").i("names is what?: %s | %s", names.size(), names.toString());
             if(!names.isEmpty()) {
-                Timber.tag("fart").i("names is what?: %s | %s", names.size(), names.toString());
                 mCubeNames = new ArrayList<>();
                 mCubeNames.addAll(names);
             }

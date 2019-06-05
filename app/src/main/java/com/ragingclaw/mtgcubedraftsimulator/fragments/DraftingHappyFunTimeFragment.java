@@ -1,6 +1,7 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,6 +10,9 @@ import android.os.Message;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,7 +29,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.base.Functions;
 import com.google.common.collect.Lists;
+import com.google.firebase.auth.FirebaseAuth;
 import com.ragingclaw.mtgcubedraftsimulator.R;
+import com.ragingclaw.mtgcubedraftsimulator.activities.LoginActivity;
 import com.ragingclaw.mtgcubedraftsimulator.adapters.DraftCardsAdapter;
 import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
 import com.ragingclaw.mtgcubedraftsimulator.database.Pack;
@@ -83,6 +89,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
     private static Bundle mBundleRecyclerViewState;
     private Parcelable mListState = null;
+    private View view;
 
     public DraftingHappyFunTimeFragment() {
         // Required empty public constructor
@@ -119,7 +126,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_drafting_happy_fun_time, container, false);
+        view = inflater.inflate(R.layout.fragment_drafting_happy_fun_time, container, false);
         unbinder = ButterKnife.bind(this, view);;
         int pck = currentPackNum+1;
         String title = "Pack" + pck + ", Pick" + currentPickNum;
@@ -364,6 +371,36 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
 
         draftCardsRecyclerView.setLayoutManager(gridLayoutManager);
+    }
+
+
+    private void goToLogin() {
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.cube_menu, menu);
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                mAuth.signOut();
+                goToLogin();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public interface OnDraftingHappyFunTimeInteraction {
