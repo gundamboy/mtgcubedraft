@@ -92,8 +92,7 @@
     <string name="draft_deck_review">Draft Deck Review</string>
     <string name="woot">WOOT!</string>
     <string name="the_cube_has_no_name">You must give your cube a name to continue</string>
-
-
+    <string name="no_internet">OH NO! Looks like you don\'t have an internet connection. Try again later i guess.</string>
 
 
 </resources>
