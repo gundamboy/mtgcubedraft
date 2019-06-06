@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -16,7 +15,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.ragingclaw.mtgcubedraftsimulator.BuildConfig;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.CubeCardsReview;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.DraftingHappyFunTimeFragment;
@@ -26,14 +24,10 @@ import com.ragingclaw.mtgcubedraftsimulator.fragments.MyCubesFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.NewCubeStepOneFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.NewDraftBuilderFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.SingleCardDisplayFragment;
-import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
-import com.ragingclaw.mtgcubedraftsimulator.utils.NetworkUtils;
-import com.ragingclaw.mtgcubedraftsimulator.utils.NotLoggingTree;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements
         MainActivityFragment.OnMainActivityFragmentInteraction,
@@ -63,12 +57,6 @@ public class MainActivity extends AppCompatActivity implements
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        } else {
-            Timber.plant(new NotLoggingTree());
-        }
 
         toolbar.setTitle(getString(R.string.main_activity_title));
         setSupportActionBar(toolbar);
