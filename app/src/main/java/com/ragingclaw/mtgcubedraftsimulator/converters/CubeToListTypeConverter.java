@@ -10,21 +10,20 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 
+@SuppressWarnings("ALL")
 public class CubeToListTypeConverter {
 
     @TypeConverter
     public static List<Cube> stringToList(String json) {
         Gson gson = new Gson();
         Type type = new TypeToken<List<Cube>>() {}.getType();
-        List<Cube> cubes = gson.fromJson(json, type);
-        return cubes;
+        return gson.fromJson(json, type);
     }
 
     @TypeConverter
     public static String listToString(List<Cube> steps) {
         Gson gson = new Gson();
         Type type = new TypeToken<List<Cube>>() {}.getType();
-        String json = gson.toJson(steps, type);
-        return json;
+        return gson.toJson(steps, type);
     }
 }

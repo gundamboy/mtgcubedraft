@@ -1,12 +1,12 @@
 package com.ragingclaw.mtgcubedraftsimulator.sqlAsset;
 
-import android.util.Log;
-
 import com.ragingclaw.mtgcubedraftsimulator.sqlAsset.SQLiteAssetHelper.SQLiteAssetException;
 
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import timber.log.Timber;
 
 /**
  * Compare paths by their upgrade version numbers, instead of using
@@ -24,7 +24,7 @@ class VersionComparator implements Comparator<String> {
 
     private static final String TAG = com.ragingclaw.mtgcubedraftsimulator.sqlAsset.SQLiteAssetHelper.class.getSimpleName();
 
-    private Pattern pattern = Pattern
+    private final Pattern pattern = Pattern
             .compile(".*_upgrade_([0-9]+)-([0-9]+).*");
 
     /**
@@ -48,12 +48,12 @@ class VersionComparator implements Comparator<String> {
         Matcher m1 = pattern.matcher(file1);
 
         if (!m0.matches()) {
-            Log.w(TAG, "could not parse upgrade script file: " + file0);
+            Timber.w("could not parse upgrade script file: " + file0);
             throw new SQLiteAssetException("Invalid upgrade script file");
         }
 
         if (!m1.matches()) {
-            Log.w(TAG, "could not parse upgrade script file: " + file1);
+            Timber.tag(TAG).w("could not parse upgrade script file: " + file1);
             throw new SQLiteAssetException("Invalid upgrade script file");
         }
 

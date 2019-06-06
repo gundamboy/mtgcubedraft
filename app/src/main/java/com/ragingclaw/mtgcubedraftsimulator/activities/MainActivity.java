@@ -1,7 +1,6 @@
 package com.ragingclaw.mtgcubedraftsimulator.activities;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -26,6 +25,8 @@ import com.ragingclaw.mtgcubedraftsimulator.fragments.NewDraftBuilderFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.SingleCardDisplayFragment;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -45,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements
     ActionBar actionBar;
 
     private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
 
 
     @Override
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements
         getFragmentManager().popBackStack();
 
         mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
         toolbar.setTitle(getString(R.string.main_activity_title));
         setSupportActionBar(toolbar);
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void OnBuildDraftFragmentInteractionListener(Uri uri) { }
+    public void OnBuildDraftFragmentInteractionListener() { }
 
     @Override
     public void onDraftingHappyFunTimeInteraction(String title) {
@@ -144,46 +144,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onSingleCardFragmentInteraction(Uri uri) { }
+    public void onSingleCardFragmentInteraction() { }
 
     @Override
     public void onEndGameFragmentInteraction(String title) { setActionBarTitle(title); }
-
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-
-        // take care of widget stuff
-        if(intent != null) {
-            if (intent.hasExtra(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE)) {
-                if(intent.getAction().equals(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE)) {
-                    Handler handler = new Handler();
-                    Runnable r = new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(MainActivity.this, "new cube on resume", Toast.LENGTH_SHORT).show();
-                        }
-                    };
-                    handler.postDelayed(r, 0);
-                }
-            }
-        } else if(intent.hasExtra(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES)) {
-            if(intent.getAction().equals(AllMyConstants.WIDGET_INTENT_ACTION_MY_CUBES)) {
-                Handler handler = new Handler();
-                Runnable r = new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MainActivity.this, "my cubes on resume", Toast.LENGTH_SHORT).show();
-                    }
-                };
-                handler.postDelayed(r, 0);
-            }
-        }
-    }
 
     @Override
     public void onBackPressed() {

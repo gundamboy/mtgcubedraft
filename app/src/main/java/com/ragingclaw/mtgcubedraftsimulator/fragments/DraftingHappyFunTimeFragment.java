@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -20,15 +18,12 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.FragmentNavigator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.common.base.Functions;
-import com.google.common.collect.Lists;
 import com.google.firebase.auth.FirebaseAuth;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.activities.LoginActivity;
@@ -39,19 +34,19 @@ import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.models.PackViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 
+import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
+import java.util.Objects;
 import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,9 +62,6 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     @BindView(R.id.draft_done_dialog_button) Button draftDoneButton;
 
     private Unbinder unbinder;
-    private Thread t;
-    private Handler handler;
-    private Bundle handlerBundle = new Bundle();
     private MagicCardViewModel magicCardViewModel;
     private PackViewModel packViewModel;
     private GridLayoutManager gridLayoutManager;
@@ -82,8 +74,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     private int currentPickNum = 1;
     private int currentSeatNum = 1;
 
-    private List<Pack> packs = new ArrayList<>();
-    private List<MagicCard> currentCards = new ArrayList<>();
+    private final List<MagicCard> currentCards = new ArrayList<>();
     private Set<String> cardsHash = new HashSet<>();
     private boolean timeToChangePacks = false;
 
@@ -96,40 +87,32 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     }
 
     public static com.ragingclaw.mtgcubedraftsimulator.fragments.DraftingHappyFunTimeFragment newInstance() {
-        com.ragingclaw.mtgcubedraftsimulator.fragments.DraftingHappyFunTimeFragment fragment = new com.ragingclaw.mtgcubedraftsimulator.fragments.DraftingHappyFunTimeFragment();
 
-        return fragment;
+        return new DraftingHappyFunTimeFragment();
     }
 
-    SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-            if(key.equals(AllMyConstants.CARD_ID) && prefs.getBoolean(AllMyConstants.UPDATE_DRAFT, false)) {
-
-            }
-
-            if(key.equals(AllMyConstants.CURRENT_SEAT)) { currentSeatNum = prefs.getInt(AllMyConstants.CURRENT_SEAT, 0); }
-            if(key.equals(AllMyConstants.CURRENT_PACK)) { currentPackNum = prefs.getInt(AllMyConstants.CURRENT_PACK, 0); }
-            if(key.equals(AllMyConstants.CURRENT_PICK)) { currentPickNum = prefs.getInt(AllMyConstants.CURRENT_PICK, 1); }
-        }
+    final SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = (prefs, key) -> {
+        if(key.equals(AllMyConstants.CURRENT_SEAT)) { currentSeatNum = prefs.getInt(AllMyConstants.CURRENT_SEAT, 0); }
+        if(key.equals(AllMyConstants.CURRENT_PACK)) { currentPackNum = prefs.getInt(AllMyConstants.CURRENT_PACK, 0); }
+        if(key.equals(AllMyConstants.CURRENT_PICK)) { currentPickNum = prefs.getInt(AllMyConstants.CURRENT_PICK, 1); }
     };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            packs = Parcels.unwrap(getArguments().getParcelable(AllMyConstants.PACKS));
+            List<Pack> packs = Parcels.unwrap(getArguments().getParcelable(AllMyConstants.PACKS));
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_drafting_happy_fun_time, container, false);
-        unbinder = ButterKnife.bind(this, view);;
+        unbinder = ButterKnife.bind(this, view);
         int pck = currentPackNum+1;
-        String title = "Pack" + pck + ", Pick" + currentPickNum;
+        String title = getActivity().getString(R.string.pack) + pck + getActivity().getString(R.string.pick) + currentPickNum;
         sendDataBackToActivity(title);
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -141,176 +124,157 @@ public class DraftingHappyFunTimeFragment extends Fragment {
         draftCardsAdapter = new DraftCardsAdapter();
         draftCardsRecyclerView.setAdapter(draftCardsAdapter);
 
-        magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
+        magicCardViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(MagicCardViewModel.class);
         packViewModel = ViewModelProviders.of(getActivity()).get(PackViewModel.class);
 
         final int[] flag = {0};
 
-        packViewModel.getAllPacks().observe(this, new Observer<List<Pack>>() {
-            @Override
-            public void onChanged(List<Pack> packs) {
-                int pck = currentPackNum+1;
-                String title = "Pack" + pck + ", Pick" + currentPickNum;
-                sendDataBackToActivity(title);
-                mEditor = mPreferences.edit();
+        packViewModel.getAllPacks().observe(this, packs -> {
+            int pck12 = currentPackNum+1;
+            String title12 = getActivity().getString(R.string.pack) + pck12 + getActivity().getString(R.string.pick) + currentPickNum;
+            sendDataBackToActivity(title12);
+            mEditor = mPreferences.edit();
 
-                if(!mPreferences.getBoolean(AllMyConstants.START_DRAFT, true)) {
-                    if (flag[0] == 0) {
-                        if(mPreferences.getBoolean(AllMyConstants.UPDATE_DRAFT, true)) {
-                            mEditor.putBoolean(AllMyConstants.START_DRAFT, false);
-                            mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, false);
+            if(!mPreferences.getBoolean(AllMyConstants.START_DRAFT, true)) {
+                if (flag[0] == 0) {
+                    if(mPreferences.getBoolean(AllMyConstants.UPDATE_DRAFT, true)) {
+                        mEditor.putBoolean(AllMyConstants.START_DRAFT, false);
+                        mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, false);
 
-                            int cardIdPicked = mPreferences.getInt(AllMyConstants.CARD_ID, 0);
-                            currentSeatNum = mPreferences.getInt(AllMyConstants.CURRENT_SEAT, 1);
-                            currentPackNum = mPreferences.getInt(AllMyConstants.CURRENT_PACK, 0);
+                        int cardIdPicked = mPreferences.getInt(AllMyConstants.CARD_ID, 0);
+                        currentSeatNum = mPreferences.getInt(AllMyConstants.CURRENT_SEAT, 1);
+                        currentPackNum = mPreferences.getInt(AllMyConstants.CURRENT_PACK, 0);
 
-                            if (mPreferences.contains(AllMyConstants.THE_CHOSEN_CARDS)) {
-                                cardsHash = mPreferences.getStringSet(AllMyConstants.THE_CHOSEN_CARDS, null);
-                            }
+                        if (mPreferences.contains(AllMyConstants.THE_CHOSEN_CARDS)) {
+                            cardsHash = mPreferences.getStringSet(AllMyConstants.THE_CHOSEN_CARDS, null);
+                        }
 
-                            cardsHash.add(String.valueOf(cardIdPicked));
-                            mEditor.putStringSet(AllMyConstants.THE_CHOSEN_CARDS, cardsHash);
-                            currentPickNum = cardsHash.size() + 1;
+                        cardsHash.add(String.valueOf(cardIdPicked));
+                        mEditor.putStringSet(AllMyConstants.THE_CHOSEN_CARDS, cardsHash);
+                        currentPickNum = cardsHash.size() + 1;
 
-                            Pack currentPack = null;
-                            List<Integer> currentPackCardIds = new ArrayList<>();
+                        Pack currentPack = null;
+                        List<Integer> currentPackCardIds = new ArrayList<>();
 
-                            if(cardsHash.size() == 45) {
-                                mEditor.commit();
-                                draftCardsRecyclerView.setVisibility(View.GONE);
-                                draftCompleteLayout.setVisibility(View.VISIBLE);
-                                sendDataBackToActivity(getActivity().getResources().getString(R.string.woot));
+                        if(cardsHash.size() == 45) {
+                            mEditor.apply();
+                            draftCardsRecyclerView.setVisibility(View.GONE);
+                            draftCompleteLayout.setVisibility(View.VISIBLE);
+                            sendDataBackToActivity(Objects.requireNonNull(getActivity()).getResources().getString(R.string.woot));
 
-                                draftDoneButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Navigation.findNavController(view).navigate(R.id.action_draftingHappyFunTimeFragment_to_endGameFragment2, null, null, null);
-                                    }
-                                });
-                            }
+                            draftDoneButton.setOnClickListener(v -> Navigation.findNavController(view).navigate(R.id.action_draftingHappyFunTimeFragment_to_endGameFragment2, null, null, null));
+                        }
 
 
-                            for (Pack p : packs) {
+                        for (Pack p : packs) {
 
-                                if (p.getSeat_num() == currentSeatNum) {
-                                    if (p.getBooster_num() == currentPackNum) {
-                                        currentPack = p;
-                                        currentPackCardIds = p.getCardIDs();
-                                    }
+                            if (p.getSeat_num() == currentSeatNum) {
+                                if (p.getBooster_num() == currentPackNum) {
+                                    currentPack = p;
+                                    currentPackCardIds = p.getCardIDs();
                                 }
                             }
+                        }
 
 
-                            if (currentPackCardIds.size() != 0) {
-                                for (Pack p : packs) {
-                                    if (p.getPackId() != currentPack.getPackId()) {
-                                        if (p.getBooster_num() == currentPackNum) {
-                                            List<Integer> ids = p.getCardIDs();
-                                            Collections.shuffle(ids);
-                                            ids.remove(0);
-                                            p.setCardIDs(ids);
-                                            if (ids.size() == 0) {
-                                                packViewModel.deletePack(p);
-                                            } else {
-                                                packViewModel.updatePack(p);
-                                            }
-                                        }
-                                    }
-
-                                    if (p.getPackId() == currentPack.getPackId()) {
-                                        currentPackCardIds.remove(Integer.valueOf(cardIdPicked));
-                                        p.setCardIDs(currentPackCardIds);
-                                        if (currentPackCardIds.size() == 0) {
+                        if (currentPackCardIds.size() != 0) {
+                            for (Pack p : packs) {
+                                if (p.getPackId() != currentPack.getPackId()) {
+                                    if (p.getBooster_num() == currentPackNum) {
+                                        List<Integer> ids = p.getCardIDs();
+                                        Collections.shuffle(ids);
+                                        ids.remove(0);
+                                        p.setCardIDs(ids);
+                                        if (ids.size() == 0) {
                                             packViewModel.deletePack(p);
-                                            timeToChangePacks = true;
                                         } else {
                                             packViewModel.updatePack(p);
                                         }
+                                    }
+                                }
+
+                                if (p.getPackId() == currentPack.getPackId()) {
+                                    currentPackCardIds.remove(Integer.valueOf(cardIdPicked));
+                                    p.setCardIDs(currentPackCardIds);
+                                    if (currentPackCardIds.size() == 0) {
+                                        packViewModel.deletePack(p);
+                                        timeToChangePacks = true;
+                                    } else {
+                                        packViewModel.updatePack(p);
+                                    }
 
 
-                                        if (currentSeatNum == 8) {
-                                            currentSeatNum = 1;
-                                        } else {
-                                            currentSeatNum += 1;
-                                        }
+                                    if (currentSeatNum == 8) {
+                                        currentSeatNum = 1;
+                                    } else {
+                                        currentSeatNum += 1;
                                     }
                                 }
                             }
-
-                            if(timeToChangePacks) {
-                                if (currentPackNum < 2) {
-                                    currentPackNum += 1;
-                                    currentSeatNum = 1;
-                                    timeToChangePacks = false;
-                                    mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, true);
-                                } else {
-                                    mEditor.commit();
-                                    draftCardsRecyclerView.setVisibility(View.GONE);
-                                    draftCompleteLayout.setVisibility(View.VISIBLE);
-
-                                    draftDoneButton.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            Navigation.findNavController(view).navigate(R.id.action_draftingHappyFunTimeFragment_to_endGameFragment2, null, null, null);
-                                        }
-                                    });
-                                }
-                            }
-
-
-                            mEditor.putInt(AllMyConstants.CURRENT_PACK, currentPackNum);
-                            mEditor.putInt(AllMyConstants.CURRENT_SEAT, currentSeatNum);
-                            mEditor.putInt(AllMyConstants.CURRENT_PICK, currentPickNum);
-
-                            mEditor.commit();
-
-                            flag[0] = 1;
                         }
-                    }
-                }
 
+                        if(timeToChangePacks) {
+                            if (currentPackNum < 2) {
+                                currentPackNum += 1;
+                                currentSeatNum = 1;
+                                timeToChangePacks = false;
+                                mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, true);
+                            } else {
+                                mEditor.commit();
+                                draftCardsRecyclerView.setVisibility(View.GONE);
+                                draftCompleteLayout.setVisibility(View.VISIBLE);
 
-
-
-
-
-                for(Pack p : packs) {
-                    List<Integer> cardIds = p.getCardIDs();
-
-                    if (p.getSeat_num() == currentSeatNum && p.getBooster_num() == currentPackNum) {
-                        magicCardViewModel.getmAllCards().observe(getActivity(), new Observer<List<MagicCard>>() {
-                            @Override
-                            public void onChanged(List<MagicCard> magicCards) {
-                                int pck = currentPackNum+1;
-                                String title = "Pack" + pck + ", Pick" + currentPickNum;
-                                sendDataBackToActivity(title);
-                                currentCards.clear();
-                                for (MagicCard card : magicCards) {
-                                    if (cardIds.contains(card.getMultiverseid())) {
-                                        currentCards.add(card);
-                                    }
-                                }
-
-                                draftCardsAdapter.setCards(currentCards);
-                                draftCardsAdapter.setOnClickListener(new DraftCardsAdapter.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(int position, int cardId, View v, String url) {
-                                        Bundle b = new Bundle();
-                                        b.putInt(AllMyConstants.CARD_ID, cardId);
-                                        b.putInt(AllMyConstants.CURRENT_SEAT, currentSeatNum);
-                                        b.putInt(AllMyConstants.CURRENT_PACK, currentPackNum);
-                                        b.putString(AllMyConstants.CARD_URL, url);
-                                        FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, AllMyConstants.SHARED_ANIMATION).build();
-                                        Navigation.findNavController(view).navigate(R.id.action_draftingHappyFunTimeFragment_to_singleCardDisplayFragment, b, null, extras);
-                                    }
-                                });
+                                draftDoneButton.setOnClickListener(v -> Navigation.findNavController(view).navigate(R.id.action_draftingHappyFunTimeFragment_to_endGameFragment2, null, null, null));
                             }
-                        });
+                        }
+
+
+                        mEditor.putInt(AllMyConstants.CURRENT_PACK, currentPackNum);
+                        mEditor.putInt(AllMyConstants.CURRENT_SEAT, currentSeatNum);
+                        mEditor.putInt(AllMyConstants.CURRENT_PICK, currentPickNum);
+
+                        mEditor.commit();
+
+                        flag[0] = 1;
                     }
                 }
-
-
             }
+
+
+
+
+
+
+            for(Pack p : packs) {
+                List<Integer> cardIds = p.getCardIDs();
+
+                if (p.getSeat_num() == currentSeatNum && p.getBooster_num() == currentPackNum) {
+                    magicCardViewModel.getmAllCards().observe(Objects.requireNonNull(getActivity()), magicCards -> {
+                        int pck1 = currentPackNum + 1;
+                        String title1 = getActivity().getString(R.string.pack) + pck1 + getActivity().getString(R.string.pick) + currentPickNum;
+                        sendDataBackToActivity(title1);
+                        currentCards.clear();
+                        for (MagicCard card : magicCards) {
+                            if (cardIds.contains(card.getMultiverseid())) {
+                                currentCards.add(card);
+                            }
+                        }
+
+                        draftCardsAdapter.setCards(currentCards);
+                        draftCardsAdapter.setOnClickListener((cardId, v, url) -> {
+                            Bundle b = new Bundle();
+                            b.putInt(AllMyConstants.CARD_ID, cardId);
+                            b.putInt(AllMyConstants.CURRENT_SEAT, currentSeatNum);
+                            b.putInt(AllMyConstants.CURRENT_PACK, currentPackNum);
+                            b.putString(AllMyConstants.CARD_URL, url);
+                            FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, AllMyConstants.SHARED_ANIMATION).build();
+                            Navigation.findNavController(view).navigate(R.id.action_draftingHappyFunTimeFragment_to_singleCardDisplayFragment, b, null, extras);
+                        });
+                    });
+                }
+            }
+
+
         });
 
         return view;
@@ -329,7 +293,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
             mListener = (com.ragingclaw.mtgcubedraftsimulator.fragments.DraftingHappyFunTimeFragment.OnDraftingHappyFunTimeInteraction) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnDraftingHappyFunTimeInteraction");
+                    + getActivity().getString(R.string.fragment_interaction_error_end_text));
         }
     }
 
@@ -349,7 +313,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
         super.onPause();
 
         mBundleRecyclerViewState = new Bundle();
-        mListState = draftCardsRecyclerView.getLayoutManager().onSaveInstanceState();
+        mListState = Objects.requireNonNull(draftCardsRecyclerView.getLayoutManager()).onSaveInstanceState();
         mBundleRecyclerViewState.putParcelable(AllMyConstants.RECYCLER_RESTORE, mListState);
     }
 
@@ -357,14 +321,10 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if (mBundleRecyclerViewState != null) {
-            new Handler().postDelayed(new Runnable() {
+            new Handler().postDelayed(() -> {
+                mListState = mBundleRecyclerViewState.getParcelable(AllMyConstants.RECYCLER_RESTORE);
+                Objects.requireNonNull(draftCardsRecyclerView.getLayoutManager()).onRestoreInstanceState(mListState);
 
-                @Override
-                public void run() {
-                    mListState = mBundleRecyclerViewState.getParcelable(AllMyConstants.RECYCLER_RESTORE);
-                    draftCardsRecyclerView.getLayoutManager().onRestoreInstanceState(mListState);
-
-                }
             }, 50);
         }
 
@@ -376,7 +336,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
     private void goToLogin() {
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         startActivity(intent);
-        getActivity().finish();
+        Objects.requireNonNull(getActivity()).finish();
     }
 
     @Override
@@ -391,15 +351,13 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.logout:
-                FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                mAuth.signOut();
-                goToLogin();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.logout) {
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            mAuth.signOut();
+            goToLogin();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     public interface OnDraftingHappyFunTimeInteraction {

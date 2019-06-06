@@ -12,8 +12,8 @@ import com.ragingclaw.mtgcubedraftsimulator.database.ApplicationRepository;
 import java.util.List;
 
 public class CubeViewModel extends AndroidViewModel {
-    private ApplicationRepository mApplicationRepository;
-    private LiveData<List<Cube>> mAllCubes;
+    private final ApplicationRepository mApplicationRepository;
+    private final LiveData<List<Cube>> mAllCubes;
 
     public CubeViewModel(@NonNull Application application) {
         super(application);

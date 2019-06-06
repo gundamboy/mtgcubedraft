@@ -16,21 +16,18 @@ import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-
-import timber.log.Timber;
 
 /**
  * Implementation of App Widget functionality.
  */
 public class CubeDraftWidgetProvider extends AppWidgetProvider {
     private FirebaseAuth mAuth;
-    private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId, List<String> names) {
+                                int appWidgetId) {
 
         CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
@@ -63,15 +60,15 @@ public class CubeDraftWidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) { RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_provider_layout);
             mAuth = FirebaseAuth.getInstance();
-            String userId = mAuth.getCurrentUser().getUid();
-            mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            String userId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+            SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             Set<String> names;
             ArrayList<String> cubeNames = new ArrayList<>();
 
             if(mPreferences.contains(AllMyConstants.CUBE_NAMES)) {
                 names = mPreferences.getStringSet(AllMyConstants.CUBE_NAMES, null);
 
-                if(names.size() > 0) {
+                if((names != null ? names.size() : 0) > 0) {
                     cubeNames.addAll(names);
                 } else {
                     cubeNames = null;

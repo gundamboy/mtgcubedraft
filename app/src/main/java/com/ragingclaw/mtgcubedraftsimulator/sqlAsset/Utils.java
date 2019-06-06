@@ -1,7 +1,5 @@
 package com.ragingclaw.mtgcubedraftsimulator.sqlAsset;
 
-import android.util.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,12 +9,14 @@ import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import timber.log.Timber;
+
 class Utils {
 
     private static final String TAG = SQLiteAssetHelper.class.getSimpleName();
 
     public static List<String> splitSqlScript(String script, char delim) {
-        List<String>  statements = new ArrayList<String>();
+        List<String>  statements = new ArrayList<>();
         StringBuilder sb         = new StringBuilder();
         boolean       inLiteral  = false;
         char[]        content    = script.toCharArray();
@@ -54,7 +54,7 @@ class Utils {
         ZipInputStream zis = new ZipInputStream(zipFileStream);
         ZipEntry       ze;
         while ((ze = zis.getNextEntry()) != null) {
-            Log.w(TAG, "extracting file: '" + ze.getName() + "'...");
+            Timber.tag(TAG).w("extracting file: %s \"'...\"'", ze.getName());
             return zis;
         }
         return null;

@@ -22,10 +22,13 @@ import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,7 +50,6 @@ public class SingleCardDisplayFragment extends Fragment {
     private OnSingleCardFragmentInteractionListener mListener;
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
-    private boolean goBackToDeck = false;
 
     ViewGroup container;
 
@@ -55,10 +57,9 @@ public class SingleCardDisplayFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static SingleCardDisplayFragment newInstance(String param1, String param2) {
-        SingleCardDisplayFragment fragment = new SingleCardDisplayFragment();
+    public static SingleCardDisplayFragment newInstance() {
 
-        return fragment;
+        return new SingleCardDisplayFragment();
     }
 
     @Override
@@ -69,7 +70,7 @@ public class SingleCardDisplayFragment extends Fragment {
             cardUrl = getArguments().getString(AllMyConstants.CARD_URL);
             currentSeat = getArguments().getInt(AllMyConstants.CURRENT_SEAT);
             packNumber = getArguments().getInt(AllMyConstants.CURRENT_PACK);
-            goBackToDeck = getArguments().getBoolean(AllMyConstants.GO_BACK_TO_DECK);
+            boolean goBackToDeck = getArguments().getBoolean(AllMyConstants.GO_BACK_TO_DECK);
         }
 
         if (savedInstanceState != null) {
@@ -81,7 +82,7 @@ public class SingleCardDisplayFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // just shows the card that was picked and bounces some info back to the last fragment
         // to prevent crashing
 
@@ -91,7 +92,7 @@ public class SingleCardDisplayFragment extends Fragment {
             container.removeAllViewsInLayout();
         }
 
-        int orientation = getActivity().getResources().getConfiguration().orientation;
+        int orientation = Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation;
         if(orientation == Configuration.ORIENTATION_PORTRAIT) {
             // inflate portrait layout
             view =  inflater.inflate(R.layout.fragment_single_card_display, container, false);
@@ -106,50 +107,32 @@ public class SingleCardDisplayFragment extends Fragment {
 
         Picasso.get().load(cardUrl).memoryPolicy(MemoryPolicy.NO_CACHE).placeholder(R.drawable.mtg_card_back).into(mtgCardImage);
 
-        draftMeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        draftMeButton.setOnClickListener(v -> {
 
-                mEditor = mPreferences.edit();
-                mEditor.putInt(AllMyConstants.CARD_ID, multiVerseId);
-                mEditor.putInt(AllMyConstants.CURRENT_SEAT, currentSeat);
-                mEditor.putInt(AllMyConstants.CURRENT_PACK, packNumber);
-                mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, true);
-                mEditor.putBoolean(AllMyConstants.START_DRAFT, false);
-                mEditor.commit();
+            mEditor = mPreferences.edit();
+            mEditor.putInt(AllMyConstants.CARD_ID, multiVerseId);
+            mEditor.putInt(AllMyConstants.CURRENT_SEAT, currentSeat);
+            mEditor.putInt(AllMyConstants.CURRENT_PACK, packNumber);
+            mEditor.putBoolean(AllMyConstants.UPDATE_DRAFT, true);
+            mEditor.putBoolean(AllMyConstants.START_DRAFT, false);
+            mEditor.apply();
 
-                FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(mtgCardImage, AllMyConstants.SHARED_ANIMATION).build();
-                Navigation.findNavController(view).navigate(R.id.action_singleCardDisplayFragment_to_draftingHappyFunTimeFragment, null, null, extras);
-            }
+            FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(mtgCardImage, AllMyConstants.SHARED_ANIMATION).build();
+            Navigation.findNavController(view).navigate(R.id.action_singleCardDisplayFragment_to_draftingHappyFunTimeFragment, null, null, extras);
         });
 
-        goBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(view).navigateUp();
-                //getActivity().onBackPressed();
-            }
+        goBackButton.setOnClickListener(v -> {
+            Navigation.findNavController(view).navigateUp();
+            //getActivity().onBackPressed();
         });
 
         return view;
     }
 
-    public void onButtonPressed(Uri uri) {
+    public void sendDataBackToActivity(Uri uri) {
         if (mListener != null) {
-            mListener.onSingleCardFragmentInteraction(uri);
+            mListener.onSingleCardFragmentInteraction();
         }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        // Checks the orientation of the screen
-//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
-//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-//            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
-//        }
     }
 
     @Override
@@ -159,7 +142,7 @@ public class SingleCardDisplayFragment extends Fragment {
             mListener = (OnSingleCardFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnSingleCardFragmentInteractionListener");
+                    + getActivity().getString(R.string.fragment_interaction_error_end_text));
         }
     }
 
@@ -184,7 +167,6 @@ public class SingleCardDisplayFragment extends Fragment {
     }
 
     public interface OnSingleCardFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onSingleCardFragmentInteraction(Uri uri);
+        void onSingleCardFragmentInteraction();
     }
 }

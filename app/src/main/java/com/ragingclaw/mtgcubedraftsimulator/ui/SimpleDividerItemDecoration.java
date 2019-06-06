@@ -10,15 +10,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ragingclaw.mtgcubedraftsimulator.R;
 
+import org.jetbrains.annotations.NotNull;
+
 public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
-    private Drawable mDivider;
+    private final Drawable mDivider;
 
     public SimpleDividerItemDecoration(Context context) {
         mDivider = ContextCompat.getDrawable(context, R.drawable.line_divider);
     }
 
     @Override
-    public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+    public void onDrawOver(@NotNull Canvas c, @NotNull RecyclerView parent, @NotNull RecyclerView.State state) {
         int left = parent.getPaddingLeft();
         int right = parent.getWidth() - parent.getPaddingRight();
 

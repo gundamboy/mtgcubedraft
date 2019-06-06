@@ -12,8 +12,8 @@ import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
 import java.util.List;
 
 public class MagicCardViewModel extends AndroidViewModel {
-    private ApplicationRepository mApplicationRepository;
-    private LiveData<List<MagicCard>> mAllCards;
+    private final ApplicationRepository mApplicationRepository;
+    private final LiveData<List<MagicCard>> mAllCards;
 
     public MagicCardViewModel(@NonNull Application application) {
         super(application);

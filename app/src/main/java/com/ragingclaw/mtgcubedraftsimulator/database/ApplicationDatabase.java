@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
 import com.ragingclaw.mtgcubedraftsimulator.sqlAsset.AssetSQLiteOpenHelperFactory;
 
@@ -23,7 +22,7 @@ public abstract class ApplicationDatabase extends RoomDatabase {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                     ApplicationDatabase.class,
                     "mtgCubeSimDB.db")
-                    .openHelperFactory((SupportSQLiteOpenHelper.Factory) new AssetSQLiteOpenHelperFactory())
+                    .openHelperFactory(new AssetSQLiteOpenHelperFactory())
                     .allowMainThreadQueries()
                     .build();
         }

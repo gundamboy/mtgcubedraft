@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--<color name="colorPrimary">#039BE5</color>-->
-    <!--<color name="colorPrimaryDark">#0288D1</color>-->
-    <!--<color name="colorAccent">#FFA000</color>-->
-
     <color name="primaryTextColor">#555555</color>
     <color name="toastBackgroundColor">#555555</color>
-    <color name="grey_100">#F5F5F5</color>
     <color name="grey_300">#E0E0E0</color>
     <color name="grey_500">#9E9E9E</color>
 
@@ -15,20 +10,4 @@
     <color name="colorAccent">#ce5938</color>
     <color name="windowBackground">#f2ece7</color>
     <color name="textColorPrimary">#181818</color>
-    <color name="textTitles">#181818</color>
-    <color name="textContent">#424242</color>
-    <color name="textStartCredits">#4f4d4c</color>
-    <color name="flat_gray">#4f4d4c</color>
-    <color name="colorToolbarExpanded">#fcfcfc</color>
-    <color name="colorToolbarCollapsed">#181818</color>
-    <color name="colorTransparent">#00FFFFFF</color>
-    <color name="old_rose">#C34645</color>
-    <color name="sea_green">#2E7774</color>
-    <color name="beige">#EDE7DF</color>
-    <color name="smoke_black">#282828</color>
-    <color name="dim_gray">#7D6962</color>
-    <color name="translucent_scrim_top">#26000000</color>
-    <color name="translucent_scrim_top_center">#0C000000</color>
-    <color name="translucent_scrim_bottom">#80000000</color>
-    <color name="translucent_scrim_bottom_center">#0D000000</color>
 </resources>

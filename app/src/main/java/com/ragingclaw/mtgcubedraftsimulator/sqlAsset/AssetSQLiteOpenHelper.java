@@ -13,10 +13,9 @@ class AssetSQLiteOpenHelper implements SupportSQLiteOpenHelper {
     private final OpenHelper mDelegate;
 
     AssetSQLiteOpenHelper(Context context, String name,
-                          SQLiteDatabase.CursorFactory factory, int version,
-                          DatabaseErrorHandler errorHandler,
+                          int version,
                           Callback callback) {
-        mDelegate = createDelegate(context, name, factory, version, errorHandler, callback);
+        mDelegate = createDelegate(context, name, null, version, null, callback);
     }
 
     private OpenHelper createDelegate(Context context, String name,

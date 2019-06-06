@@ -4,26 +4,22 @@ import androidx.room.TypeConverter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 public class StringTypeConverter {
 
     @TypeConverter
     public String fromArray(ArrayList<String> strings) {
-        String string = "";
+        StringBuilder string = new StringBuilder();
         if (strings != null) {
-            for (String s : strings) string += (s + ",");
+            for (String s : strings) string.append(s).append(",");
         }
-        return string;
+        return string.toString();
     }
 
     @TypeConverter
     public ArrayList<String> toArray(String concatenatedStrings) {
-        ArrayList<String> myStrings = new ArrayList<>();
 
-        myStrings.addAll(Arrays.asList(concatenatedStrings.split(",")));
-
-        return myStrings;
+        return new ArrayList<>(Arrays.asList(concatenatedStrings.split(",")));
     }
 
 }

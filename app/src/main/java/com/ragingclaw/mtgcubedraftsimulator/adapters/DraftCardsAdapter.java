@@ -3,7 +3,6 @@ package com.ragingclaw.mtgcubedraftsimulator.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,7 +25,7 @@ public class DraftCardsAdapter extends RecyclerView.Adapter<DraftCardsAdapter.Ca
     private DraftCardsAdapter.OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-        void onItemClick(int position, int cardId, View view, String url);
+        void onItemClick(int cardId, View view, String url);
     }
 
     public void setOnClickListener(OnItemClickListener listener) {
@@ -72,13 +71,10 @@ public class DraftCardsAdapter extends RecyclerView.Adapter<DraftCardsAdapter.Ca
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            mtgCardImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if(position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(position, Integer.parseInt(cardId.getText().toString()), mtgCardImage, cardUrl.getText().toString());
-                    }
+            mtgCardImage.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if(position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(Integer.parseInt(cardId.getText().toString()), mtgCardImage, cardUrl.getText().toString());
                 }
             });
         }

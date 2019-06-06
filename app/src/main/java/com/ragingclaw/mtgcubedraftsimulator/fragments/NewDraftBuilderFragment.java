@@ -30,12 +30,14 @@ import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.models.PackViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 
+import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
@@ -48,18 +50,10 @@ public class NewDraftBuilderFragment extends Fragment {
     @BindView(R.id.creating_cube_static_text) TextView creatingText;
     @BindView(R.id.percentage_built) TextView completePercent;
     private Unbinder unbinder;
-    private Thread t;
-    private Handler handler;
     private Bundle handlerBundle = new Bundle();
     private List<MagicCard> cubeCards;
     private int cubeId = -1;
-    private String draftName;
     private OnBuildDraftFragmentInteractionListener mListener;
-    private CubeViewModel cubeViewModel;
-    private MagicCardViewModel magicCardViewModel;
-    private PackViewModel packViewModel;
-    private FirebaseAuth mAuth;
-    private String currentUserId;
 
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
@@ -70,9 +64,8 @@ public class NewDraftBuilderFragment extends Fragment {
     }
 
     public static NewDraftBuilderFragment newInstance() {
-        NewDraftBuilderFragment fragment = new NewDraftBuilderFragment();
 
-        return fragment;
+        return new NewDraftBuilderFragment();
     }
 
     @Override
@@ -80,19 +73,19 @@ public class NewDraftBuilderFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             cubeId = getArguments().getInt(AllMyConstants.CUBE_ID);
-            draftName = getArguments().getString(AllMyConstants.DRAFT_NAME);
+            String draftName = getArguments().getString(AllMyConstants.DRAFT_NAME);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.creating_cube_or_draft_layout, container, false);
         unbinder = ButterKnife.bind(this, view);
-        cubeViewModel = ViewModelProviders.of(getActivity()).get(CubeViewModel.class);
-        magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
-        packViewModel = ViewModelProviders.of(getActivity()).get(PackViewModel.class);
-        mAuth = FirebaseAuth.getInstance();
-        currentUserId = mAuth.getCurrentUser().getUid();
+        CubeViewModel cubeViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(CubeViewModel.class);
+        MagicCardViewModel magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
+        PackViewModel packViewModel = ViewModelProviders.of(getActivity()).get(PackViewModel.class);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        String currentUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 
         // text on this layout is dynamic, change it from building a cube, to building draft
         creatingText.setText(getResources().getString(R.string.creating_draft));
@@ -112,7 +105,8 @@ public class NewDraftBuilderFragment extends Fragment {
     private void buildDraft(int cubeId, String userId, CubeViewModel cubeViewModel, MagicCardViewModel magicCardViewModel, PackViewModel packViewModel, View view, SharedPreferences mPreferences, SharedPreferences.Editor mEditor) {
 
         // separate threads cannot communicate with the UI thread directly. This lets them communicate.
-        handler = new Handler(Looper.getMainLooper()) {
+        // updates the % complete in the layout
+        Handler handler = new Handler(Looper.getMainLooper()) {
 
             @Override
             public void handleMessage(Message msg) {
@@ -124,14 +118,14 @@ public class NewDraftBuilderFragment extends Fragment {
             }
         };
 
-        t = new Thread(new BuildDraft(handler, cubeId, userId, cubeViewModel,
+        Thread t = new Thread(new BuildDraft(handler, cubeId, userId, cubeViewModel,
                 magicCardViewModel, packViewModel, view, mPreferences, mEditor));
         t.start();
     }
 
     public void sendDataToActivity(Uri uri) {
         if (mListener != null) {
-            mListener.OnBuildDraftFragmentInteractionListener(uri);
+            mListener.OnBuildDraftFragmentInteractionListener();
         }
     }
 
@@ -142,7 +136,7 @@ public class NewDraftBuilderFragment extends Fragment {
             mListener = (OnBuildDraftFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnBuildDraftFragmentInteractionListener");
+                    + getActivity().getString(R.string.fragment_interaction_error_end_text));
         }
     }
 
@@ -160,20 +154,20 @@ public class NewDraftBuilderFragment extends Fragment {
 
     public interface OnBuildDraftFragmentInteractionListener {
         // TODO: Update argument type and name
-        void OnBuildDraftFragmentInteractionListener(Uri uri);
+        void OnBuildDraftFragmentInteractionListener();
     }
 
     public class BuildDraft implements Runnable {
-        Handler handler;
-        int cubeId;
-        String userId;
-        CubeViewModel cubeViewModel;
-        MagicCardViewModel magicCardViewModel;
-        PackViewModel packViewModel;
-        int packsPerPlayer = 3;
-        View view;
-        SharedPreferences sharedPreferences;
-        SharedPreferences.Editor editor;
+        final Handler handler;
+        final int cubeId;
+        final String userId;
+        final CubeViewModel cubeViewModel;
+        final MagicCardViewModel magicCardViewModel;
+        final PackViewModel packViewModel;
+        final int packsPerPlayer = 3;
+        final View view;
+        final SharedPreferences sharedPreferences;
+        final SharedPreferences.Editor editor;
 
         public BuildDraft(Handler handler, int cubeId, String userId,
                           CubeViewModel cubeViewModel,
@@ -214,8 +208,6 @@ public class NewDraftBuilderFragment extends Fragment {
             Cube userCube  = cubeViewModel.getmUserCube(userId, cubeId);
 
             // get the 360 card ids from the cube
-            List<Integer> cardsFromTheCube = userCube.getCard_ids();
-            List<Integer> cardIdPool = cardsFromTheCube;
 
             // adds in 3 lists to each of the player pack master ArrayList objects.
             for(int i=0; i < packsPerPlayer; i++) {
@@ -231,30 +223,30 @@ public class NewDraftBuilderFragment extends Fragment {
 
 
             // shared preferences can only store Sets, so lists have to be converted to Sets
-            Set<String> seat1_pack1 = new HashSet<>();
-            Set<String> seat1_pack2 = new HashSet<>();
-            Set<String> seat1_pack3 = new HashSet<>();
-            Set<String> seat2_pack1 = new HashSet<>();
-            Set<String> seat2_pack2 = new HashSet<>();
-            Set<String> seat2_pack3 = new HashSet<>();
-            Set<String> seat3_pack1 = new HashSet<>();
-            Set<String> seat3_pack2 = new HashSet<>();
-            Set<String> seat3_pack3 = new HashSet<>();
-            Set<String> seat4_pack1 = new HashSet<>();
-            Set<String> seat4_pack2 = new HashSet<>();
-            Set<String> seat4_pack3 = new HashSet<>();
-            Set<String> seat5_pack1 = new HashSet<>();
-            Set<String> seat5_pack2 = new HashSet<>();
-            Set<String> seat5_pack3 = new HashSet<>();
-            Set<String> seat6_pack1 = new HashSet<>();
-            Set<String> seat6_pack2 = new HashSet<>();
-            Set<String> seat6_pack3 = new HashSet<>();
-            Set<String> seat7_pack1 = new HashSet<>();
-            Set<String> seat7_pack2 = new HashSet<>();
-            Set<String> seat7_pack3 = new HashSet<>();
-            Set<String> seat8_pack1 = new HashSet<>();
-            Set<String> seat8_pack2 = new HashSet<>();
-            Set<String> seat8_pack3 = new HashSet<>();
+            Set<String> seat1_pack1;
+            Set<String> seat1_pack2;
+            Set<String> seat1_pack3;
+            Set<String> seat2_pack1;
+            Set<String> seat2_pack2;
+            Set<String> seat2_pack3;
+            Set<String> seat3_pack1;
+            Set<String> seat3_pack2;
+            Set<String> seat3_pack3;
+            Set<String> seat4_pack1;
+            Set<String> seat4_pack2;
+            Set<String> seat4_pack3;
+            Set<String> seat5_pack1;
+            Set<String> seat5_pack2;
+            Set<String> seat5_pack3;
+            Set<String> seat6_pack1;
+            Set<String> seat6_pack2;
+            Set<String> seat6_pack3;
+            Set<String> seat7_pack1;
+            Set<String> seat7_pack2;
+            Set<String> seat7_pack3;
+            Set<String> seat8_pack1;
+            Set<String> seat8_pack2;
+            Set<String> seat8_pack3;
 
 
             // make the packs
@@ -266,8 +258,8 @@ public class NewDraftBuilderFragment extends Fragment {
 
                     // for each player/seat at the table
                     for(int player = 0; player < 8; player++) {
-                        int cardId = getRandomFromList(cardIdPool);
-                        int index = cardIdPool.indexOf(cardId);
+                        int cardId = getRandomFromList(userCube.getCard_ids());
+                        int index = userCube.getCard_ids().indexOf(cardId);
 
                         if (player == 0) { player1Packs.get(pack).add(cardId); }
                         if (player == 1) { player2Packs.get(pack).add(cardId); }
@@ -278,10 +270,10 @@ public class NewDraftBuilderFragment extends Fragment {
                         if (player == 6) { player7Packs.get(pack).add(cardId); }
                         if (player == 7) { player8Packs.get(pack).add(cardId); }
 
-                        cardIdPool.remove(index);
+                        userCube.getCard_ids().remove(index);
 
                         // shuffles the id list to help make things more random.
-                        Collections.shuffle(cardIdPool);
+                        Collections.shuffle(userCube.getCard_ids());
                     }
                 }
             }
@@ -298,30 +290,30 @@ public class NewDraftBuilderFragment extends Fragment {
                 packViewModel.insertPack(new Pack(0, p, 8, cubeId, player8Packs.get(p)));
             }
 
-            seat1_pack1 = new HashSet<String>(Lists.transform(player1Packs.get(0), Functions.toStringFunction()));
-            seat1_pack2 = new HashSet<String>(Lists.transform(player1Packs.get(1), Functions.toStringFunction()));
-            seat1_pack3 = new HashSet<String>(Lists.transform(player1Packs.get(2), Functions.toStringFunction()));
-            seat2_pack1 = new HashSet<String>(Lists.transform(player2Packs.get(0), Functions.toStringFunction()));
-            seat2_pack2 = new HashSet<String>(Lists.transform(player2Packs.get(1), Functions.toStringFunction()));
-            seat2_pack3 = new HashSet<String>(Lists.transform(player2Packs.get(2), Functions.toStringFunction()));
-            seat3_pack1 = new HashSet<String>(Lists.transform(player3Packs.get(0), Functions.toStringFunction()));
-            seat3_pack2 = new HashSet<String>(Lists.transform(player3Packs.get(1), Functions.toStringFunction()));
-            seat3_pack3 = new HashSet<String>(Lists.transform(player3Packs.get(2), Functions.toStringFunction()));
-            seat4_pack1 = new HashSet<String>(Lists.transform(player4Packs.get(0), Functions.toStringFunction()));
-            seat4_pack2 = new HashSet<String>(Lists.transform(player4Packs.get(1), Functions.toStringFunction()));
-            seat4_pack3 = new HashSet<String>(Lists.transform(player4Packs.get(2), Functions.toStringFunction()));
-            seat5_pack1 = new HashSet<String>(Lists.transform(player5Packs.get(0), Functions.toStringFunction()));
-            seat5_pack2 = new HashSet<String>(Lists.transform(player5Packs.get(1), Functions.toStringFunction()));
-            seat5_pack3 = new HashSet<String>(Lists.transform(player5Packs.get(2), Functions.toStringFunction()));
-            seat6_pack1 = new HashSet<String>(Lists.transform(player6Packs.get(0), Functions.toStringFunction()));
-            seat6_pack2 = new HashSet<String>(Lists.transform(player6Packs.get(1), Functions.toStringFunction()));
-            seat6_pack3 = new HashSet<String>(Lists.transform(player6Packs.get(2), Functions.toStringFunction()));
-            seat7_pack1 = new HashSet<String>(Lists.transform(player7Packs.get(0), Functions.toStringFunction()));
-            seat7_pack2 = new HashSet<String>(Lists.transform(player7Packs.get(1), Functions.toStringFunction()));
-            seat7_pack3 = new HashSet<String>(Lists.transform(player7Packs.get(2), Functions.toStringFunction()));
-            seat8_pack1 = new HashSet<String>(Lists.transform(player8Packs.get(0), Functions.toStringFunction()));
-            seat8_pack2 = new HashSet<String>(Lists.transform(player8Packs.get(1), Functions.toStringFunction()));
-            seat8_pack3 = new HashSet<String>(Lists.transform(player8Packs.get(2), Functions.toStringFunction()));
+            seat1_pack1 = new HashSet<>(Lists.transform(player1Packs.get(0), Functions.toStringFunction()));
+            seat1_pack2 = new HashSet<>(Lists.transform(player1Packs.get(1), Functions.toStringFunction()));
+            seat1_pack3 = new HashSet<>(Lists.transform(player1Packs.get(2), Functions.toStringFunction()));
+            seat2_pack1 = new HashSet<>(Lists.transform(player2Packs.get(0), Functions.toStringFunction()));
+            seat2_pack2 = new HashSet<>(Lists.transform(player2Packs.get(1), Functions.toStringFunction()));
+            seat2_pack3 = new HashSet<>(Lists.transform(player2Packs.get(2), Functions.toStringFunction()));
+            seat3_pack1 = new HashSet<>(Lists.transform(player3Packs.get(0), Functions.toStringFunction()));
+            seat3_pack2 = new HashSet<>(Lists.transform(player3Packs.get(1), Functions.toStringFunction()));
+            seat3_pack3 = new HashSet<>(Lists.transform(player3Packs.get(2), Functions.toStringFunction()));
+            seat4_pack1 = new HashSet<>(Lists.transform(player4Packs.get(0), Functions.toStringFunction()));
+            seat4_pack2 = new HashSet<>(Lists.transform(player4Packs.get(1), Functions.toStringFunction()));
+            seat4_pack3 = new HashSet<>(Lists.transform(player4Packs.get(2), Functions.toStringFunction()));
+            seat5_pack1 = new HashSet<>(Lists.transform(player5Packs.get(0), Functions.toStringFunction()));
+            seat5_pack2 = new HashSet<>(Lists.transform(player5Packs.get(1), Functions.toStringFunction()));
+            seat5_pack3 = new HashSet<>(Lists.transform(player5Packs.get(2), Functions.toStringFunction()));
+            seat6_pack1 = new HashSet<>(Lists.transform(player6Packs.get(0), Functions.toStringFunction()));
+            seat6_pack2 = new HashSet<>(Lists.transform(player6Packs.get(1), Functions.toStringFunction()));
+            seat6_pack3 = new HashSet<>(Lists.transform(player6Packs.get(2), Functions.toStringFunction()));
+            seat7_pack1 = new HashSet<>(Lists.transform(player7Packs.get(0), Functions.toStringFunction()));
+            seat7_pack2 = new HashSet<>(Lists.transform(player7Packs.get(1), Functions.toStringFunction()));
+            seat7_pack3 = new HashSet<>(Lists.transform(player7Packs.get(2), Functions.toStringFunction()));
+            seat8_pack1 = new HashSet<>(Lists.transform(player8Packs.get(0), Functions.toStringFunction()));
+            seat8_pack2 = new HashSet<>(Lists.transform(player8Packs.get(1), Functions.toStringFunction()));
+            seat8_pack3 = new HashSet<>(Lists.transform(player8Packs.get(2), Functions.toStringFunction()));
 
 
             // put all this crap into shared prefs
@@ -355,7 +347,7 @@ public class NewDraftBuilderFragment extends Fragment {
             mEditor.putStringSet(AllMyConstants.SEAT8_PACK2, seat8_pack2);
             mEditor.putStringSet(AllMyConstants.SEAT8_PACK3, seat8_pack3);
             mEditor.putBoolean(AllMyConstants.START_DRAFT, true);
-            mEditor.commit();
+            mEditor.apply();
 
 
             // this process can happen fast. this just shows a % complete to keep it consistent
@@ -368,7 +360,7 @@ public class NewDraftBuilderFragment extends Fragment {
                 Message m = Message.obtain();
                 Bundle b = new Bundle();
 
-                b.putString("percent", percent);
+                b.putString(getActivity().getString(R.string.percent_text), percent);
                 m.setData(b);
                 handler.sendMessage(m);
             }

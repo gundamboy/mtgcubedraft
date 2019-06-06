@@ -4,7 +4,7 @@ apply plugin: "androidx.navigation.safeargs"
 android {
     signingConfigs {
         config {
-            storeFile file('D:\\Projects\\AndoidApps\\mtgcubedraft\\keystore.jks')
+            storeFile file('$rootDir\\keystore.jks')
             storePassword 'password'
             keyAlias = 'MTGdraft'
             keyPassword 'password'
@@ -50,8 +50,13 @@ dependencies {
 
     implementation 'android.arch.navigation:navigation-fragment:1.0.0'
     implementation 'android.arch.navigation:navigation-ui:1.0.0'
+
+
     implementation "androidx.room:room-runtime:2.1.0-rc01"
     annotationProcessor "androidx.room:room-compiler:2.1.0-rc01"
+    testImplementation "androidx.room:room-testing:2.1.0-rc01"
+
+
 
     // third party stuff
     implementation 'com.jakewharton.timber:timber:4.7.1'
@@ -71,8 +76,8 @@ dependencies {
     // testing
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
-    testImplementation "androidx.room:room-testing:2.1.0-rc01"
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
 
 }
 

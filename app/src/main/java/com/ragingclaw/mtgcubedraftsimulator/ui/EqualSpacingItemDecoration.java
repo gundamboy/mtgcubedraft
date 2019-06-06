@@ -6,6 +6,8 @@ import android.view.View;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.jetbrains.annotations.NotNull;
+
 public class EqualSpacingItemDecoration extends RecyclerView.ItemDecoration {
     private final int spacing;
     private int displayMode;
@@ -24,7 +26,7 @@ public class EqualSpacingItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+    public void getItemOffsets(@NotNull Rect outRect, @NotNull View view, @NotNull RecyclerView parent, @NotNull RecyclerView.State state) {
         int position = parent.getChildViewHolder(view).getAdapterPosition();
         int itemCount = state.getItemCount();
         RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();

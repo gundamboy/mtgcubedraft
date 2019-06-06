@@ -7,9 +7,9 @@ import java.util.List;
 
 public class ApplicationRepository {
 
-    private MagicCardDao mMagicCardDao;
-    private CubeDao mCubesDoa;
-    private PackDao mPackDao;
+    private final MagicCardDao mMagicCardDao;
+    private final CubeDao mCubesDoa;
+    private final PackDao mPackDao;
 
     public ApplicationRepository(Application application) {
         ApplicationDatabase db = ApplicationDatabase.getDatabase(application);
@@ -124,7 +124,7 @@ public class ApplicationRepository {
 
     // Card AsyncTasks *************************************************
     private static class InsertCardAsyncTask extends android.os.AsyncTask<MagicCard, Void, Void> {
-        private MagicCardDao mMagicCardDao;
+        private final MagicCardDao mMagicCardDao;
 
         private InsertCardAsyncTask(MagicCardDao magicCardDao) {
             this.mMagicCardDao = magicCardDao;
@@ -138,7 +138,7 @@ public class ApplicationRepository {
     }
 
     private static class UpdateCardAsyncTask extends android.os.AsyncTask<MagicCard, Void, Void> {
-        private MagicCardDao mMagicCardDao;
+        private final MagicCardDao mMagicCardDao;
 
         private UpdateCardAsyncTask(MagicCardDao magicCardDao) {
             this.mMagicCardDao = magicCardDao;
@@ -152,7 +152,7 @@ public class ApplicationRepository {
     }
 
     private static class DeleteCardAsyncTask extends android.os.AsyncTask<MagicCard, Void, Void> {
-        private MagicCardDao mMagicCardDao;
+        private final MagicCardDao mMagicCardDao;
 
         private DeleteCardAsyncTask(MagicCardDao magicCardDao) {
             this.mMagicCardDao = magicCardDao;
@@ -166,7 +166,7 @@ public class ApplicationRepository {
     }
 
     private static class DeleteAllCardsAsyncTask extends android.os.AsyncTask<Void, Void, Void> {
-        MagicCardDao magicCardDao;
+        final MagicCardDao magicCardDao;
 
         private DeleteAllCardsAsyncTask(MagicCardDao magicCardDao) {
             this.magicCardDao = magicCardDao;
@@ -181,7 +181,7 @@ public class ApplicationRepository {
 
     // Cube AsyncTasks *************************************************
     private static class InsertCubeAsyncTask extends android.os.AsyncTask<Cube, Void, Void> {
-        private CubeDao cubeDao;
+        private final CubeDao cubeDao;
 
         private InsertCubeAsyncTask(CubeDao cubeDao) {
             this.cubeDao = cubeDao;
@@ -195,7 +195,7 @@ public class ApplicationRepository {
     }
 
     private static class UpdateCubeAsyncTask extends android.os.AsyncTask<Cube, Void, Void> {
-        private CubeDao cubeDao;
+        private final CubeDao cubeDao;
 
         private UpdateCubeAsyncTask(CubeDao cubeDao) {
             this.cubeDao = cubeDao;
@@ -210,7 +210,7 @@ public class ApplicationRepository {
 
     private static class DeleteCubeAsyncTask extends android.os.AsyncTask<Cube, Void, Void> {
 
-        private CubeDao cubeDao;
+        private final CubeDao cubeDao;
 
         private DeleteCubeAsyncTask(CubeDao cubeDao) {
             this.cubeDao = cubeDao;
@@ -225,7 +225,7 @@ public class ApplicationRepository {
 
     private static class DeleteAllCubesAsyncTask extends AsyncTask<Void, Void, Void> {
 
-        private CubeDao cubeDao;
+        private final CubeDao cubeDao;
 
         private DeleteAllCubesAsyncTask(CubeDao cubeDao) {
             this.cubeDao = cubeDao;
@@ -240,7 +240,7 @@ public class ApplicationRepository {
 
     // Packs AsyncTasks *************************************************
     private static class InsertPackAsyncTask extends AsyncTask<Pack, Void, Void> {
-        private PackDao packDao;
+        private final PackDao packDao;
 
         private InsertPackAsyncTask(PackDao packDao) {
             this.packDao = packDao;
@@ -254,7 +254,7 @@ public class ApplicationRepository {
     }
 
     private static class UpdatePackAsyncTask extends AsyncTask<Pack, Void, Void> {
-        PackDao packDao;
+        final PackDao packDao;
 
         private UpdatePackAsyncTask(PackDao packDao) {
             this.packDao = packDao;
@@ -268,7 +268,7 @@ public class ApplicationRepository {
     }
 
     private static class DeletePackAsyncTask extends AsyncTask<Pack, Void, Void> {
-        PackDao packDao;
+        final PackDao packDao;
 
         private DeletePackAsyncTask(PackDao packDao) {
             this.packDao = packDao;
@@ -282,7 +282,7 @@ public class ApplicationRepository {
     }
 
     private static class DeleteAllPacksAsyncTask extends AsyncTask<Void, Void, Void> {
-        PackDao packDao;
+        final PackDao packDao;
 
         private DeleteAllPacksAsyncTask(PackDao packDao) {
             this.packDao = packDao;

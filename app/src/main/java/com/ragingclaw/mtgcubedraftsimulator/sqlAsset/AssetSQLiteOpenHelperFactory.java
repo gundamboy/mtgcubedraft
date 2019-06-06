@@ -13,8 +13,8 @@ public class AssetSQLiteOpenHelperFactory implements SupportSQLiteOpenHelper.Fac
     public SupportSQLiteOpenHelper create(SupportSQLiteOpenHelper.Configuration configuration) {
 
         return new AssetSQLiteOpenHelper(
-                configuration.context, configuration.name, null,
-                configuration.callback.version, null, configuration.callback
+                configuration.context, configuration.name,
+                configuration.callback.version, configuration.callback
         );
     }
 }
