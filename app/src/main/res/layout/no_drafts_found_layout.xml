@@ -16,7 +16,6 @@
         android:text="@string/my_cubes_monster_text"
         android:textSize="@dimen/text42"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/create_cube_button"
         app:layout_constraintStart_toEndOf="@+id/no_drafts_info"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

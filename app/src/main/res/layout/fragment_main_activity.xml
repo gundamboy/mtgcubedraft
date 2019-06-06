@@ -30,14 +30,14 @@
                 android:layout_marginEnd="@dimen/margins_8"
                 android:contentDescription="@string/magic_the_gathering_arena_logo_description"
                 android:src="@drawable/mtg_arena_logo"
-                app:layout_constraintBottom_toTopOf="@+id/titleText"
+                app:layout_constraintBottom_toTopOf="@+id/noInternet"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/titleText"
+                android:id="@+id/noInternet"
                 style="@style/LoginTitleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
                 android:layout_marginTop="@dimen/margins_8"
                 android:layout_marginEnd="@dimen/margins_8"
                 android:layout_marginBottom="8dp"
-                android:text="OH NO! Looks like you don't have an internet connection. Try again later i guess. "
+                android:text="@string/no_internet"
                 android:textColor="@color/primaryTextColor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
