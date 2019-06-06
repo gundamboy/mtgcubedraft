@@ -1,0 +1,59 @@
+I have checked the app meets these at least a million times. here's the list.
+requiremnts are below, but first, a little about the app. 
+
+The flow:
+login with google, or email(it will make you an account)
+make a cube. draft the cube. whats a cube? a cube is 360 random cards from ALL of MTG. That's over 40k cards. yeah. A draft: there are 8 players. each player has 3 packs of 15 cards.
+players open 1 pack, take 1 card, then pass the pack to the left. this is done until there are 0 cards left. Players open their 2nd pack. Pass to the right. 
+No cards left, open pack 3, pass to left. you end up with 45 cards. thats it. game over.
+
+drafting: click a card, you get a big card. 
+layouts: card stays the same size, so the layout doesnt change. this is becauase I did make different layouts but testing on smaller screens
+it was difficult to read the card text on those screens. Cards having to be scrolled down then the buttons under them was a concious choice.
+
+you picked 45 cards. thats it. you can see those cards then push done. do it again.
+
+widget: updates 1 time a time. it shows the names of the cubes you made. thats it. that is relavent info.
+
+
+core: 
+App integrates a third-party library.
+	-- app itegrates several
+
+App validates all input from servers and users. If data does not exist or is in the wrong format, the app logs this fact and does not crash.
+	-- all inputes are validated
+
+App includes support for accessibility.
+	-- yup. dpad and RTL
+
+App keeps all strings in a strings.xml file and enables RTL layout switching on all layouts.
+	--YUP
+
+App provides a widget to provide relevant information to the user on the home screen.
+	-- shows a list of the names of the cubues user has made in real time baed on livedata
+
+Google Play Services
+	-- uses firecloud/firesore for auth 
+	-- stores users in firecloud
+
+Building
+App builds from a clean repository checkout with no additional configuration.
+	-- YUP. for me and a tester
+
+App builds and deploys using the installRelease Gradle task.
+	-- it did. and it was a pain in the ass
+
+App is equipped with a signing configuration, and the keystore and passwords are included in the repository. Keystore is referred to by a relative path.
+	-- it is. see above.
+
+All app dependencies are managed by Gradle.
+	-- yes. 
+
+Data Persistence
+App stores data locally using Room OR Firebase Realtime Database. No third party frameworks may be used.
+	room for cards/packs and firebase for uers
+
+	-- does not pull an api other than using picasso to pull images
+
+If Room is used then LiveData and ViewModel are used when required and no unnecessary calls to the database are made.
+	-- yup. 
