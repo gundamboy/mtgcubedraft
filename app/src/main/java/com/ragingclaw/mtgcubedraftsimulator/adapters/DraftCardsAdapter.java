@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class DraftCardsAdapter extends RecyclerView.Adapter<DraftCardsAdapter.Ca
         String url = currentCard.getImageUrl();
         holder.cardUrl.setText(url);
 
-        Picasso.get().load(url).placeholder(R.drawable.mtg_card_back).into(holder.mtgCardImage);
+        Picasso.get().load(url).memoryPolicy(MemoryPolicy.NO_CACHE).placeholder(R.drawable.mtg_card_back).into(holder.mtgCardImage);
 
         holder.cardId.setText(String.valueOf(currentCard.getMultiverseid()));
     }

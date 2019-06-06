@@ -20,6 +20,7 @@ import android.widget.ImageView;
 
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -100,7 +101,7 @@ public class SingleDeckCardFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        Picasso.get().load(cardUrl).placeholder(R.drawable.mtg_card_back).into(mtgCardImage);
+        Picasso.get().load(cardUrl).memoryPolicy(MemoryPolicy.NO_CACHE).placeholder(R.drawable.mtg_card_back).into(mtgCardImage);
 
         goBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
