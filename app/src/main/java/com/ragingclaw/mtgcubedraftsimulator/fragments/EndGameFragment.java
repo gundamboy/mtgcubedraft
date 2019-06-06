@@ -93,7 +93,7 @@ public class EndGameFragment extends Fragment {
             Navigation.findNavController(view).popBackStack();
         }
 
-        sendDataToActivity("Draft Deck Review");
+        sendDataToActivity(getActivity().getResources().getString(R.string.draft_deck_review));
 
         magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
 
@@ -149,7 +149,7 @@ public class EndGameFragment extends Fragment {
 
                 Set<String> names = new ArraySet<>();
                 if(mPreferences.contains(AllMyConstants.CUBE_NAMES)) {
-                    names = mPreferences.getStringSet(AllMyConstants.CUBE_NAME, null);
+                    names = mPreferences.getStringSet(AllMyConstants.CUBE_NAMES, null);
                 } else {
                     names = null;
                 }
