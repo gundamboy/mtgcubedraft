@@ -133,7 +133,7 @@ public class EndGameFragment extends Fragment {
                             b.putInt(AllMyConstants.CARD_ID, cardId);
                             b.putString(AllMyConstants.CARD_URL, url);
                             b.putBoolean(AllMyConstants.GO_BACK_TO_DECK, true);
-                            FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, "mtgCardScale").build();
+                            FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, AllMyConstants.SHARED_ANIMATION).build();
                             Navigation.findNavController(view).navigate(R.id.action_endGameFragment_to_singleDeckCardFragment, b, null, extras);
                         }
                     });

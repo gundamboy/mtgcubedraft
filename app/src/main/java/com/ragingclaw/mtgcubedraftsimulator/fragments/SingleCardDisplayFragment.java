@@ -117,7 +117,7 @@ public class SingleCardDisplayFragment extends Fragment {
                 mEditor.putBoolean(AllMyConstants.START_DRAFT, false);
                 mEditor.commit();
 
-                FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(mtgCardImage, "mtgCardScale").build();
+                FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(mtgCardImage, AllMyConstants.SHARED_ANIMATION).build();
                 Navigation.findNavController(view).navigate(R.id.action_singleCardDisplayFragment_to_draftingHappyFunTimeFragment, null, null, extras);
             }
         });

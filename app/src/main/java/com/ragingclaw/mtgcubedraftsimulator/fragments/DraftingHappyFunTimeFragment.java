@@ -179,7 +179,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                                 mEditor.commit();
                                 draftCardsRecyclerView.setVisibility(View.GONE);
                                 draftCompleteLayout.setVisibility(View.VISIBLE);
-                                sendDataBackToActivity("WOOT!");
+                                sendDataBackToActivity(getActivity().getResources().getString(R.string.woot));
 
                                 draftDoneButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -300,7 +300,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                                         b.putInt(AllMyConstants.CURRENT_SEAT, currentSeatNum);
                                         b.putInt(AllMyConstants.CURRENT_PACK, currentPackNum);
                                         b.putString(AllMyConstants.CARD_URL, url);
-                                        FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, "mtgCardScale").build();
+                                        FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder().addSharedElement(v, AllMyConstants.SHARED_ANIMATION).build();
                                         Navigation.findNavController(view).navigate(R.id.action_draftingHappyFunTimeFragment_to_singleCardDisplayFragment, b, null, extras);
                                     }
                                 });

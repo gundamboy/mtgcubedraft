@@ -128,7 +128,7 @@ public class NewCubeStepOneFragment extends Fragment {
 
                 } else {
                     // show toast because i dont have time for fancy shit.
-                    Toast.makeText(getContext(), "You must give your cube a name to continue", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getActivity().getResources().getString(R.string.the_cube_has_no_name), Toast.LENGTH_SHORT).show();
                 }
             }
         });
