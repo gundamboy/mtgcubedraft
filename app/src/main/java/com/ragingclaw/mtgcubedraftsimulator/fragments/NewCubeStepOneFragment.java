@@ -286,7 +286,7 @@ public class NewCubeStepOneFragment extends Fragment {
                 mEditor.putInt(AllMyConstants.CUBE_ID, theId);
                 mEditor.remove(AllMyConstants.CUBE_NAMES);
                 mEditor.putStringSet(AllMyConstants.CUBE_NAMES, names);
-                mEditor.putStringSet(AllMyConstants.THE_CHOSEN_CARDS, ids);
+                mEditor.putStringSet(AllMyConstants.CUBE_IDS, ids);
                 mEditor.commit();
 
                 Message m = Message.obtain();

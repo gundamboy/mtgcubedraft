@@ -2,6 +2,7 @@ package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -47,6 +48,8 @@ public class SingleCardDisplayFragment extends Fragment {
     private SharedPreferences.Editor mEditor;
     private boolean goBackToDeck = false;
 
+    ViewGroup container;
+
     public SingleCardDisplayFragment() {
         // Required empty public constructor
     }
@@ -81,7 +84,22 @@ public class SingleCardDisplayFragment extends Fragment {
         // just shows the card that was picked and bounces some info back to the last fragment
         // to prevent crashing
 
-        View view =  inflater.inflate(R.layout.fragment_single_card_display, container, false);
+        View view;
+
+        if (container != null) {
+            container.removeAllViewsInLayout();
+        }
+
+        int orientation = getActivity().getResources().getConfiguration().orientation;
+        if(orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // inflate portrait layout
+            view =  inflater.inflate(R.layout.fragment_single_card_display, container, false);
+        } else {
+            // inflate landscape layout
+            view =  inflater.inflate(R.layout.fragment_single_card_display, container, false);
+        }
+
+
         unbinder = ButterKnife.bind(this, view);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 

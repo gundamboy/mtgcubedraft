@@ -170,7 +170,6 @@ public class DraftingHappyFunTimeFragment extends Fragment {
 
                             cardsHash.add(String.valueOf(cardIdPicked));
                             mEditor.putStringSet(AllMyConstants.THE_CHOSEN_CARDS, cardsHash);
-
                             currentPickNum = cardsHash.size() + 1;
 
                             Pack currentPack = null;

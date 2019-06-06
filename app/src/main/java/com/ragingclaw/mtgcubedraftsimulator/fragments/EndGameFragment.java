@@ -157,6 +157,7 @@ public class EndGameFragment extends Fragment {
                 }
                 mEditor.clear();
                 mEditor.putStringSet(AllMyConstants.CUBE_NAMES, names);
+                mEditor.remove(AllMyConstants.THE_CHOSEN_CARDS);
 
                 mEditor.commit();
 

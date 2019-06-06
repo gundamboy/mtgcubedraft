@@ -14,6 +14,7 @@ public class AllMyConstants {
     public static final String TOAST_MESSAGE = "TOAST_MESSAGE";
     public static final String NEW_CUBE = "NEW_CUBE";
     public static final String CUBE_ID = "CUBE_ID";
+    public static final String CUBE_IDS = "CUBE_IDS";
     public static final String CARD_ID = "CARD_ID";
     public static final String CARD_URL = "CARD_URL";
     public static final String CURRENT_SEAT = "CURRENT_SEAT";

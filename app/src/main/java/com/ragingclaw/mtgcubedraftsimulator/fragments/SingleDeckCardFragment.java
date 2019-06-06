@@ -3,6 +3,7 @@ package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -50,15 +51,7 @@ public class SingleDeckCardFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SingleDeckCardFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static SingleDeckCardFragment newInstance(String param1, String param2) {
         SingleDeckCardFragment fragment = new SingleDeckCardFragment();
         return fragment;
@@ -88,13 +81,26 @@ public class SingleDeckCardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // just shows the card that was picked and bounces some info back to the last fragment
         // to prevent crashing
+        View view;
 
-        View view =  inflater.inflate(R.layout.fragment_single_deck_card, container, false);
+        if (container != null) {
+            container.removeAllViewsInLayout();
+        }
+
+        int orientation = getActivity().getResources().getConfiguration().orientation;
+
+        if(orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // inflate portrait layout
+            view =  inflater.inflate(R.layout.fragment_single_deck_card, container, false);
+        } else {
+            // inflate landscape layout
+            view =  inflater.inflate(R.layout.fragment_single_deck_card, container, false);
+        }
+
         unbinder = ButterKnife.bind(this, view);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         Picasso.get().load(cardUrl).placeholder(R.drawable.mtg_card_back).into(mtgCardImage);
-
 
         goBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,7 +108,6 @@ public class SingleDeckCardFragment extends Fragment {
                 Navigation.findNavController(view).navigate(R.id.action_singleDeckCardFragment_to_endGameFragment, null, null, null);
             }
         });
-
 
         return view;
     }

@@ -135,28 +135,11 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
-    private void swapFragment(Fragment fragment) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_in_from_bottom, R.anim.slide_out_from_top, R.anim.slide_in_from_bottom, R.anim.slide_out_from_top);
-        fragmentTransaction.replace(R.id.loginOptionsView, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
 
     @Override
     public void onFragmentInteraction(View view, String message) {
 
-        if (message.equals("email")) {
-            swapFragment(new EmailPasswordFragment());
-        }
 
-        if (message.equals("create")) {
-            swapFragment(new CreateAccountFragment());
-        }
-
-        if (message.equals("google")) {
-            googleSignIn();
-        }
     }
 
     @Override

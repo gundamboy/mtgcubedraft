@@ -99,6 +99,12 @@ public class MainActivityFragment extends Fragment {
                     if (magicCards.size() > 0) {
                         isDataLoaded = true;
 
+                        // check to see if the last batch of draft cards still exists for some reason.
+                        // kill it if it does.
+                        if(mPreferences.contains(AllMyConstants.THE_CHOSEN_CARDS)) {
+                            mEditor.remove(AllMyConstants.THE_CHOSEN_CARDS);
+                        }
+
                         mEditor.putBoolean(AllMyConstants.IS_DATA_LOADED, true);
                         mEditor.apply();
 

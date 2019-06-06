@@ -93,8 +93,6 @@ public class MyCubesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Timber.tag("fart").i("hello");
-        Timber.tag("fart").i("hello");
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_my_cubes, container, false);
         unbinder = ButterKnife.bind(this, view);

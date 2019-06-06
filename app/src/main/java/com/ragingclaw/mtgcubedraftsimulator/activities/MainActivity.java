@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.navigation.Navigation;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,7 +33,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-// TODO: i screwed up. Remake the database insert from crawling the set files. sigh.
 public class MainActivity extends AppCompatActivity implements
         MainActivityFragment.OnMainActivityFragmentInteraction,
         NewCubeStepOneFragment.OnFragmentInteractionListenerStepOne,
@@ -167,27 +165,15 @@ public class MainActivity extends AppCompatActivity implements
         super.onResume();
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            for (String key : bundle.keySet()) {
-                Object value = bundle.get(key);
-                Timber.tag("fart").i("key: %s, value: %s", key, value.toString());
-            }
-        }
 
-        Timber.tag("fart").i("onResume");
         // take care of widget stuff
-
         if(intent != null) {
-            Timber.tag("fart").i("intent is not null");
-
             if (intent.hasExtra(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE)) {
                 if(intent.getAction().equals(AllMyConstants.WIDGET_INTENT_ACTION_NEW_CUBE)) {
-                    Timber.tag("fart").i("intent had the extra and the action BEFORE RUNNABLE");
                     Handler handler = new Handler();
                     Runnable r = new Runnable() {
                         @Override
                         public void run() {
-                            Timber.tag("fart").i("intent had the extra and the action");
                             Toast.makeText(MainActivity.this, "new cube on resume", Toast.LENGTH_SHORT).show();
                         }
                     };
