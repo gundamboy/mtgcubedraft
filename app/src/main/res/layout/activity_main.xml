@@ -11,11 +11,57 @@
 
     <include layout="@layout/appbar_layout" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/icon"
+                style="@style/LoginIcon"
+                android:layout_width="@dimen/mtg_logo_size"
+                android:layout_height="@dimen/mtg_logo_size"
+                android:layout_marginStart="@dimen/margins_8"
+                android:layout_marginTop="@dimen/margins_8"
+                android:layout_marginEnd="@dimen/margins_8"
+                android:contentDescription="@string/magic_the_gathering_arena_logo_description"
+                android:src="@drawable/mtg_arena_logo"
+                app:layout_constraintBottom_toTopOf="@+id/titleText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/titleText"
+                style="@style/LoginTitleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margins_8"
+                android:layout_marginTop="@dimen/margins_8"
+                android:layout_marginEnd="@dimen/margins_8"
+                android:layout_marginBottom="8dp"
+                android:text="OH NO! Looks like you don't have an internet connection. Try again later i guess. "
+                android:textColor="@color/primaryTextColor"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/icon" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
+        android:visibility="gone"
         android:fillViewport="true">
         <fragment
             android:id="@+id/nav_host"
