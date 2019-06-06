@@ -4,9 +4,9 @@ apply plugin: "androidx.navigation.safeargs"
 android {
     signingConfigs {
         config {
-            storeFile file("$rootDir\\keystore.jks")
+            storeFile file('D:\\Projects\\AndoidApps\\mtgcubedraft\\keystore.jks')
             storePassword 'password'
-            keyAlias = 'MTGdraftKey'
+            keyAlias = 'MTGdraft'
             keyPassword 'password'
         }
     }
@@ -24,6 +24,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
+        }
+        debug {
         }
     }
     compileOptions {
