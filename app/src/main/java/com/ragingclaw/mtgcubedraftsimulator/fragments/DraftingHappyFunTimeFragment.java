@@ -175,7 +175,7 @@ public class DraftingHappyFunTimeFragment extends Fragment {
                             Pack currentPack = null;
                             List<Integer> currentPackCardIds = new ArrayList<>();
 
-                            if(cardsHash.size() == 2) {
+                            if(cardsHash.size() == 45) {
                                 mEditor.commit();
                                 draftCardsRecyclerView.setVisibility(View.GONE);
                                 draftCompleteLayout.setVisibility(View.VISIBLE);

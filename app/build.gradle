@@ -2,6 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: "androidx.navigation.safeargs"
 
 android {
+    signingConfigs {
+        config {
+            storeFile file("$rootDir\\keystore.jks")
+            storePassword 'password'
+            keyAlias = 'MTGdraftKey'
+            keyPassword 'password'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.ragingclaw.mtgcubedraftsimulator"
@@ -15,6 +23,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
     compileOptions {
