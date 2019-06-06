@@ -18,12 +18,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
 import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
@@ -33,8 +40,10 @@ import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 import com.ragingclaw.mtgcubedraftsimulator.widget.CubeDraftWidgetProvider;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -281,6 +290,28 @@ public class NewCubeStepOneFragment extends Fragment {
                         mEditor.remove(AllMyConstants.CUBE_NAMES);
                     }
                 }
+
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                Map<String, Object> cubeToInsert = new HashMap<>();
+                cubeToInsert.put("ids", cardIds);
+                cubeToInsert.put("cubeId", cubeId);
+                cubeToInsert.put("name", cubeName);
+                cubeToInsert.put("total_cards", 360);
+                cubeToInsert.put("uid", currentUserId);
+
+                db.collection("cubes").add(cubeToInsert)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
 
                 mEditor.putInt(AllMyConstants.CUBE_ID, theId);
                 mEditor.remove(AllMyConstants.CUBE_NAMES);
