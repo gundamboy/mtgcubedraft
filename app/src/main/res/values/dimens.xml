@@ -1,0 +1,79 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="app_bar_height_portrait">56dp</dimen>
+    <dimen name="app_bar_height_landscape">48dp</dimen>
+    <dimen name="app_bar_height_tablet">64dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!--scrim-->
+    <dimen name="scrim_app_bar_height">180dp</dimen>
+    <dimen name="sheet_text_scrim_height_top">100dp</dimen>
+    <dimen name="sheet_text_scrim_height_bottom">100dp</dimen>
+    <dimen name="expand_title_margin">16dp</dimen>
+
+    <dimen name="icon_top_margin">24dp</dimen>
+    <dimen name="icon_bottom_margin">24dp</dimen>
+    <dimen name="title_bottom_margin">16dp</dimen>
+    <dimen name="field_width_standard">160dp</dimen>
+
+
+    <dimen name="mtg_symbol_image_size">100dp</dimen>
+    <dimen name="mtg_symbol_image_size_landscape">100dp</dimen>
+    <dimen name="mtg_logo_size">200dp</dimen>
+
+    <!--text-->
+    <dimen name="text0">0sp</dimen>
+    <dimen name="text08">8sp</dimen>
+    <dimen name="text10">10sp</dimen>
+    <dimen name="text12">12sp</dimen>
+    <dimen name="text14">14sp</dimen>
+    <dimen name="text16">16sp</dimen>
+    <dimen name="text18">18sp</dimen>
+    <dimen name="text20">20sp</dimen>
+    <dimen name="text22">22sp</dimen>
+    <dimen name="text24">24sp</dimen>
+    <dimen name="text26">26sp</dimen>
+    <dimen name="text28">28sp</dimen>
+    <dimen name="text32">32sp</dimen>
+    <dimen name="text42">42sp</dimen>
+    <dimen name="text45">45sp</dimen>
+
+    <!--margins and padding-->
+    <dimen name="baseline_0">0dp</dimen>
+    <dimen name="baseline_4">4dp</dimen>
+    <dimen name="baseline_8">8dp</dimen>
+    <dimen name="baseline_14">14dp</dimen>
+    <dimen name="padding_4">4dp</dimen>
+    <dimen name="padding_8">8dp</dimen>
+    <dimen name="padding_16">16dp</dimen>
+    <dimen name="padding_24">24dp</dimen>
+    <dimen name="margins_2">2dp</dimen>
+    <dimen name="margins_4">4dp</dimen>
+    <dimen name="margins_8">8dp</dimen>
+    <dimen name="margins_12">12dp</dimen>
+    <dimen name="margins_14">14dp</dimen>
+    <dimen name="margins_16">16dp</dimen>
+    <dimen name="margins_18">18dp</dimen>
+    <dimen name="margins_20">20dp</dimen>
+    <dimen name="margins_22">22dp</dimen>
+    <dimen name="margins_24">24dp</dimen>
+    <dimen name="margins_32">32dp</dimen>
+    <dimen name="margins_40">40dp</dimen>
+    <dimen name="margins_60">60dp</dimen>
+    <dimen name="margins_72">72dp</dimen>
+
+    <dimen name="layout_42">42dp</dimen>
+    <dimen name="layout_54">54dp</dimen>
+    <dimen name="layout_64">64dp</dimen>
+    <dimen name="layout_150">150dp</dimen>
+    <dimen name="layout_180">180dp</dimen>
+    <dimen name="layout_200">200dp</dimen>
+    <dimen name="layout_300">300dp</dimen>
+
+    <!--
+Refer to App Widget Documentation for margin information
+http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
+    -->
+    <dimen name="widget_margin">8dp</dimen>
+</resources>

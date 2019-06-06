@@ -1,0 +1,35 @@
+<merge>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:padding="@dimen/padding_8"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="@dimen/layout_200"
+            android:layout_height="@dimen/layout_200"
+            android:layout_marginStart="@dimen/margins_8"
+            android:layout_marginTop="@dimen/margins_8"
+            android:layout_marginEnd="@dimen/margins_8"
+            android:contentDescription="@string/warning_icon_description"
+            android:layout_gravity="center"
+            android:src="@drawable/v_thumbs_up" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margins_16"
+            android:layout_marginEnd="@dimen/margins_16"
+            style="@style/PasswordWarningText"
+            android:text="@string/draft_complete_dialog_text"/>
+
+        <Button
+            android:id="@+id/draft_done_dialog_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margins_16"
+            android:text="@string/dialog_draft_complete_confirm"
+            android:layout_gravity="center_horizontal"/>
+
+    </LinearLayout>
+</merge>

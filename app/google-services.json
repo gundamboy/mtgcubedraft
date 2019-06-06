@@ -1,0 +1,93 @@
+{
+  "project_info": {
+    "project_number": "491503160435",
+    "firebase_url": "https://mtg-cube-draft-simulator.firebaseio.com",
+    "project_id": "mtg-cube-draft-simulator",
+    "storage_bucket": "mtg-cube-draft-simulator.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491503160435:android:cbf31fc48026f77c",
+        "android_client_info": {
+          "package_name": "com.ragingclaw.mtgcubedraftsimulator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491503160435-m51q36i26u8jri73vqn1701bjsa624du.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ragingclaw.mtgcubedraftsimulator",
+            "certificate_hash": "117e56eae0c2c9781467460907b7c7e58a5b19b4"
+          }
+        },
+        {
+          "client_id": "491503160435-er8igspaltu4afa0ohufq6q7lc7s0b9p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ragingclaw.mtgcubedraftsimulator",
+            "certificate_hash": "b70443a25a7d220460310b49d53efd1f2b9fd810"
+          }
+        },
+        {
+          "client_id": "491503160435-6jrdsdnbsgph7nq2bmthdvsfi9s5rm8g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbKU-DSDim4Xad04DDguDcrvWK64Lq38E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "491503160435-6jrdsdnbsgph7nq2bmthdvsfi9s5rm8g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491503160435:android:229c193ec2884470",
+        "android_client_info": {
+          "package_name": "com.ragingclaw.mtgcubedraftsimulator.activities"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491503160435-3fn5agjhm2cvvtme824lr1ovju3n1u7m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ragingclaw.mtgcubedraftsimulator.activities",
+            "certificate_hash": "117e56eae0c2c9781467460907b7c7e58a5b19b4"
+          }
+        },
+        {
+          "client_id": "491503160435-6jrdsdnbsgph7nq2bmthdvsfi9s5rm8g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbKU-DSDim4Xad04DDguDcrvWK64Lq38E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "491503160435-6jrdsdnbsgph7nq2bmthdvsfi9s5rm8g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

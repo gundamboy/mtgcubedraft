@@ -1,0 +1,58 @@
+<merge>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?android:attr/actionBarSize">
+
+    <TextView
+        android:id="@+id/no_cubes_monster_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margins_8"
+        android:layout_marginTop="@dimen/margins_8"
+        android:layout_marginEnd="@dimen/margins_8"
+        android:gravity="center"
+        android:text="@string/my_cubes_monster_text"
+        android:textSize="42sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/create_cube_button"
+        app:layout_constraintStart_toEndOf="@+id/no_cubes_info"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/no_cubes_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margins_16"
+        android:layout_marginTop="@dimen/margins_32"
+        android:layout_marginEnd="@dimen/margins_16"
+        android:text="@string/my_cubes_no_cubes_instructions"
+        android:textSize="22sp"
+        android:gravity=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/no_cubes_monster_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/no_cubes_monster_text" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/create_cube_button"
+        android:layout_width="@dimen/layout_300"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/margins_8"
+        android:layout_marginTop="@dimen/margins_8"
+        android:layout_marginEnd="@dimen/margins_8"
+        android:layout_marginBottom="@dimen/margins_8"
+        android:text="@string/make_a_cube_text_2"
+        android:textSize="@dimen/text32"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/no_cubes_monster_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/no_cubes_info" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</merge>
