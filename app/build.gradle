@@ -54,7 +54,6 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:2.1.0-rc01"
 
     // third party stuff
-    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.jakewharton:butterknife:10.1.0'
@@ -62,13 +61,9 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
-    implementation 'com.squareup.moshi:moshi:1.8.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.14.1'
     implementation 'org.parceler:parceler-api:1.1.12'
     annotationProcessor 'org.parceler:parceler:1.1.12'
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
-    implementation 'com.github.tajchert:WaitingDots:0.4.0'
 
     // this is where the... Magic.... happens... get it! MAGIC! Because Magic The Gathering!
     implementation 'io.magicthegathering:javasdk:0.0.14'

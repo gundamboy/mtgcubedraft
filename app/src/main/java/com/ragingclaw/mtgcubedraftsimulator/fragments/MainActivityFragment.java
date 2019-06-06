@@ -29,6 +29,7 @@ import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.database.MagicCard;
 import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
+import com.ragingclaw.mtgcubedraftsimulator.utils.NetworkUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +51,7 @@ public class MainActivityFragment extends Fragment {
     @BindView(R.id.btn_my_cubes) com.google.android.material.button.MaterialButton myCubesButton;
     @BindView(R.id.insetData) com.google.android.material.button.MaterialButton mInsertData;
     @BindView(R.id.mainLayout) LinearLayout mainLayout;
+    @BindView(R.id.no_network) LinearLayout noNetworkLayout;
     private Unbinder unbinder;
     private MagicCardViewModel magicCardViewModel;
     private FirebaseAuth mAuth;
@@ -82,65 +84,71 @@ public class MainActivityFragment extends Fragment {
 
         sendDataToActivity(getActivity().getResources().getString(R.string.main_activity_title));
 
-        // set up preferences and user stuff
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mEditor = mPreferences.edit();
+        if(!NetworkUtils.isOnline(getActivity())) {
+            noNetworkLayout.setVisibility(View.VISIBLE);
+            mainLayout.setVisibility(View.GONE);
+            } else {
 
-        mAuth = FirebaseAuth.getInstance();
-        currentUserId = mAuth.getCurrentUser().getUid();
+            // set up preferences and user stuff
+            mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            mEditor = mPreferences.edit();
 
-        // view model for database stuff
-        magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
+            mAuth = FirebaseAuth.getInstance();
+            currentUserId = mAuth.getCurrentUser().getUid();
 
-        magicCardViewModel.getmAllCards().observe(this, new Observer<List<MagicCard>>() {
-            @Override
-            public void onChanged(List<MagicCard> magicCards) {
-                if(!isDataLoaded) {
-                    if (magicCards.size() > 0) {
-                        isDataLoaded = true;
+            // view model for database stuff
+            magicCardViewModel = ViewModelProviders.of(getActivity()).get(MagicCardViewModel.class);
 
-                        // check to see if the last batch of draft cards still exists for some reason.
-                        // kill it if it does.
-                        if(mPreferences.contains(AllMyConstants.THE_CHOSEN_CARDS)) {
-                            mEditor.remove(AllMyConstants.THE_CHOSEN_CARDS);
-                        }
+            magicCardViewModel.getmAllCards().observe(this, new Observer<List<MagicCard>>() {
+                @Override
+                public void onChanged(List<MagicCard> magicCards) {
+                    if (!isDataLoaded) {
+                        if (magicCards.size() > 0) {
+                            isDataLoaded = true;
 
-                        mEditor.putBoolean(AllMyConstants.IS_DATA_LOADED, true);
-                        mEditor.apply();
+                            // check to see if the last batch of draft cards still exists for some reason.
+                            // kill it if it does.
+                            if (mPreferences.contains(AllMyConstants.THE_CHOSEN_CARDS)) {
+                                mEditor.remove(AllMyConstants.THE_CHOSEN_CARDS);
+                            }
 
-                        if (isDataLoaded) {
-                            newCubeButton.setEnabled(true);
-                            myCubesButton.setEnabled(true);
-                        } else {
-                            newCubeButton.setEnabled(false);
-                            myCubesButton.setEnabled(false);
+                            mEditor.putBoolean(AllMyConstants.IS_DATA_LOADED, true);
+                            mEditor.apply();
+
+                            if (isDataLoaded) {
+                                newCubeButton.setEnabled(true);
+                                myCubesButton.setEnabled(true);
+                            } else {
+                                newCubeButton.setEnabled(false);
+                                myCubesButton.setEnabled(false);
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
 
 
-        newCubeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToNewCube(view);
-            }
-        });
+            newCubeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToNewCube(view);
+                }
+            });
 
-        myCubesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToMyCubes(view);
-            }
-        });
+            myCubesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToMyCubes(view);
+                }
+            });
 
-        mInsertData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                insertData();
-            }
-        });
+            mInsertData.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    insertData();
+                }
+            });
+        }
 
         return view;
     }
@@ -217,7 +225,6 @@ public class MainActivityFragment extends Fragment {
                             json = new String(buffer, "UTF-8");
                             JSONObject obj = new JSONObject(json);
 
-                            Timber.tag("fart").i("***** file: %s", file);
                             JSONArray cardsArray = obj.getJSONArray("cards");
 
                             for(int i = 0; i < cardsArray.length(); i++) {

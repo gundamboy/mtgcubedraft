@@ -87,12 +87,10 @@ public class EndGameFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        Timber.tag("fart").i("fm test size: %s", fm.getBackStackEntryCount());
 
         for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
             fm.popBackStack();
             Navigation.findNavController(view).popBackStack();
-            Timber.tag("fart").i("clearing backstack");
         }
 
         sendDataToActivity("Draft Deck Review");

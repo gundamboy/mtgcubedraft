@@ -145,7 +145,6 @@ public class LoginActivity extends AppCompatActivity implements
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
-                    Timber.tag("fart").i("user was created");
                     user = mAuth.getCurrentUser();
 
                 } else {

@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -27,6 +28,7 @@ import com.ragingclaw.mtgcubedraftsimulator.fragments.NewDraftBuilderFragment;
 import com.ragingclaw.mtgcubedraftsimulator.fragments.SingleCardDisplayFragment;
 import com.ragingclaw.mtgcubedraftsimulator.models.MagicCardViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
+import com.ragingclaw.mtgcubedraftsimulator.utils.NetworkUtils;
 import com.ragingclaw.mtgcubedraftsimulator.utils.NotLoggingTree;
 
 import butterknife.BindView;
@@ -45,11 +47,11 @@ public class MainActivity extends AppCompatActivity implements
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.mainLayout) androidx.core.widget.NestedScrollView mainLayout;
+
     ActionBar actionBar;
 
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
-    private MagicCardViewModel magicCardViewModel;
 
 
     @Override
@@ -79,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             mainLayout.setVisibility(View.VISIBLE);
         }
+
     }
 
     public void setActionBarTitle(String title) {

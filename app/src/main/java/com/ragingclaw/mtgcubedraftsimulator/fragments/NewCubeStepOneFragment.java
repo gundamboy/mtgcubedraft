@@ -161,7 +161,6 @@ public class NewCubeStepOneFragment extends Fragment {
                 if(handlerBundle.containsKey(AllMyConstants.CUBE_NAMES)) {
                     if(handlerBundle.getStringArrayList(AllMyConstants.CUBE_NAMES).size() > 0) {
                         // update widget
-                        Timber.tag("fart").i("attempt to update widget");
 
                         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getActivity());
                         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
