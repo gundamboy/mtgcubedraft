@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 loggedIn();
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Sign in canceled.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.toast_login_canceled_text), Toast.LENGTH_SHORT).show();
                 finish();
             }
         }

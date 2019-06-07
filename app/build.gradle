@@ -4,7 +4,7 @@ apply plugin: "androidx.navigation.safeargs"
 android {
     signingConfigs {
         config {
-            storeFile file('$rootDir\\keystore.jks')
+            storeFile file("$rootDir\\keystore.jks")
             storePassword 'password'
             keyAlias = 'MTGdraft'
             keyPassword 'password'

@@ -80,6 +80,7 @@
     <string name="pick">, Pick</string>
     <string name="fragment_interaction_error_end_text">must implement OnEndGameFragmentInteractionListener</string>
     <string name="percent_text">percent</string>
+    <string name="toast_login_canceled_text">Sign in canceled.</string>
 
 
 </resources>
