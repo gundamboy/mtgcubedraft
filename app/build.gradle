@@ -65,9 +65,8 @@ dependencies {
      Here is the the androidx overview: https://developer.android.com/jetpack/androidx
      "AndroidX fully replaces the Support Library by providing feature parity and new libraries."
 
-     SO, I am leaving this in. It's the official position of Google to use this. If that is not
-     acceptable, I am prepared to take this to the highest possible reaches of Udacity.
-     I have looked at other peoples projects and they passed using androidx.
+     Changing my last bit of this comment. I found that last stable version of room. Fine. Perfectly
+     acceptable.
      */
     implementation "androidx.room:room-runtime:2.0.0"
     annotationProcessor "androidx.room:room-compiler:2.0.0"
