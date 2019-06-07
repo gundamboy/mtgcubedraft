@@ -2,25 +2,15 @@ package com.ragingclaw.mtgcubedraftsimulator.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.ragingclaw.mtgcubedraftsimulator.R;
-import com.ragingclaw.mtgcubedraftsimulator.fragments.CreateAccountFragment;
-import com.ragingclaw.mtgcubedraftsimulator.fragments.EmailPasswordFragment;
-import com.ragingclaw.mtgcubedraftsimulator.fragments.LoginFragment;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 
 import java.util.Arrays;
