@@ -4,7 +4,7 @@ apply plugin: "androidx.navigation.safeargs"
 android {
     signingConfigs {
         config {
-            storeFile file('D:\\Projects\\AndoidApps\\mtgcubedraft\\keystore.jks')
+            storeFile file('$rootDir\\keystore.jks')
             storePassword 'password'
             keyAlias = 'MTGdraft'
             keyPassword 'password'
@@ -50,8 +50,30 @@ dependencies {
 
     implementation 'android.arch.navigation:navigation-fragment:1.0.0'
     implementation 'android.arch.navigation:navigation-ui:1.0.0'
+
+
+    /**
+    There is a screen shot in the root folder of the project called room_androidx_conversions.png
+     It is google's official position to use androidx.
+     Please tell me how I can use Room per the project requirements while following the official
+     recommendation from Google, if it is impossible to not use Room. Seriously. I'd love to know
+     how it's possible.
+
+     If you dont look at the screenshot, here is the conversion tables
+     https://developer.android.com/jetpack/androidx/migrate
+
+     Here is the the androidx overview: https://developer.android.com/jetpack/androidx
+     "AndroidX fully replaces the Support Library by providing feature parity and new libraries."
+
+     SO, I am leaving this in. It's the official position of Google to use this. If that is not
+     acceptable, I am prepared to take this to the highest possible reaches of Udacity.
+     I have looked at other peoples projects and they passed using androidx.
+     */
     implementation "androidx.room:room-runtime:2.1.0-rc01"
     annotationProcessor "androidx.room:room-compiler:2.1.0-rc01"
+    testImplementation "androidx.room:room-testing:2.1.0-rc01"
+
+
 
     // third party stuff
     implementation 'com.jakewharton.timber:timber:4.7.1'
@@ -71,8 +93,8 @@ dependencies {
     // testing
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
-    testImplementation "androidx.room:room-testing:2.1.0-rc01"
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
 
 }
 

@@ -28,11 +28,9 @@ public class DraftCompleteDialogFragment extends DialogFragment implements Dialo
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
         builder.setView(inflater.inflate(R.layout.dialog_draft_complete, null))
-                .setNegativeButton(R.string.dialog_draft_complete_confirm, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                        DraftCompleteDialogFragment.this.getDialog().cancel();
-                    }
+                .setNegativeButton(R.string.dialog_draft_complete_confirm, (dialog, id) -> {
+                    // User cancelled the dialog
+                    DraftCompleteDialogFragment.this.getDialog().cancel();
                 });
         // Create the AlertDialog object and return it
         return builder.create();

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,7 +12,6 @@
             android:layout_height="match_parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/building_cube_layout"
                     android:layout_gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
@@ -32,7 +30,6 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/creating_draft_static_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margins_8"
@@ -75,7 +72,6 @@
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <ImageView
-                    android:id="@+id/mtg_symbol_u"
                     android:layout_width="@dimen/mtg_symbol_image_size"
                     android:layout_height="@dimen/mtg_symbol_image_size"
                     android:layout_marginStart="@dimen/margins_8"
@@ -114,7 +110,6 @@
                     app:layout_constraintTop_toBottomOf="@+id/percentage_built" />
 
                 <ImageView
-                    android:id="@+id/mtg_symbol_g"
                     android:layout_width="@dimen/mtg_symbol_image_size"
                     android:layout_height="@dimen/mtg_symbol_image_size"
                     android:layout_marginStart="@dimen/margins_8"

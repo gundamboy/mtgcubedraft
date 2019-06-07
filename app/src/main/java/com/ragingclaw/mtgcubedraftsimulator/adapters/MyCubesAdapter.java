@@ -23,7 +23,7 @@ public class MyCubesAdapter extends RecyclerView.Adapter<MyCubesAdapter.CubeHold
     private MyCubesAdapter.OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-        void onItemClick(int position, int cubeId, String cubeName);
+        void onItemClick(int cubeId, String cubeName);
     }
 
     public void setOnClickListener(OnItemClickListener listener) {
@@ -72,13 +72,10 @@ public class MyCubesAdapter extends RecyclerView.Adapter<MyCubesAdapter.CubeHold
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            imageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(position, Integer.parseInt(cubeId.getText().toString()), cubeName.getText().toString());
-                    }
+            imageButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(Integer.parseInt(cubeId.getText().toString()), cubeName.getText().toString());
                 }
             });
         }

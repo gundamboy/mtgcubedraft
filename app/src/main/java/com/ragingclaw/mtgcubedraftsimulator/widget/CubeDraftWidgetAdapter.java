@@ -1,12 +1,9 @@
 package com.ragingclaw.mtgcubedraftsimulator.widget;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -14,24 +11,16 @@ import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
-import timber.log.Timber;
-
 public class CubeDraftWidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
-    private Context mContext;
-    private int appWidgetId;
-    private String userId;
+    private final Context mContext;
     private ArrayList<String> mCubeNames;
 
     public CubeDraftWidgetAdapter(Context mContext, Intent mIntent) {
         this.mContext = mContext;
-        this.appWidgetId = mIntent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
         this.mCubeNames = mIntent.getStringArrayListExtra(AllMyConstants.CUBE_NAMES);
-        this.userId = mIntent.getStringExtra(AllMyConstants.USER_ID);
     }
 
     @Override
@@ -44,7 +33,7 @@ public class CubeDraftWidgetAdapter implements RemoteViewsService.RemoteViewsFac
         SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         if(mPreferences.contains(AllMyConstants.CUBE_NAMES)) {
             Set<String> names = mPreferences.getStringSet(AllMyConstants.CUBE_NAMES, null);
-            if(!names.isEmpty()) {
+            if(!Objects.requireNonNull(names).isEmpty()) {
                 mCubeNames = new ArrayList<>();
                 mCubeNames.addAll(names);
             }

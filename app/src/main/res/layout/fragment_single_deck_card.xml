@@ -17,6 +17,7 @@
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:transitionName="@string/mtg_card_scale_transition_name"
+        android:contentDescription="@string/magic_the_gathering_card_image_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

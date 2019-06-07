@@ -1,8 +1,6 @@
 package com.ragingclaw.mtgcubedraftsimulator.database;
 
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
@@ -21,7 +19,6 @@ import java.util.List;
 public class Pack {
 
     @PrimaryKey(autoGenerate = true)
-    @NonNull
     private int packId;
 
     private int booster_num;

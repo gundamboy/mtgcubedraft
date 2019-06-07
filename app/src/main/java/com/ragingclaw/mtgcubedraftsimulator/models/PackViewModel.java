@@ -12,8 +12,8 @@ import com.ragingclaw.mtgcubedraftsimulator.database.Pack;
 import java.util.List;
 
 public class PackViewModel extends AndroidViewModel {
-    private ApplicationRepository mApplicationRepository;
-    private LiveData<List<Pack>> mAllPacks;
+    private final ApplicationRepository mApplicationRepository;
+    private final LiveData<List<Pack>> mAllPacks;
 
     public PackViewModel(@NonNull Application application) {
         super(application);

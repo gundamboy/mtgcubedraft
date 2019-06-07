@@ -1,6 +1,5 @@
 package com.ragingclaw.mtgcubedraftsimulator.fragments;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,9 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.NavDeepLinkBuilder;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,19 +25,17 @@ import android.view.ViewGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.ragingclaw.mtgcubedraftsimulator.R;
 import com.ragingclaw.mtgcubedraftsimulator.activities.LoginActivity;
-import com.ragingclaw.mtgcubedraftsimulator.activities.MainActivity;
 import com.ragingclaw.mtgcubedraftsimulator.adapters.MyCubesAdapter;
-import com.ragingclaw.mtgcubedraftsimulator.database.Cube;
 import com.ragingclaw.mtgcubedraftsimulator.models.CubeViewModel;
 import com.ragingclaw.mtgcubedraftsimulator.utils.AllMyConstants;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,7 +51,6 @@ public class MyCubesFragment extends Fragment {
     @BindView(R.id.cubes_recyclerview) RecyclerView cubes_recyclerView;
     @BindView(R.id.create_cube_button) com.google.android.material.button.MaterialButton createCubeButton;
     private Unbinder unbinder;
-    private CubeViewModel cubeViewModel;
     private MyCubesAdapter myCubesAdapter;
     private FirebaseAuth mAuth;
     private LinearLayoutManager linearLayoutManager;
@@ -66,7 +60,6 @@ public class MyCubesFragment extends Fragment {
     private boolean savePosition = false;
     private int cubeId;
     private String cubeName;
-    private String toastMessage;
     private Boolean isSaved;
     private Boolean isSingle;
     private  View view;
@@ -79,9 +72,8 @@ public class MyCubesFragment extends Fragment {
     }
 
     public static MyCubesFragment newInstance() {
-        MyCubesFragment fragment = new MyCubesFragment();
 
-        return fragment;
+        return new MyCubesFragment();
     }
 
     @Override
@@ -91,7 +83,7 @@ public class MyCubesFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_my_cubes, container, false);
@@ -100,76 +92,59 @@ public class MyCubesFragment extends Fragment {
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         mAuth = FirebaseAuth.getInstance();
-        String currentUser = mAuth.getCurrentUser().getUid();
+        String currentUser = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 
         cubeId = mPreferences.getInt(AllMyConstants.CUBE_ID, 0);
         cubeName = mPreferences.getString(AllMyConstants.CUBE_NAME, null);
-        toastMessage = mPreferences.getString(AllMyConstants.TOAST_MESSAGE, null);
         isSaved = mPreferences.getBoolean(AllMyConstants.IS_SAVED, false);
         isSingle = mPreferences.getBoolean(AllMyConstants.IS_SINGLE, false);
 
         // view model for db stuff
-        cubeViewModel = ViewModelProviders.of(this).get(CubeViewModel.class);
+        CubeViewModel cubeViewModel = ViewModelProviders.of(this).get(CubeViewModel.class);
 
-        createCubeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(view).navigate(R.id.action_myCubesFragment_to_newCubeStepOneFragment);
-            }
-        });
+        createCubeButton.setOnClickListener(v -> Navigation.findNavController(view).navigate(R.id.action_myCubesFragment_to_newCubeStepOneFragment));
 
         // livedata observer for displaying data
-        cubeViewModel.getmAllUsersCubes(currentUser).observe(this, new Observer<List<Cube>>() {
-            @Override
-            public void onChanged(List<Cube> cubesEntities) {
-                ArrayList<String> cubeNamesForWidget = new ArrayList<>();
-                // update stuff
-                if(cubesEntities.size() > 0) {
-                    for (Cube c : cubesEntities) {
-                        cubeNamesForWidget.add(c.getCube_name());
-                    }
+        cubeViewModel.getmAllUsersCubes(currentUser).observe(this, cubesEntities -> {
+            // update stuff
+            if(cubesEntities.size() > 0) {
+                savePosition = true;
+                my_cubes_layout.setVisibility(View.VISIBLE);
+                no_cubes_found_layout.setVisibility(View.GONE);
+                linearLayoutManager = new LinearLayoutManager(getActivity());
+                cubes_recyclerView.setLayoutManager(linearLayoutManager);
+                cubes_recyclerView.setHasFixedSize(true);
+                myCubesAdapter = new MyCubesAdapter();
+                cubes_recyclerView.setAdapter(myCubesAdapter);
+                myCubesAdapter.setCubes(cubesEntities);
 
-                    savePosition = true;
-                    my_cubes_layout.setVisibility(View.VISIBLE);
-                    no_cubes_found_layout.setVisibility(View.GONE);
-                    linearLayoutManager = new LinearLayoutManager(getActivity());
-                    cubes_recyclerView.setLayoutManager(linearLayoutManager);
-                    cubes_recyclerView.setHasFixedSize(true);
-                    myCubesAdapter = new MyCubesAdapter();
-                    cubes_recyclerView.setAdapter(myCubesAdapter);
-                    myCubesAdapter.setCubes(cubesEntities);
+                myCubesAdapter.setOnClickListener((theCubeId, theCubeName) -> {
+                    cubeName = theCubeName;
+                    cubeId = theCubeId;
+                    isSaved = false;
+                    isSingle = true;
 
-                    myCubesAdapter.setOnClickListener(new MyCubesAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(int position, int theCubeId, String theCubeName) {
-                            cubeName = theCubeName;
-                            cubeId = theCubeId;
-                            isSaved = false;
-                            isSingle = true;
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(AllMyConstants.NEW_CUBE, false);
+                    bundle.putBoolean(AllMyConstants.CUBE_CARDS, false);
+                    bundle.putString(AllMyConstants.CUBE_NAME, cubeName);
+                    bundle.putInt(AllMyConstants.CUBE_ID, cubeId);
 
-                            Bundle bundle = new Bundle();
-                            bundle.putBoolean(AllMyConstants.NEW_CUBE, false);
-                            bundle.putBoolean(AllMyConstants.CUBE_CARDS, false);
-                            bundle.putString(AllMyConstants.CUBE_NAME, cubeName);
-                            bundle.putInt(AllMyConstants.CUBE_ID, cubeId);
+                    mEditor = mPreferences.edit();
+                    mEditor.putInt(AllMyConstants.CUBE_ID, cubeId);
+                    mEditor.putString(AllMyConstants.CUBE_NAME, cubeName);
+                    mEditor.putString(AllMyConstants.TOAST_MESSAGE, null);
+                    mEditor.putBoolean(AllMyConstants.IS_SAVED, isSaved);
+                    mEditor.putBoolean(AllMyConstants.IS_SINGLE, isSingle);
+                    mEditor.apply();
 
-                            mEditor = mPreferences.edit();
-                            mEditor.putInt(AllMyConstants.CUBE_ID, cubeId);
-                            mEditor.putString(AllMyConstants.CUBE_NAME, cubeName);
-                            mEditor.putString(AllMyConstants.TOAST_MESSAGE, null);
-                            mEditor.putBoolean(AllMyConstants.IS_SAVED, isSaved);
-                            mEditor.putBoolean(AllMyConstants.IS_SINGLE, isSingle);
-                            mEditor.commit();
+                    Navigation.findNavController(view).navigate(R.id.action_myCubesFragment_to_cubeCardsReview, bundle, null);
+                });
 
-                            Navigation.findNavController(view).navigate(R.id.action_myCubesFragment_to_cubeCardsReview, bundle, null);
-                        }
-                    });
-
-                } else {
-                    if (my_cubes_layout.getVisibility() == View.VISIBLE) {
-                        my_cubes_layout.setVisibility(View.GONE);
-                        no_cubes_found_layout.setVisibility(View.VISIBLE);
-                    }
+            } else {
+                if (my_cubes_layout.getVisibility() == View.VISIBLE) {
+                    my_cubes_layout.setVisibility(View.GONE);
+                    no_cubes_found_layout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -190,7 +165,7 @@ public class MyCubesFragment extends Fragment {
             mListener = (OnMyCubesFragmentInteraction) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnMyCubesFragmentInteraction");
+                    + getActivity().getString(R.string.fragment_interaction_error_end_text));
         }
     }
 
@@ -211,31 +186,22 @@ public class MyCubesFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
         inflater.inflate(R.menu.cube_menu, menu);
-
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.logout:
-                mAuth.signOut();
-                goToLogin();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.logout) {
+            mAuth.signOut();
+            goToLogin();
+            return true;
         }
-    }
-
-    private void goToHome() {
-        Navigation.findNavController(view).navigate(R.id.action_myCubesFragment_to_hostFragment);
-
+        return super.onOptionsItemSelected(item);
     }
 
     private void goToLogin() {
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         startActivity(intent);
-        getActivity().finish();
+        Objects.requireNonNull(getActivity()).finish();
     }
 
     @Override
@@ -243,7 +209,7 @@ public class MyCubesFragment extends Fragment {
         super.onPause();
         if(savePosition) {
             mBundleRecyclerViewState = new Bundle();
-            mListState = cubes_recyclerView.getLayoutManager().onSaveInstanceState();
+            mListState = Objects.requireNonNull(cubes_recyclerView.getLayoutManager()).onSaveInstanceState();
             mBundleRecyclerViewState.putParcelable(AllMyConstants.RECYCLER_RESTORE, mListState);
         }
     }
@@ -253,19 +219,12 @@ public class MyCubesFragment extends Fragment {
         super.onViewStateRestored(savedInstanceState);
         if(savePosition) {
             if (mBundleRecyclerViewState != null) {
-                new Handler().postDelayed(new Runnable() {
+                new Handler().postDelayed(() -> {
+                    mListState = mBundleRecyclerViewState.getParcelable(AllMyConstants.RECYCLER_RESTORE);
+                    Objects.requireNonNull(cubes_recyclerView.getLayoutManager()).onRestoreInstanceState(mListState);
 
-                    @Override
-                    public void run() {
-                        mListState = mBundleRecyclerViewState.getParcelable(AllMyConstants.RECYCLER_RESTORE);
-                        cubes_recyclerView.getLayoutManager().onRestoreInstanceState(mListState);
-
-                    }
                 }, 50);
             }
-
-
-            //cubes_recyclerView.setLayoutManager(linearLayoutManager);
         }
     }
 

@@ -1,8 +1,5 @@
 package com.ragingclaw.mtgcubedraftsimulator.database;
 
-import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
@@ -13,21 +10,14 @@ import com.ragingclaw.mtgcubedraftsimulator.converters.StringTypeConverter;
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-
-import io.magicthegathering.javasdk.resource.Card;
-import io.magicthegathering.javasdk.resource.ForeignData;
-import io.magicthegathering.javasdk.resource.Ruling;
 
 @Entity(tableName = "cards")
 @TypeConverters({StringTypeConverter.class, BigDecimalTypeConverter.class})
 @Parcel(Parcel.Serialization.BEAN)
 public class MagicCard {
     @PrimaryKey
-    @NonNull
-    private int multiverseid = -1;
+    private int multiverseid;
 
     private String id;
     private String layout;

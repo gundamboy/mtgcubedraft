@@ -6,8 +6,6 @@ import androidx.room.util.StringUtil;
 import java.util.Collections;
 import java.util.List;
 
-import timber.log.Timber;
-
 public class IntegerIdTypeConverter {
     @TypeConverter
     public static List<Integer> stringToIntList(String data) {

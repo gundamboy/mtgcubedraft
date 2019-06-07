@@ -1,6 +1,5 @@
 package com.ragingclaw.mtgcubedraftsimulator.database;
 
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
@@ -14,14 +13,13 @@ import java.util.List;
 @TypeConverters(IntegerIdTypeConverter.class)
 public class Cube {
 
-    @NonNull
     @PrimaryKey(autoGenerate = true)
     private int cubeId;
 
     private String userId;
     private String cube_name;
     private int total_cards;
-    private List<Integer> card_ids = null;
+    private List<Integer> card_ids;
 
     public Cube(int cubeId, String userId, String cube_name, int total_cards, List<Integer> card_ids) {
         this.cubeId = cubeId;
